@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "author": "ZJINH",
   "description": "Cloud-网盘",
-  "license": null,
+  "license": "ZJINH",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
