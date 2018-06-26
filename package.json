@@ -25,6 +25,14 @@
     "files": [
       "dist/electron/**/*"
     ],
+    "nsis": {
+      "oneClick": false,
+      "menuCategory": "Cloud",
+      "shortcutName": "Cloud-网盘",
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "runAfterFinish": true
+    },
     "dmg": {
       "contents": [
         {
@@ -41,13 +49,17 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "static/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "static/icons/icon.ico",
+      "artifactName": "${productName}_setup_${version}.${ext}",
+      "target": [
+        "nsis"
+      ]
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "static/icons"
     }
   },
   "dependencies": {
