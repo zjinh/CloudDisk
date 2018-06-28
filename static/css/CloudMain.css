@@ -1,0 +1,517 @@
+@charset "utf-8";
+body{
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	-khtml-user-select:none;
+	user-select:none;
+}
+/*遮罩*/
+.CloudFliter{
+	width: 120%;
+	height: 120%;
+	position: absolute;
+	left: -10%;
+	top: -10%;
+	z-index: -1;
+	opacity: 0.4;
+	-webkit-filter: blur(25px);
+	filter: blur(25px);
+	background: url("../../upload/user_bg/bg1.jpg");
+	background-position: 50% 50%!important;
+	background-size: cover!important;
+	background-repeat: no-repeat!important;
+	-webkit-transition: background 0.4s ease-in-out;
+	-moz-transition: background 0.4s ease-in-out;
+	-o-transition: background 0.4s ease-in-out;
+	transition: background 0.4s ease-in-out;
+	-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	-webkit-animation-name:fadeIn;animation-name:fadeIn;
+}
+/*加载动画*/
+#CloudLoading{
+	position: absolute;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	z-index: 1;
+}
+@keyframes fade-in {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+@keyframes drop {
+	0% {
+		bottom: 0px;
+		opacity: 1;
+	}
+
+	80% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 1;
+		bottom: -500px;
+	}
+}
+@keyframes wave {
+	0% {
+		background-position: 0 160px;
+		background-size: 170px 300px;
+	}
+
+	100% {
+		background-position: 500px -18px;
+		background-size: 250px 150px;
+	}
+}
+.loader {
+	width: 120px;
+	height: 120px;
+	position: fixed;
+	margin: auto;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	text-align: center;
+	line-height: 120px;
+	font-family: sans-serif;
+	color: #ffffff;
+	font-size: 16px;
+	overflow: unset;
+	box-sizing: unset;
+}
+.loader span {
+	z-index: 3;
+}
+.loader-bg {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: transparent repeat-x 0 100px/150px 300px url(../img/loader/loader.png);
+	z-index: 2;
+	animation: wave 2.2s ease-out forwards;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+}
+.drops {
+	-webkit-filter: url('#liquid');
+	filter: url('#liquid');
+	position:absolute;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	z-index: 1;
+	opacity: 0;
+	animation: fade-in .1s linear .4s forwards;
+	overflow: unset;
+	box-sizing: unset;
+}
+.drop1 , .drop2 {
+	width: 21px;
+	height: 24px;
+	border-radius: 50%;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	background-color: #3b8cff;
+}
+.drop1 {
+	width: 30px;
+	height: 16px;
+	bottom: 2px;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+}
+.drop2 {
+	animation: drop 2s cubic-bezier(1,.19,.66,.12) .5s infinite;
+}
+/*天气*/
+.WeatherPanel{
+	float: left;
+	padding: 5px;
+}
+.WeatherPanel *{
+	float: left;
+}
+.WeatherPanel img{
+	width: 30px;
+	height: 30px;
+	margin-top: 2px;
+	margin-right: 10px;
+}
+.WeatherPanel p{
+	width: auto;
+	color: #fff;
+	line-height: 35px;
+}
+.WeatherPanel button{
+	height: 30px;
+	padding: 0px 4px;
+	background: none;
+	color: #fff;
+	line-height: 30px;
+	margin-top: 2px;
+}
+/*顶部时间栏*/
+.CloudHeadTime{
+	float: left;
+	color: #fff;
+	padding: 5px;
+}
+.CloudHeadTime p{
+	float: left;
+	margin-right: 5px;
+	line-height: 35px;
+	font-size: 15px;
+}
+/*用户信息面板*/
+.CloudMainLogined {
+	float: right;
+	width: auto;
+	max-width: 300px;
+	padding: 5px;
+}
+.CloudMainLogined img {
+	float: right;
+	width: 35px;
+	height: 35px;
+	border-radius: 100%;
+	-webkit-border-radius: 100%;
+	-moz-border-radius: 100%;
+}
+.CloudMainLogined p {
+	float: left;
+	padding: 3px;
+	width: auto;
+	height: 35px;
+	max-width: 96px;
+	color: #fff;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	line-height: 30px;
+}
+.CloudMainLogined span{
+	color: #fff;
+	margin: 7px;
+	margin-left: 0px;
+}
+/*用户下拉菜单*/
+.CloudUserDropMenu div,.CloudSystemN div,.CloudUserMainMessage div{
+	color: #58666e;
+	background-color: #edf1f2;
+	border-bottom: 1px solid #dee5e7;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+.CloudUserDropMenu .sf-icon-redo,.CloudSystemN .sf-icon-redo,.CloudUserMainMessage .sf-icon-redo{
+	float: right;
+	margin-top: 3px;
+}
+.CloudUserDropMenu p{
+	width: 100%;
+	height: 1px;
+	border-bottom: 1px solid #dee5e7;
+	margin: 5px 0;
+}
+.CloudMainLogined:hover,.UserNotifys:hover{
+	background: rgba(255,255,255,0.2);
+}
+/*系统通知菜单*/
+.CloudSystemNMain{
+	width: 100%;
+	height: 150px;
+	overflow: auto;
+}
+/*用户通知按钮面板*/
+.UserNotifyPanel{
+	float: right;
+	margin-right: 10px;
+}
+.UserNotifys{
+	width: 45px;
+	height: 45px;
+	line-height: 45px;
+	color: #fff;
+	text-align: center;
+	cursor: pointer;
+	max-width: 45px;
+}
+.UserNotifys span{
+	font-weight: 400;
+	color: white;
+	border-radius: 5px;
+	font-size: 10px;
+}
+/*顶部栏*/
+.CloudHeadPanel{
+	width: 100%;
+	padding: 5px;
+	height: 55px;
+}
+/*应用菜单*/
+.CustomFuncPanel{
+	padding: 10px;
+	width: calc(100% - 300px);
+	height: calc(100% - 55px);
+	position: relative;
+	display: inline-block;
+}
+.CustonFunc{
+	float: left;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	width: 100px;
+	height: 100px;
+	text-align: center;
+	cursor: pointer;
+	-webkit-animation-duration:.3s;animation-duration:.3s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	background: rgba(255, 255, 255, 0.2);
+	border: 2px solid rgba(0,0,0,0);
+	position: absolute;
+	-webkit-transition: background 0.4s ease-in-out;
+	-moz-transition: background 0.4s ease-in-out;
+	-o-transition: background 0.4s ease-in-out;
+	transition: background 0.4s ease-in-out;
+}
+.CustonFunc:hover{
+	border-color: #fff;
+}
+.CustonFunc div{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
+}
+.CustonFunc img{
+	margin-top: 5px;
+	width: 65px;
+	height: 65px;
+	z-index:-1;
+}
+.CustonFunc p{
+	width: 100%;
+	color: #f6f6f6;
+	font-size: 12px;
+	z-index:-1;
+	text-shadow: 0px 0px 1px #000000;
+	text-align: left;
+	text-indent: 5px;
+}
+/*右侧部分*/
+.CloudMainRightPanel{
+	width: 300px;
+	height: calc(100% - 55px);
+	float: right;
+	display: inline-block;
+}
+.CloudMainNoteInfo{
+	float: right;
+	width: 100%;
+	padding: 5px;
+	padding-right: 0;
+	margin-top: 20px;
+}
+.CloudMainNoteHead{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	color: #fff;
+}
+.CloudMainNoteMain{
+	width: 100%;
+	max-height: 300px;
+	overflow-y: auto;
+}
+.CloudMainNoteMain li{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	color: #eee;
+	padding: 0 10px;
+	padding-right: 0;
+	margin-bottom: 4px;
+}
+.CloudMainNoteMain li:hover{
+	cursor: pointer;
+	background: rgba(255,255,255,0.2);
+}
+.CloudMainNoteMain li p{
+	float: left;
+	width: calc(100% - 65px);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding-right: 5px;
+}
+.CloudMainNoteMain li span{
+	float: left;
+	font-size: 12px;
+}
+.CloudMainNoteHead span{
+	width:35px;
+	text-align: center;
+	line-height: 30px;
+}
+.CloudMainNoteHead *{
+	float: left;
+}
+.CloudWeatherPanel{
+	width: 100%;
+	height: 255px;
+}
+.CloudWeatherPanel *{
+	float: left;
+}
+.CloudWeatherPanel div{
+	width: 100%;
+	padding: 10px;
+	color: #fff;
+	border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.CloudWeatherPanel div img{
+	width: 50px;
+	margin: 5px;
+}
+.CloudWeatherPanel div p{
+	float: right;
+	font-size: 22px;
+	padding-right: 10px;
+}
+.CloudWeatherPanel div span{
+	text-align: right;
+	width: calc(100% - 60px);
+	margin-top: 8px;
+	padding-right: 10px;
+}
+.CloudWeatherPanel-input span{
+	padding: 0 10px;
+	width: unset!important;
+	line-height: 25px;
+	margin: 0!important;
+}
+.CloudWeatherPanel-input label{
+	float: right;
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+}
+.CloudWeatherPanel-input input{
+	float: right;
+	width: 95px;
+	height: 25px;
+	color: #fff;
+	background: rgba(255,255,255,0.2);
+	margin-left: -25px;
+	padding-left: 25px;
+}
+.CloudWeatherPanel li{
+	width: 25%;
+	text-align: center;
+	color: #c4c2c2;
+}
+.CloudWeatherPanel li img{
+	float: unset;
+	width: 40px;
+	margin: 15px 5px 0px 5px;
+}
+.CloudWeatherPanel li p{
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+}
+/*退出菜单*/
+.PowerLogo{
+	float: left;
+	width: 35px;
+	height: 35px;
+	line-height: 35px;
+	text-align: center;
+	background:#79726a;
+	color: #fff;
+	border-radius: 100%;
+	-moz-border-radius: 100%;
+	-webkit-border-radius: 100%;
+}
+.PowerTipsBold,.PowerTips{
+	float: left;
+	width: calc(100% - 50px);
+	margin-left: 10px;
+	font-weight: 500;
+	margin-bottom: 5px;
+}
+.PowerTips{
+	margin-top: 5px;
+	font-weight: normal;
+}
+/*任务栏*/
+#SlimfBar {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	background: rgba(255,255,255,0.2);
+}
+/*事项管理*/
+.pined {
+	color: #f74949;
+	-webkit-transform: rotate(30deg)!important;
+}
+.ThingShowMain{
+	width: 100%;
+	height: 100%;
+	background: #fbf3dd;
+	padding: 12px;
+}
+.ThingShowTime{
+	width: 100%;
+	height: 30px;
+	line-height: 15px;
+	color: #7F8C8D;
+	font-size: 13px;
+}
+.ThingShowContainer{
+	width: 100%;
+	height: calc(100% - 30px);
+	overflow-y: auto;
+}
+.ThingShowContainer:focus{
+	outline: none;
+}
+.ThingShowMain button{
+	float: right;
+	width: 30px;
+	height: 30px;
+	background: none;
+	border: none;
+	font-size: 16px;
+	margin-right: 4px;
+}
+.ThingShowMain button:hover{
+	background: #cbcfd2;
+}
+.ThingPin{
+	transform: rotate(20deg);
+	-o-transform: rotate(20deg);
+	-webkit-transform: rotate(20deg);
+	color: #e65152;
+}
+.ThingPin:hover{
+	background: none!important;
+}

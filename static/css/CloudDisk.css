@@ -1,0 +1,590 @@
+html,body{
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	-khtml-user-select:none;
+	user-select:none;
+}
+.CloudDiskHeaderDrag{
+	width: 100%;
+	height: 70px;
+	background: #2682fc;
+	padding: 0 2px;
+}
+.CloudDiskHeaderDrag .left{
+	position: absolute;
+	height: 68px;
+	width: 160px;
+	-webkit-app-region: drag;
+}
+.CloudDiskHeaderDrag .center{
+	width: calc(100% - 676px);
+	-webkit-app-region: drag;
+}
+.CloudDiskUser{
+    float: left;
+    width: 150px;
+    height: 35px;
+    margin-top: 16px;
+}
+.CloudDiskUser *{
+    float: right;
+}
+.CloudDiskUser img{
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+}
+.CloudDiskUser span{
+    max-width: 105px;
+    height: 35px;
+    line-height: 35px;
+    margin-left: 10px;
+    color: #fff;
+}
+.CloudDiskHeaderDrag .right{
+	width: 150px;
+	-webkit-app-region: drag;
+	margin-top: 0!important;
+}
+.CloudDiskHeaderDrag section{
+	float: left;
+	height: calc(100% - 2px);
+	margin-top: 2px;
+}
+.CloudDiskHeaderControl{
+	float: right!important;
+	position: relative;
+	height: 45px!important;
+	-webkit-app-region: no-drag;
+	z-index: 1;
+}
+.CloudDiskHeaderControl span{
+	float: left;
+	margin-top: 18px;
+	height: 25px;
+	background: rgba(255, 255, 255, 0.77);
+	width: 2px;
+}
+.CloudDiskHeaderControl button{
+	float: left;
+	width: 30px;
+	height: 25px;
+	color: #fff;
+	margin-left: 5px;
+	font-size: 12px;
+	background: none;
+	margin-top: 18px;
+}
+.CloudDiskHeaderControl button:hover{
+	background: rgba(255,255,255,0.2);
+}
+.CloudDiskMain,.CloudDiskMain1,.CloudDiskFuncChange{
+	width: 100%;
+	height: 100%;
+}
+.CloudDiskMain1{
+	overflow: auto;
+}
+.CloudDiskFuncMenu{
+	float: left;
+	height: 70px;
+}
+.CloudDiskFuncMenu img{
+    float: left;
+    width: 40px;
+	margin: 15px;
+	margin-right: 0px;
+}
+.CloudDiskFuncMenu span{
+	float: left;
+	font-weight: bold;
+	color: #fff;
+	line-height: 70px;
+	padding: 0 15px;
+}
+.CloudDiskFuncMenu li {
+	float: left;
+	margin-left: 15px;
+	cursor: pointer;
+	height: 70px;
+	padding-top: 15px;
+}
+.CloudDiskFuncMenu li p {
+	color: #fff;
+	padding: 0 15px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 32px;
+}
+.CloudDiskFuncMenu li>.sf-icon-* {
+	display: block
+}
+.CloudDiskFuncLine {
+	width: 0;
+	height: 4px;
+	background: #fff;
+    border-radius: 10px;
+}
+.CloudDiskFuncLine,.CloudDiskFuncMenu li:hover .CloudDiskFuncLine {
+	-webkit-transition: all .35s;
+	-moz-transition: all .35s;
+	-o-transition: all .35s
+}
+.CloudDiskFuncMenu li:hover .CloudDiskFuncLine {
+	width: 100%!important
+}
+.CloudDiskFuncMain{
+	width: 100%;
+	height: calc(100% - 70px);
+	background: #fff;
+}
+.CloudDiskHead{
+	width: 100%;
+	height:40px;
+	background: white;
+	border-bottom: 1px solid #dcdcdc;
+}
+.CloudDiskNavLine{
+	float: left;
+	margin-top: 9px;
+	color: #d0d0d0;
+}
+.CloudDiskNav button{
+	float: left;
+	height: 100%;
+	line-height: 40px;
+	color: #6d6d6d;
+	background: none;
+	padding: 0 10px;
+}
+.CloudDiskNav button:hover,.CloudDiskNavBlock:hover,.CloudDiskHeadRight button:hover{
+	color: #3b8cff;
+}
+.CloudDiskNavBar{
+	float: left;
+	width: calc(100% - 142px);
+	height: 40px;
+}
+.CloudDiskNavBlock{
+	float: left;
+	height: 40px;
+	line-height: 37px;
+	color: #757575;
+	max-width: 80px;
+	text-overflow: ellipsis;
+}
+.CloudDiskNavBlock:after{
+	content: ' 	>';
+}
+.CloudDiskHeadLeft{
+	float: left;
+	width: calc(100% - 120px);
+	height: 100%;
+}
+.CloudDiskClassify{
+	width: 100%;
+	height: calc(100% - 60px);
+	overflow: auto;
+}
+.CloudDiskClassify li{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	color: #424e67;
+	cursor: pointer;
+}
+.CloudDiskClassify li:hover,.CloudDiskClassifyActive{
+	background: rgba(12, 12, 12, 0.12);
+}
+.CloudDiskClassifyActive{
+	color: #2682fc!important;
+	background: rgba(12, 12, 12, 0.12);
+}
+.CloudDiskCapacity{
+	width: 100%;
+	height: 35px;
+}
+.CloudDiskSliderContainer{
+	width: 95%;
+	height: 10px;
+	margin: 2px auto;
+	background: #d2d2d2;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+.CloudDiskSliderContainer div{
+	width: 0px;
+	background: #2682fc;
+	height: 100%;
+	float: left;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-transition: all .35s;
+	-moz-transition: all .35s;
+	-o-transition: all .35s
+}
+.CloudDiskCapacity p{
+	font-size: 12px;
+	text-indent: 6px;
+	color: #5d5d5d;
+	margin-top: 3px;
+}
+.CloudDiskEmptyTips{
+	width: 100%;
+	color: #828282;
+	text-align: center;
+	font-size: 16px;
+	z-index: -1;
+	position: unset!important;
+	padding-top: calc(25% - 35px);
+}
+.CloudDiskEmptyTips span{
+	width: 100%;
+	font-size: 45px;
+}
+.CloudDiskTreesContainer{
+	width: 100%;
+	max-height: 300px!important;
+	overflow-y: auto;
+}
+.childFolder{
+	padding-left: 10px;
+}
+.CloudDFoContainer{
+	width: 100%;
+	height: auto;
+}
+.CloudDFoContainer li{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+}
+.CloudDFoContainer li:hover,.CloudDiskTreeActive{
+	background: #e1e1e1;
+	color: #000;
+}
+.CloudDFoContainer span{
+	float: left;
+	display: block;
+	line-height: 30px;
+	margin: 0px 5px;
+	color: #ecc220;
+	font-size: 17px;
+}
+.CloudDiskNavBlock span{
+	line-height: 41px;
+}
+.CloudDFoContainer div{
+	float: left;
+}
+.CloudDiskClassify span{
+	width: 35px;
+	height: 40px;
+	display: block;
+	float: left;
+	text-align: center;
+	line-height: 40px;
+	font-size: 16px;
+}
+.CloudDiskHeadRight{
+	float: left;
+	width: 120px;
+	height: 100%;
+}
+.CloudDiskHeadRight button{
+	float: left;
+	line-height: 40px;
+	width: 40px;
+	text-align: center;
+	color: #6d6d6d;
+	background: none;
+	z-index: 2;
+	position: relative;
+}
+.CDsearchInput{
+	background: #e1e1e1;
+	height: 35px;
+	width: 0px;
+	position: absolute;
+	top: 71px;
+	right: 80px;
+	z-index: 1;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	text-indent: 10px;
+	color: #4f4f4f;
+}
+.CloudDiskLeft,.CloudDiskRight{
+	float: left;
+	width:200px;
+	height: calc(100% - 40px);
+	border-right: 1px solid #dcdcdc;
+}
+.CloudDiskMainFunc{
+	width: 100%;
+	height:35px;
+	line-height: 35px;
+	display: none;
+}
+.CloudDiskMainFunc span{
+	height: 35px;
+	display: block;
+	font-size: 12px;
+	line-height: 30px;
+	text-indent: 10px;
+	color: #848484;
+}
+.CloudDiskMainFunc *{
+	float: left;
+}
+.CloudDiskMainFunc>*>.SlimfCheck{
+	margin: 12px 7px;
+}
+.CloudDiskMainFunc button{
+	width: 85px;
+	height: 30px;
+	float: right;
+	background: #4086ED;
+	color: #fff;
+}
+.CloudDiskFuncBlock{
+	height: 35px;
+	line-height:35px;
+	color: #424e67;
+	width: calc(20% - 1px);
+	text-align: left;
+	cursor: pointer;
+	padding-left: 10px;
+}
+.CloudDiskFuncBlock:active{
+	background: #e6e3e3;
+}
+.CloudDiskRight{
+	width: calc(100% - 200px);
+	border:none;
+}
+.CloudDiskDisable{
+	color: #c7c7c7!important;
+	background: none!important;
+	cursor: no-drop!important;
+}
+.CloudDiskDisable:hover{
+	color: #dcdcdc!important;
+}
+.CloudDiskMFile{
+	width: 90px;
+	height: 80px;
+	float: left;
+	margin: 10px 0px 0px 10px;
+	text-align: center;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	cursor: pointer;
+}
+.CloudDiskMFile span{
+	font-size: 30px;
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	margin-top: 5px;
+	display: block;
+}
+.CloudDiskMFile p,.CloudDiskMList p{
+	color: #333333;
+	text-overflow: ellipsis;
+	word-break: break-all;
+	font-size: 12px;
+}
+.CloudDiskMFile>.CloudDiskTime{
+	display: none;
+}
+.CloudDiskMList{
+	width: 100%;
+	height: 35px;
+	padding-left: 5px;
+	cursor: pointer;
+	margin-top: 5px;
+}
+.CloudDiskMList span,.CloudDiskMList p{
+	float: left;
+	display: inline-block;
+	height: 35px;
+	line-height: 35px;
+	margin-left: 5px;
+}
+.CloudDiskMList p{
+	width: calc(56% - 45px);
+}
+.CloudDiskMList >.CloudDiskTime{
+	width: 20%;
+	float: left;
+	height: 100%;
+	font-size: 12px;
+	line-height: 35px;
+	text-align: left;
+}
+.CloudDiskMFile:hover,.CloudDiskMList:hover{
+	background: #ececec;
+}
+.CloudDiskChecked{
+	background: #cecece!important;
+}
+.CloudDiskMList>.SlimfCheck{
+	margin-top: 10px;
+}
+.CloudDiskMList span {
+	line-height: 38px;
+	padding-top: 3px;
+}
+.CloudDiskSelectTips{
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+	font-size: 12px;
+	text-indent: 10px;
+	color: #616161;
+}
+.CloudDiskInfoContainer{
+	width: 100%;
+	max-height: 350px;
+}
+.CloudDiskInfoHead{
+	height: 50px;
+	border-bottom: 1px solid #ccc;
+}
+.CloudDiskInfoHead *{
+	display: inline-block;
+	float: left;
+	line-height: 44px;
+	text-indent: 10px;
+	text-overflow: ellipsis;
+}
+.CloudDiskInfoHead span{
+	width: 280px;
+}
+.CloudDiskInfoList{
+	width: 100%;
+	font-size: 13px;
+	line-height: 30px;
+}
+.CloudDiskInfoList button{
+	border-radius: 0;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	margin-right: 3px;
+	border: 1px solid #ccc;
+	background: #eee;
+	color: #4f4f4f;
+}
+.CloudDiskInfoList input{
+    width: 143px;
+    border-radius: 0px;
+    height: 29px;
+}
+.CloudDiskInfoList span{
+	height: 30px;
+	display: block;
+	float: left;
+}
+.CloudDiskInfoList div{
+	width: 266px;
+	word-break: break-all;
+}
+.CloudDiskInfoList a{
+	color: #000;
+}
+.CloudDiskShareWindow{
+	width: 100%;
+	height: 100%;
+}
+.CloudDiskShareWindow ul{
+	width: 100%;
+	height: 35px;
+}
+.CloudDiskShareWindow ul>li{
+	width: 50%;
+	float: left;
+	text-align: center;
+}
+.CloudDiskShareActive{
+	border-bottom: 2px solid #3b8cff;
+}
+.CloudDiskShareWContent{
+	display: none;
+	width: 100%;
+	height: 60px;
+}
+.CloudDiskShareWindow p{
+	font-size: 14px;
+	line-height: 40px;
+}
+.CloudDiskViewContent{
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background: #fcfcfc;
+}
+.CloudDiskLoading{
+	text-align: center;
+	color: #2682fc;
+	padding-top: calc(25% - 35px);
+}
+.CloudDiskLoading .sf-icon-hdd{
+	width: 100%;
+	font-size: 45px;
+	position: relative;
+}
+.CloudDiskLoading p{
+	color: #828282;
+	font-size: 16px;
+}
+@-webkit-keyframes CloudDiskLoading {
+	50% {
+		opacity: 0.2;
+		-webkit-transform: scale(0.75);
+		transform: scale(0.75); }
+
+	100% {
+		opacity: 1;
+		-webkit-transform: scale(1);
+		transform: scale(1); } }
+@keyframes CloudDiskLoading {
+	50% {
+		opacity: 0.5;
+		-webkit-transform: scale(0.75);
+		transform: scale(0.75); }
+	100% {
+		opacity: 1;
+		-webkit-transform: scale(1);
+		transform: scale(1); } }
+.CloudDiskLoading-beat{
+	position: absolute;
+	top: 25px;
+	text-align: center;
+	left: calc(50% - 12px);
+	background: #fff;
+	height: 10px;
+	width: 26px;
+}
+.CloudDiskLoading-beat > div {
+	float: right;
+	background-color: #2682fc;
+	width: 4px;
+	height: 4px;
+	margin-top: 3px;
+	margin-right: 2px;
+	border-radius: 100%;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+	display: inline-block;
+	-webkit-animation: CloudDiskLoading 0.7s 0s infinite linear;
+	animation: CloudDiskLoading 0.7s 0s infinite linear;
+}
+.CloudDiskLoading-beat > div:nth-child(2n-1) {
+	-webkit-animation-delay: 0.35s !important;
+	animation-delay: 0.35s !important; }

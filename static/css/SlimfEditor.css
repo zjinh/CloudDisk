@@ -1,0 +1,289 @@
+.SlimfEditortoolbar,.SlimfEditorTextContainer, .SlimfEditortoolbar *,.SlimfEditorTextContainer *{
+  overflow: initial;
+}
+/*头顶菜单*/
+.SlimfEditortoolbar{
+  width: 100%;
+  height: 40px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 0 5px;
+  background:#fff;
+  border-bottom:1px solid #ccc;
+}
+.SlimfEditortoolbar .SlimfEditorMenu {
+  position: relative;
+  text-align: center;
+  cursor: pointer;
+  color: #636363;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+.SlimfEditortoolbar .SlimfEditorMenu:hover {
+  color: #333;
+  background: #cacaca;
+}
+/*下拉菜单，这里有两种模式*/
+.SlimfEditorDropList{
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #fff;
+  text-align: center;
+  color: #999;
+  line-height: 2;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+.SlimfEditorDropTitle{
+  color: #2682fc;
+  border-bottom: 1px solid #f1f1f1;
+  text-align: left;
+  text-indent: 10px;
+}
+.SlimfEditorDropList ul.SlimfEditorDropListul {
+  line-height: 1;
+  max-height: 300px;
+  overflow: auto;
+}
+.SlimfEditorDropListul li.SlimfEditorItem {
+  color: #666;
+  height: 35px;
+  line-height: 35px;
+}
+.SlimfEditorDropListul li.SlimfEditorItem:hover {
+  color: #38f;
+}
+.SlimfEditorDropList ul.SlimfEditorBlockUl {
+  text-align: left;
+  padding: 5px;
+  overflow-y: auto;
+  max-height: 250px;
+}
+.SlimfEditorDropList ul.SlimfEditorBlockUl li.SlimfEditorItem {
+  float: left;
+  width: 32px;
+  height: 32px;
+  margin: 2px;
+}
+.SlimfEditorDropList ul.SlimfEditorBlockUl li.SlimfEditorItem:hover {
+  background-color: #f1f1f1;
+}
+.SlimfEditorBGC{
+  border: 1px solid #ccc;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+}
+/*选中*/
+.SlimfEditorMenuActive,.SlimfEditorMenuActive:hover{
+  color: #1e88e5!important;
+}
+/*操作面板*/
+#SlimfEditor-Confrim .SlimfConfirmNote{
+  padding: 0 15px 10px;
+  float: left;
+}
+#SlimfEditor-Confrim ul{
+  float: left;
+  overflow: unset!important;
+  padding-bottom: 10px;
+}
+#SlimfEditor-Confrim ul li{
+  float: left;
+  min-height: 0;
+  height: unset;
+}
+#SlimfEditor-Confrim ul li:hover{
+  background: none;
+  color: #38f;
+}
+.SlimfEditorPanelTitle .SlimfEditorItem {
+  padding: 0px 3px 1px;
+  color: #999;
+  cursor: pointer;
+  margin: 0 3px;
+  position: relative;
+  top: 1px;
+}
+.SlimfEditorPanelTitle .SlimfEditorMenuActive {
+  color: #2196F3;
+  border-bottom: 1px solid #2196F3;
+  cursor: default;
+}
+.SlimfEditorPanelContent {
+  font-size: 16px;
+  min-height: 100px;
+  float: left;
+  width: 100%;
+}
+.SlimfEditorPanelContent .sf-icon-upload{
+  text-align: center;
+  width: 100%;
+  font-size: 30px;
+  line-height: 80px;
+  color: #1e88e5;
+  cursor: pointer;
+}
+.SlimfEditorPanelBtnC{
+  float: left;
+  width: 100%;
+}
+.SlimfEditorPanelContent textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+.SlimfEditorPanelContent textarea:focus {
+  border-color: #1e88e5;
+}
+.SlimfEditorPanelContent input[type=text] {
+  border: 1px solid #ccc;
+  height: 30px;
+  color: #333;
+  border-radius: 0;
+}
+.SlimfEditorPanelContent input[type=text].small {
+  width: 30px;
+  text-align: center;
+}
+.SlimfEditorPanelContent input[type=text].block {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+}
+.SlimfEditorPanelContent input[type=text]:focus {
+  border: 1px solid #1e88e5;
+}
+.SlimfEditorPanelContent .SlimfEditorPanelBtnC button {
+  font-size: 14px;
+  color: #1e88e5;
+  border: none;
+  padding: 5px 10px;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.SlimfEditorPanelContent .SlimfEditorPanelBtnC button.left {
+  float: left;
+  margin-right: 10px;
+}
+.SlimfEditorPanelContent .SlimfEditorPanelBtnC button.right {
+  float: right;
+  margin: 10px 0px 0px;
+  padding: 6px 16px;
+  background: #3b8cff;
+  color: #fff;
+  text-align: center;
+
+  border: 1px solid #3b8cff;
+}
+.SlimfEditorPanelContent .SlimfEditorPanelBtnC button.gray {
+  color: #999;
+}
+.SlimfEditorPanelContent .SlimfEditorPanelBtnC button.red {
+  color: #c24f4a;
+}
+/*表情*/
+.SEEmoticoncontainer .SlimfEditorItem {
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 3px;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+/*上传*/
+.SlimfEditorPanel .sf-icon-upload {
+  text-align: center;
+  color: #4e4e4e;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  font-size: 26px;
+  cursor: pointer;
+}
+.SlimfEditorPanel .sf-icon-upload:hover{
+  color: #0e88bf;
+}
+.SlimfEditorTextContainer .SlimfEditorProgress {
+  position: absolute;
+  background-color: #1e88e5;
+  bottom: 0px;
+  left: 0;
+  height: 5px;
+}
+/*编辑区域*/
+.SlimfEditorTextContainer {
+  position: relative;
+}
+.SlimfEditorText {
+  padding:10px;
+  overflow-y: scroll;
+  background: #fff
+}
+.SlimfEditorText p,
+.SlimfEditorText h1,
+.SlimfEditorText h2,
+.SlimfEditorText h3,
+.SlimfEditorText h4,
+.SlimfEditorText h5,
+.SlimfEditorText table,
+.SlimfEditorText pre {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+.SlimfEditorText ul,
+.SlimfEditorText ol {
+  margin: 10px 0 10px 20px;
+}
+.SlimfEditorText blockquote {
+  display: block;
+  border-left: 8px solid #d0e5f2;
+  padding: 5px 10px;
+  margin: 10px 0;
+  line-height: 1.4;
+  font-size: 100%;
+  background-color: #f1f1f1;
+}
+.SlimfEditorText code {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  background-color: #f1f1f1;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  padding: 3px 5px;
+  margin: 0 3px;
+}
+.SlimfEditorText pre code {
+  display: block;
+}
+.SlimfEditorText table {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+.SlimfEditorText table td,
+.SlimfEditorText table th {
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding: 3px 5px;
+}
+.SlimfEditorText table th {
+  border-bottom: 2px solid #ccc;
+  text-align: center;
+}
+.SlimfEditorText:focus {
+  outline: none;
+}
+.SlimfEditorText img {
+  cursor: pointer;
+}
+.SlimfEditorText img:hover {
+  box-shadow: 0 0 5px #333;
+}
