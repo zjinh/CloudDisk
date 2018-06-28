@@ -2,7 +2,7 @@
 <template>
     <div :class="data.disabled?'CloudIndex-Input Input-Focus':focusState">
         <span :class="data.icon"></span>
-        <input :id="id" type="text" v-model="input.value" autocomplete='off' spellcheck="false" @focus="focusState='CloudIndex-Input Input-Focus'" @blur="blur" :disabled="data.disabled?data.disabled:false">
+        <input :id="id" :type="data.type?data.type:'text'" v-model="input.value" autocomplete='off' spellcheck="false" @focus="focusState='CloudIndex-Input Input-Focus'" @blur="blur" :disabled="data.disabled?data.disabled:false">
         <label :for="id">{{data.text}}</label>
     </div>
 </template>
@@ -17,7 +17,7 @@
         },
         data(){
             return{
-                id:'Input'+this.randomString(10),
+                id:'Input-'+this.randomString(10),
                 input:this.data,
                 focusState:'CloudIndex-Input'
             }

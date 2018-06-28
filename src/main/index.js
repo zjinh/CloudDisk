@@ -1,4 +1,5 @@
 import { app, BrowserWindow,ipcMain,Menu,Tray,autoUpdater } from 'electron'
+const path = require('path');
 
 //import { autoUpdater } from 'electron-updater'
 
@@ -41,7 +42,9 @@ autoUpdater.setFeedURL('http://cloud.com:100/update');
 const LoginURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`;
-
+const DiskURL= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/main`
+    : `file://${__dirname}/main.html`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -71,7 +74,6 @@ function CheckUpdate(event) {
     //执行自动更新检查
 }
 function CreateLoginWindow () {
-
     Menu.setApplicationMenu(null);
     LoginWindow = new BrowserWindow({
         width: 850,
@@ -87,10 +89,10 @@ function CreateLoginWindow () {
         LoginWindow = null;
     });
 }
-function CreatDiskWindow() {
+function CreateDiskWindow() {
     Menu.setApplicationMenu(null);
-    trayIcon = path.join(__dirname, 'public/img/ico');
-    appTray = new Tray(path.join(trayIcon, 'app.ico'));
+    let trayIcon = path.join(__dirname, '../../static/icons');
+    appTray = new Tray(path.join(trayIcon, 'icon.ico'));
     //图标的上下文菜单
     const contextMenu = Menu.buildFromTemplate(trayMenuTemplate);
     //设置此托盘图标的悬停提示内容
@@ -109,11 +111,7 @@ function CreatDiskWindow() {
         backgroundColor:'#fff',
         frame:false
     });
-    DiskWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'disk.html'),
-        protocol: 'file:',
-        slashes: true
-    }));
+    DiskWindow.loadURL(DiskURL);
     DiskWindow.webContents.openDevTools();
     DiskWindow.on('closed', function() {
         DiskWindow = null;
@@ -129,9 +127,9 @@ function BindIpc() {
     /*登录窗口*/
     ipcMain.on('login-success', function () {
         LoginWindow.setSize(800,300);
-        var a=setTimeout(function () {
+        let a=setTimeout(function () {
             clearTimeout(a);
-            CreatDiskWindow();
+            CreateDiskWindow();
             LoginWindow.close();
         },2000)
     });

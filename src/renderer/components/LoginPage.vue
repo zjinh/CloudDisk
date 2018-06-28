@@ -1,10 +1,10 @@
 <template>
     <div>
-        <section style="-webkit-app-region: drag" class="CloudIndexSection">
+        <section style="-webkit-app-region: drag" class="CloudIndexSection" v-show="!LoginSuccess">
             <section style="-webkit-app-region: no-drag">
-                <button type="button" class="sf-icon-cog" tooltip="系统设置"></button>
-                <button type="button" class="sf-icon-window-minimize" tooltip="最小化"></button>
-                <button type="button" class="sf-icon-times"  tooltip='关闭' style="font-size:14px"></button>
+                <button type="button" class="sf-icon-cog" @click="ServerSetting"></button>
+                <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
+                <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
             </section>
         </section>
         <div class="CloudIndexMain">
@@ -17,11 +17,11 @@
                     <Logininput v-bind:data="LoginUserInput"></Logininput>
                     <Logininput v-bind:data="LoginPassInput"></Logininput>
                     <div class="CloudIndex-LineContainer">
-                        <label><el-checkbox v-model="remberpass">记住我</el-checkbox></label>
+                        <label><Checkbox v-model="RemberPass">记住我</Checkbox></label>
                         <a @click="changeType('forget')">忘记密码？</a>
                     </div>
                     <div class="CloudIndex-postBut">
-                        <button @click="login">登录</button>
+                        <button @click="login" :class="LoginButtonState">登录</button>
                     </div>
                     <div class="CloudIndex-OtherLogin">
                         <label>其他登录</label>
@@ -80,32 +80,40 @@
                 <img draggable="false" src="../../../static/img/logo/log.png">
             </div>
         </div>
-        <div class="CloudIndexLogining">
+        <div class="CloudIndexLogining" v-show="LoginSuccess">
             <ul>
                 <li class="sf-icon-music"></li>
                 <li class="sf-icon-users"></li>
                 <li>
-                    <img draggable="false">
+                    <img draggable="false" :src="User.head">
                     <div class="circle"></div>
                 </li>
                 <li class="sf-icon-video"></li>
                 <li class="sf-icon-comments"></li>
-                <p></p>
+                <p>正在加载用户信息</p>
             </ul>
         </div>
+        <ServerWindow></ServerWindow>
     </div>
 </template>
 
 <script>
     import Logininput from './LoginPage/l-input';
     import VerifyInput from './LoginPage/Verify-Input';
+    import ServerWindow from './LoginPage/ServerWindow';
+    import Api from '../api/api';
+    let ipc=require('electron').ipcRenderer;
     export default {
         name: "LoginPage",
-        components:{Logininput,VerifyInput},
+        components:{Logininput,VerifyInput,ServerWindow},
         data(){
             return{
+                /*服务器值*/
+                ServerAddress:'http://cloud.com:100',
                 /*这里为组件传值*/
-                remberpass:false,
+                RemberPass:false,
+                LoginButtonState:false,
+                LoginSuccess:false,
                 /*登录组件数据*/
                 LoginUserInput:{
                     icon:"sf-icon-user",
@@ -114,6 +122,7 @@
                 },
                 LoginPassInput:{
                     icon:"sf-icon-lock",
+                    type:'password',
                     text:"输入您的密码",
                     value:""
                 },
@@ -130,6 +139,7 @@
                 },
                 RegisterPassInput:{
                     icon:"sf-icon-lock",
+                    type:'password',
                     text:"设置登录密码",
                     value:""
                 },
@@ -163,6 +173,7 @@
                 },
                 VerifyPassInput:{
                     icon:"sf-icon-lock",
+                    type:'password',
                     text:"您的密码",
                     value:""
                 },
@@ -197,17 +208,51 @@
                         tips:"激活您的账号",
                         state:false
                     }
+                },
+                /*登录成功的值*/
+                User:{
+                    head:null
                 }
             }
         },
         created:function () {
+
         },
         mounted:function () {
 
         },
         methods:{
             login:function () {
-                console.log(this.LoginUserInput.value)
+                let _this=this;
+                let username=this.LoginUserInput.value;
+                let password=this.LoginPassInput.value;
+                if (!username.length){
+                    this.$Message.warning('请输入用户名');
+                    return false;
+                }
+                if (!password.length){
+                    this.$Message.warning('请输入密码');
+                    return false;
+                }
+                if(this.LoginButtonState){
+                    this.$Message.warning('正在验证登录信息');
+                    return false;
+                }
+                this.LoginButtonState='CloudIndex-posting';
+                Api.Login({
+                    username:username,
+                    password:password,
+                },function (rs) {
+                    rs=rs[0];
+                    console.log(rs);
+                    _this.$Message[rs.state](rs.msg);
+                    _this.LoginButtonState='';
+                    if(rs.state==='success'){
+                        _this.LoginSuccess=true;
+                        _this.User.head=_this.ServerAddress+'/'+rs.head;
+                        ipc.send('login-success');
+                    }
+                });
             },
             changeType:function (type) {
                 for(let item in this.ShowState){
@@ -216,6 +261,21 @@
                 this.ShowState[type].state = true;
                 this.HeadText.h1=this.ShowState[type].h1;
                 this.HeadText.tips=this.ShowState[type].tips
+            },
+            ServerSetting:function(){
+                this.$Modal.confirm({
+                    title: 'Title',
+                    content: '<input type="text" v-model="ServerAddress" :value="{{ServerAddress}}">',
+                    okText: 'OK',
+                    cancelText: 'Cancel'
+                });
+
+            },
+            mini:function () {
+                ipc.send('login-mini');
+            },
+            close:function () {
+                ipc.send('login-close');
             }
         }
     }

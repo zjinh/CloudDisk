@@ -1,3 +1,6 @@
+#app{
+	height: 100%;
+}
 html,body{
 	-moz-user-select:none;
 	-webkit-user-select:none;
@@ -10,22 +13,15 @@ html,body{
 	height: 70px;
 	background: #2682fc;
 	padding: 0 2px;
-}
-.CloudDiskHeaderDrag .left{
-	position: absolute;
-	height: 68px;
-	width: 160px;
 	-webkit-app-region: drag;
 }
-.CloudDiskHeaderDrag .center{
-	width: calc(100% - 676px);
-	-webkit-app-region: drag;
-}
+
 .CloudDiskUser{
     float: left;
     width: 150px;
     height: 35px;
     margin-top: 16px;
+	-webkit-app-region: no-drag;
 }
 .CloudDiskUser *{
     float: right;
@@ -41,11 +37,6 @@ html,body{
     line-height: 35px;
     margin-left: 10px;
     color: #fff;
-}
-.CloudDiskHeaderDrag .right{
-	width: 150px;
-	-webkit-app-region: drag;
-	margin-top: 0!important;
 }
 .CloudDiskHeaderDrag section{
 	float: left;
@@ -89,6 +80,7 @@ html,body{
 .CloudDiskFuncMenu{
 	float: left;
 	height: 70px;
+	-webkit-app-region: no-drag;
 }
 .CloudDiskFuncMenu img{
     float: left;
