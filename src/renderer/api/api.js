@@ -20,11 +20,18 @@ function Ajax(options) {
 }
 function Login(data,callback) {
     Ajax({
-        url:"http://cloud.com:100/service/user/login",
+        url:localStorage.server+"/service/user/login",
+        data:data,
+        success:callback
+    })
+}
+function Register(data,callback) {
+    Ajax({
+        url:localStorage.server+"/service/user/register",
         data:data,
         success:callback
     })
 }
 export default {
-    Ajax,Login
+    Ajax,Login,Register
 }
