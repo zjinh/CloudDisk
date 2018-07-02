@@ -55,7 +55,7 @@
                         <p>填写以上信息开始吧</p>
                     </div>
                     <div class="CloudIndex-postBut">
-                        <button post>开始</button>
+                        <button @click="forget" :class="PostState">开始</button>
                     </div>
                     <div class="CloudIndex-Tips">
                         <p>没有问题了&nbsp<span @click="changeType('login')">前往登录</span></p>
@@ -69,7 +69,7 @@
                         <p style="text-align: left">没有收到邮件&nbsp<span id="resendBtn">重新发送</span></p>
                     </div>
                     <div class="CloudIndex-postBut">
-                        <button post>激活</button>
+                        <button @click="verify" :class="PostState">激活</button>
                     </div>
                     <div class="CloudIndex-Tips">
                         <p>账号激活了&nbsp<span @click="changeType('login')">前往登录</span></p>
@@ -93,7 +93,6 @@
                 <p>正在加载用户信息</p>
             </ul>
         </div>
-        <ServerWindow></ServerWindow>
     </div>
 </template>
 
@@ -250,6 +249,11 @@
                         this.User.head=this.ServerAddress+'/'+rs.head;
                         ipc.send('login-success');
                     }
+                    if(rs.msg==='未激活的用户'){
+                        this.$Message.info('请查看您的激活邮箱'+rs.email);
+                        this.VerifyUserInput.value=username;
+                        this.changeType('verify');
+                    }
                 },(err)=>{
                     this.PostState='';
                     this.$Message.error('请求失败'+err);
@@ -281,7 +285,7 @@
                     return false;
                 }
                 if(this.PostState){
-                    this.$Message.warning('正在验证登录信息');
+                    this.$Message.warning('正在验证注册信息');
                     return false;
                 }
                 this.PostState='CloudIndex-posting';
@@ -306,6 +310,103 @@
                         this.RegisterCodeInput.value='';
                         this.RegisterCodeInput.url=this.RegisterCodeInput.url+'?'+Math.random();
                     }
+                },(err)=>{
+                    this.PostState='';
+                    this.$Message.error('请求失败'+err);
+                })
+            },
+            forget:function(){
+                let username=this.ForgetUserInput.value;
+                let mail=this.ForgetMailInput.value;
+                let code=this.ForgetCodeInput.value;
+                if (!username.length){
+                    this.$Message.warning('请输入您的用户名');
+                    return false;
+                }
+                if (!mail.length){
+                    this.$Message.warning('请输入您注册时填写的邮箱');
+                    return false;
+                }
+                if(mail&&!/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(mail)) {
+                    this.$Message.error('请输入正确的邮箱');
+                    return false;
+                }
+                if (!code.length){
+                    this.$Message.warning('请输入验证码');
+                    return false;
+                }
+                if(this.PostState){
+                    this.$Message.warning('正在验证您输入的信息');
+                    return false;
+                }
+                this.PostState='CloudIndex-posting';
+                Api.Forget({
+                    username: username,
+                    email: mail,
+                    validate: code
+                }, (rs)=> {
+                    rs=rs[0];
+                    this.$Message[rs.state](rs.msg);
+                    this.PostState='';
+                    if(rs.state==='success'){
+                        this.$Message[rs.state]({
+                            content: rs.msg,
+                            onClose:function () {
+                                this.changeType('login');
+                                this.LoginUserInput.value=username;
+                            }
+                        });
+                    }else{
+                        this.ForgetCodeInput.value='';
+                    }
+                },(err)=>{
+                    this.PostState='';
+                    this.$Message.error('请求失败'+err);
+                })
+            },
+            verify:function(){
+                let username=this.VerifyUserInput.value;
+                let pass=this.VerifyPassInput.value;
+                let code=this.VerifyCodeInput.value;
+                if (!username.length){
+                    this.$Message.warning('请输入您的用户名');
+                    return false;
+                }
+                if (!pass.length){
+                    this.$Message.warning('请输入密码');
+                    return false;
+                }
+                if (!code.length){
+                    this.$Message.warning('请输入您收到的验证码');
+                    return false;
+                }
+                if(this.PostState){
+                    this.$Message.warning('正在激活您的账号');
+                    return false;
+                }
+                this.PostState='CloudIndex-posting';
+                Api.Verify({
+                    name: username,
+                    pass: pass,
+                    code: code
+                }, (rs)=> {
+                    rs=rs[0];
+                    this.$Message[rs.state](rs.msg);
+                    this.PostState='';
+                    if(rs.state==='success'){
+                        this.$Message[rs.state]({
+                            content: rs.msg,
+                            onClose:function () {
+                                this.changeType('login');
+                                this.LoginUserInput.value=username;
+                            }
+                        });
+                    }else{
+                        this.VerifyCodeInput.value='';
+                    }
+                },(err)=>{
+                    this.PostState='';
+                    this.$Message.error('请求失败'+err);
                 })
             },
             changeType:function (type) {

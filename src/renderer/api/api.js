@@ -10,12 +10,12 @@ function Ajax(options) {
         params=options.data;
     }
     axios({
-        method: options.method?options.method:'POST',
+        method: method,
         data: params,
         emulateJSON:true,
         url: options.url,
-        "headers": {"Content-Type": "application/x-www-form-urlencodeed"},
-        withCredentials:true,
+        //"headers": {"Content-Type": "application/x-www-form-urlencodeed"},
+        //withCredentials:true,
     }).then((response) => {
         options.success&&typeof options.success==='function'?options.success(response.data):'';
     },function (error) {
@@ -26,7 +26,6 @@ function Login(data,callback,error) {
     Ajax({
         url:localStorage.server+"/service/user/login",
         data:data,
-        method:'get',
         success:callback,
         error:error
     })
@@ -35,11 +34,26 @@ function Register(data,callback,error) {
     Ajax({
         url:localStorage.server+"/service/user/register",
         data:data,
-        //method:method,
+        success:callback,
+        error:error
+    })
+}
+function Forget(data,callback,error) {
+    Ajax({
+        url:localStorage.server+"/service/user/forget",
+        data:data,
+        success:callback,
+        error:error
+    })
+}
+function Verify(data,callback,error) {
+    Ajax({
+        url:localStorage.server+"/service/user/verifyCheck",
+        data:data,
         success:callback,
         error:error
     })
 }
 export default {
-    Ajax,Login,Register
+    Ajax,Login,Register,Forget,Verify
 }
