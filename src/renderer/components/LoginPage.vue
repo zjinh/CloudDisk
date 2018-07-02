@@ -118,7 +118,7 @@
                 LoginUserInput:{
                     icon:"sf-icon-user",
                     text:"用户名/手机号/邮箱/CloudID",
-                    value:""
+                    value:''
                 },
                 LoginPassInput:{
                     icon:"sf-icon-lock",
@@ -223,7 +223,6 @@
         },
         methods:{
             login:function () {
-                let _this=this;
                 let username=this.LoginUserInput.value;
                 let password=this.LoginPassInput.value;
                 if (!username.length){
@@ -242,19 +241,21 @@
                 Api.Login({
                     username:username,
                     password:password,
-                },function (rs) {
+                },(rs)=> {
                     rs=rs[0];
-                    _this.$Message[rs.state](rs.msg);
-                    _this.PostState='';
+                    this.$Message[rs.state](rs.msg);
+                    this.PostState='';
                     if(rs.state==='success'){
-                        _this.LoginSuccess=true;
-                        _this.User.head=_this.ServerAddress+'/'+rs.head;
+                        this.LoginSuccess=true;
+                        this.User.head=this.ServerAddress+'/'+rs.head;
                         ipc.send('login-success');
                     }
+                },(err)=>{
+                    this.PostState='';
+                    this.$Message.error('请求失败'+err);
                 });
             },
             register:function(){
-                let _this=this;
                 let username=this.RegisterUserInput.value;
                 let mail=this.RegisterMailInput.value;
                 let password=this.RegisterPassInput.value;
@@ -289,21 +290,21 @@
                     email: mail,
                     password: password,
                     validate: code
-                },function (rs) {
+                }, (rs)=> {
                     rs=rs[0];
-                    _this.$Message[rs.state](rs.msg);
-                    _this.PostState='';
+                    this.$Message[rs.state](rs.msg);
+                    this.PostState='';
                     if(rs.state==='success'){
-                        _this.$Message[rs.state]({
+                        this.$Message[rs.state]({
                             content: rs.msg,
                             onClose:function () {
                                 this.changeType('verify');
-                                _this.VerifyUserInput.value=username;
+                                this.VerifyUserInput.value=username;
                             }
                     });
                     }else{
-                        _this.RegisterCodeInput.value='';
-                        _this.RegisterCodeInput.url=_this.RegisterCodeInput.url+'?'+Math.random();
+                        this.RegisterCodeInput.value='';
+                        this.RegisterCodeInput.url=this.RegisterCodeInput.url+'?'+Math.random();
                     }
                 })
             },

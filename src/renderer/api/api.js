@@ -1,35 +1,43 @@
 import axios from 'axios'
 function Ajax(options) {
     let params = new URLSearchParams();
-    if(options.method==='POST'||!options.method){
+    let method= options.method?options.method:'POST';
+    if(method==='POST'){
         for(let item in options.data){
             params.append(item, options.data[item]);
         }
+    }else{
+        params=options.data;
     }
     axios({
         method: options.method?options.method:'POST',
         data: params,
         emulateJSON:true,
-        url: options.url
-
+        url: options.url,
+        "headers": {"Content-Type": "application/x-www-form-urlencodeed"},
+        withCredentials:true,
     }).then((response) => {
         options.success&&typeof options.success==='function'?options.success(response.data):'';
     },function (error) {
-        options.success&&typeof options.success==='function'?options.success(error):'';
+        options.error&&typeof options.error==='function'?options.error(error):'';
     });
 }
-function Login(data,callback) {
+function Login(data,callback,error) {
     Ajax({
         url:localStorage.server+"/service/user/login",
         data:data,
-        success:callback
+        method:'get',
+        success:callback,
+        error:error
     })
 }
-function Register(data,callback) {
+function Register(data,callback,error) {
     Ajax({
         url:localStorage.server+"/service/user/register",
         data:data,
-        success:callback
+        //method:method,
+        success:callback,
+        error:error
     })
 }
 export default {
