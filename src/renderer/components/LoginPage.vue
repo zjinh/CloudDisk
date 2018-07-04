@@ -117,13 +117,13 @@
                 LoginUserInput:{
                     icon:"sf-icon-user",
                     text:"用户名/手机号/邮箱/CloudID",
-                    value:''
+                    value:localStorage.username||''
                 },
                 LoginPassInput:{
                     icon:"sf-icon-lock",
                     type:'password',
                     text:"输入您的密码",
-                    value:""
+                    value:localStorage.password||''
                 },
                 /*注册组件数据*/
                 RegisterUserInput:{
@@ -216,6 +216,9 @@
         },
         created:function () {
             localStorage.server=this.ServerAddress;
+            if(localStorage.username&&localStorage.password){
+                this.RemberPass=true;
+            }
         },
         mounted:function () {
 
@@ -242,17 +245,25 @@
                     password:password,
                 },(rs)=> {
                     rs=rs[0];
-                    this.$Message[rs.state](rs.msg);
                     this.PostState='';
                     if(rs.state==='success'){
                         this.LoginSuccess=true;
                         this.User.head=this.ServerAddress+'/'+rs.head;
+                        if(this.RemberPass){
+                            localStorage.username=username;
+                            localStorage.password=password;
+                        }else{
+                            localStorage.username=localStorage.password='';
+                        }
                         ipc.send('login-success');
-                    }
-                    if(rs.msg==='未激活的用户'){
-                        this.$Message.info('请查看您的激活邮箱'+rs.email);
-                        this.VerifyUserInput.value=username;
-                        this.changeType('verify');
+                    }else{
+                        if(rs.msg==='未激活的用户'){
+                            this.$Message.info('请查看您的激活邮箱'+rs.email);
+                            this.VerifyUserInput.value=username;
+                            this.changeType('verify');
+                        }else{
+                            this.$Message[rs.state](rs.msg);
+                        }
                     }
                 },(err)=>{
                     this.PostState='';
@@ -296,7 +307,6 @@
                     validate: code
                 }, (rs)=> {
                     rs=rs[0];
-                    this.$Message[rs.state](rs.msg);
                     this.PostState='';
                     if(rs.state==='success'){
                         this.$Message[rs.state]({
@@ -305,8 +315,9 @@
                                 this.changeType('verify');
                                 this.VerifyUserInput.value=username;
                             }
-                    });
+                        });
                     }else{
+                        this.$Message[rs.state](rs.msg);
                         this.RegisterCodeInput.value='';
                         this.RegisterCodeInput.url=this.RegisterCodeInput.url+'?'+Math.random();
                     }
@@ -346,7 +357,6 @@
                     validate: code
                 }, (rs)=> {
                     rs=rs[0];
-                    this.$Message[rs.state](rs.msg);
                     this.PostState='';
                     if(rs.state==='success'){
                         this.$Message[rs.state]({
@@ -357,6 +367,7 @@
                             }
                         });
                     }else{
+                        this.$Message[rs.state](rs.msg);
                         this.ForgetCodeInput.value='';
                     }
                 },(err)=>{
@@ -391,17 +402,18 @@
                     code: code
                 }, (rs)=> {
                     rs=rs[0];
-                    this.$Message[rs.state](rs.msg);
                     this.PostState='';
                     if(rs.state==='success'){
                         this.$Message[rs.state]({
                             content: rs.msg,
-                            onClose:function () {
+                            onClose: ()=> {
+
                                 this.changeType('login');
                                 this.LoginUserInput.value=username;
                             }
                         });
                     }else{
+                        this.$Message[rs.state](rs.msg);
                         this.VerifyCodeInput.value='';
                     }
                 },(err)=>{
@@ -419,11 +431,32 @@
             },
             ServerSetting:function(){
                 this.$Modal.confirm({
-                    title: 'Title',
-                    content: '<input type="text" v-model="ServerAddress" :value="{{ServerAddress}}">',
-                    okText: 'OK',
-                    cancelText: 'Cancel'
+                    title: '修改服务地址',
+                    content: '<input type="text" >',
+                    onOk: () => {
+                        this.$Message.info('点击了确定');
+                    },
+                    onCancel: () => {
+                        this.$Message.info('点击了取消');
+                    }
                 });
+
+                this.$Modal.confirm({
+                    render: (h) => {
+                        return h('Input', {
+                            props: {
+                                value: this.value,
+                                autofocus: true,
+                                placeholder: 'Please enter your name...'
+                            },
+                            on: {
+                                input: (val) => {
+                                    this.value = val;
+                                }
+                            }
+                        })
+                    }
+                })
 
             },
             mini:function () {

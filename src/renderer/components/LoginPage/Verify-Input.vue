@@ -3,7 +3,9 @@
         <span class="sf-icon-keyboard"></span>
         <input :id="id" type="text" v-model="data.value" autocomplete='off' spellcheck="false" @focus="focusState='CloudIndex-Input Input-Focus'" @blur="blur">
         <label :for="id">{{data.text}}</label>
-        <img title="点击刷新"  draggable="false" :src="src" @click="refresh">
+        <Tooltip content="点击刷新" placement="bottom-end">
+            <img draggable="false" :src="src" @click="refresh">
+        </Tooltip>
     </div>
 </template>
 

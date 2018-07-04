@@ -82,7 +82,10 @@ function CreateLoginWindow () {
         frame:false,
         useContentSize: true,
         maximizable:false,
-        resizable:false
+        resizable:false,
+        webPreferences:{
+            webSecurity:false
+        }
     });
     LoginWindow.loadURL(LoginURL);
     LoginWindow.on('closed', function() {

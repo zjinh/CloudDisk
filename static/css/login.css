@@ -114,10 +114,16 @@ input[type="text"]:disabled{
 	-moz-transition:all .35s;
 	-o-transition:all .35s;
 }
-.CloudIndex-Input img{
+.CloudIndex-Input .ivu-tooltip{
+	height: 40px;
 	position: absolute;
 	top: 0;
 	right: 0;
+}
+.CloudIndex-Input img{
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
 }
 .Input-Focus label{
 	top: -10px!important;
