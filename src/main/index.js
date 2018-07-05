@@ -106,9 +106,9 @@ function CreateDiskWindow() {
         DiskWindow.isVisible() ? DiskWindow.hide() : DiskWindow.show();
     });
     DiskWindow = new BrowserWindow({
-        width: 1200,
+        width: 950,
         minWidth:800,
-        minHeight:728,
+        minHeight:610,
         height: 610,
         title:'CloudDisk',
         backgroundColor:'#fff',
@@ -149,8 +149,9 @@ function BindIpc() {
     ipcMain.on('disk-mini', function () {
         DiskWindow.minimize();
     });
-    ipcMain.on('disk-mini', function () {
-
+    ipcMain.on('disk-error', function () {
+        CreateLoginWindow();
+        DiskWindow.close();
     });
     ipcMain.on('disk-change',function () {
         if (DiskWindow.isMaximized()) {

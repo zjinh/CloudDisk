@@ -65,8 +65,18 @@ let User={
     }
 };
 let Disk={
-
+    LoadTreeFile:function () {
+        
+    },
+    LoadMainFile:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/GetMainFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
 };
 export default {
-    Ajax,User
+    Ajax,User,Disk
 }

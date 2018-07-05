@@ -19,7 +19,7 @@
                     item.active = false
                 });
                 this.data[index].active = 'CloudDiskClassifyActive';
-                this.$emit("updateClassify", this.data[index].name)
+                this.$emit("updateClassify", this.data[index])
             }
         }
     }
