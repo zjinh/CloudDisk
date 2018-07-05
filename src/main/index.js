@@ -112,7 +112,10 @@ function CreateDiskWindow() {
         height: 610,
         title:'CloudDisk',
         backgroundColor:'#fff',
-        frame:false
+        frame:false,
+        webPreferences:{
+            webSecurity:false
+        }
     });
     DiskWindow.loadURL(DiskURL);
     DiskWindow.webContents.openDevTools();

@@ -17,10 +17,11 @@ html,body{
 }
 
 .CloudDiskUser{
-    float: left;
+    float: right;
     width: 150px;
     height: 35px;
     margin-top: 16px;
+	margin-right: 10px;
 	-webkit-app-region: no-drag;
 }
 .CloudDiskUser *{
@@ -79,28 +80,26 @@ html,body{
 }
 .CloudDiskFuncMenu{
 	float: left;
-	height: 70px;
+	height: 40px;
+	margin-top: 15px;
 	-webkit-app-region: no-drag;
 }
 .CloudDiskFuncMenu img{
     float: left;
     width: 40px;
-	margin: 15px;
-	margin-right: 0px;
+	margin: 0 15px;
 }
 .CloudDiskFuncMenu span{
 	float: left;
 	font-weight: bold;
 	color: #fff;
-	line-height: 70px;
-	padding: 0 15px;
+	line-height: 40px;
+	padding: 0 10px 0px 0px;
 }
 .CloudDiskFuncMenu li {
 	float: left;
 	margin-left: 15px;
 	cursor: pointer;
-	height: 70px;
-	padding-top: 15px;
 }
 .CloudDiskFuncMenu li p {
 	color: #fff;
@@ -556,7 +555,7 @@ html,body{
 		transform: scale(1); } }
 .CloudDiskLoading-beat{
 	position: absolute;
-	top: 25px;
+	top: 24px;
 	text-align: center;
 	left: calc(50% - 12px);
 	background: #fff;

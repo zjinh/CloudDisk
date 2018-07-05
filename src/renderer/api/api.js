@@ -22,38 +22,51 @@ function Ajax(options) {
         options.error&&typeof options.error==='function'?options.error(error):'';
     });
 }
-function Login(data,callback,error) {
-    Ajax({
-        url:localStorage.server+"/service/user/login",
-        data:data,
-        success:callback,
-        error:error
-    })
-}
-function Register(data,callback,error) {
-    Ajax({
-        url:localStorage.server+"/service/user/register",
-        data:data,
-        success:callback,
-        error:error
-    })
-}
-function Forget(data,callback,error) {
-    Ajax({
-        url:localStorage.server+"/service/user/forget",
-        data:data,
-        success:callback,
-        error:error
-    })
-}
-function Verify(data,callback,error) {
-    Ajax({
-        url:localStorage.server+"/service/user/verifyCheck",
-        data:data,
-        success:callback,
-        error:error
-    })
-}
+let User={
+    Login:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/login",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Register:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/register",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Forget:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/forget",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Verify:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/verifyCheck",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    UserInfo:function (callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/UserInfo",
+            data:[],
+            success:callback,
+            error:error
+        })
+    }
+};
+let Disk={
+
+};
 export default {
-    Ajax,Login,Register,Forget,Verify
+    Ajax,User
 }

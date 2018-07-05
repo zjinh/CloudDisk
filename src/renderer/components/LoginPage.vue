@@ -99,12 +99,11 @@
 <script>
     import Logininput from './LoginPage/l-input';
     import VerifyInput from './LoginPage/Verify-Input';
-    import ServerWindow from './LoginPage/ServerWindow';
     import Api from '../api/api';
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "LoginPage",
-        components:{Logininput,VerifyInput,ServerWindow},
+        components:{Logininput,VerifyInput},
         data(){
             return{
                 /*服务器值*/
@@ -240,7 +239,7 @@
                     return false;
                 }
                 this.PostState='CloudIndex-posting';
-                Api.Login({
+                Api.User.Login({
                     username:username,
                     password:password,
                 },(rs)=> {
@@ -255,6 +254,10 @@
                         }else{
                             localStorage.username=localStorage.password='';
                         }
+                        localStorage.Login={
+                            username:rs.user,
+                            usehead:rs.head
+                        };
                         ipc.send('login-success');
                     }else{
                         if(rs.msg==='未激活的用户'){
@@ -300,7 +303,7 @@
                     return false;
                 }
                 this.PostState='CloudIndex-posting';
-                Api.Register({
+                Api.User.Register({
                     username: username,
                     email: mail,
                     password: password,
@@ -352,7 +355,7 @@
                     return false;
                 }
                 this.PostState='CloudIndex-posting';
-                Api.Forget({
+                Api.User.Forget({
                     username: username,
                     email: mail,
                     validate: code
@@ -398,7 +401,7 @@
                     return false;
                 }
                 this.PostState='CloudIndex-posting';
-                Api.Verify({
+                Api.User.Verify({
                     name: username,
                     pass: pass,
                     code: code

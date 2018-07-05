@@ -7,17 +7,17 @@
                 <li><p> 分享</p><div class="CloudDiskFuncLine"></div></li>
                 <li><p> 传输</p><div class="CloudDiskFuncLine"></div></li>
             </ul>
-            <div class="CloudDiskUser">
-                <span></span>
-                <img draggable="false">
-            </div>
             <section class="CloudDiskHeaderControl">
                 <span></span>
-                <button type="button" class="sf-icon-chevron-down" tooltip="系统菜单"></button>
-                <button type="button" class="sf-icon-window-minimize" tooltip="最小化"></button>
-                <button type="button" class="sf-icon-window-maximize" tooltip="最大化"></button>
-                <button type="button" class="sf-icon-times"  tooltip='关闭' style="font-size:14px"></button>
+                <button type="button" class="sf-icon-chevron-down"></button>
+                <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
+                <button type="button" :class="ButtonState" @click="restore"></button>
+                <button type="button" class="sf-icon-times" style="font-size:14px" @click="close"></button>
             </section>
+            <div class="CloudDiskUser">
+                <span>{{Logined.username}}</span>
+                <img draggable="false" :src="Logined.userhead">
+            </div>
         </div>
         <div class="CloudDiskFuncMain">
             <div class="CloudDiskHead">
@@ -25,7 +25,7 @@
                     <div class="CloudDiskNav">
                         <button class="sf-icon-arrow-left CloudDiskDisable"> 后退</button>
                         <span class="CloudDiskNavLine">|</span>
-                        <button>全部文件</button>
+                        <button>{{CurrectClassify}}</button>
                         <div class="CloudDiskNavBar" id="CloudDiskNavBar"></div>
                     </div>
                 </div>
@@ -37,16 +37,7 @@
                 </div>
             </div>
             <div class="CloudDiskLeft">
-                <ul class="CloudDiskClassify" id="CloudDiskClassify">
-                    <li ripple class="CloudDiskClassifyActive"><span class="sf-icon-hdd"></span>全部文件</li>
-                    <li ripple><span></span>图片</li>
-                    <li ripple><span></span>视频</li>
-                    <li ripple><span></span>文档</li>
-                    <li ripple><span></span>音乐</li>
-                    <li ripple><span></span>种子</li>
-                    <li ripple><span></span>其他</li>
-                    <li ripple><span class="sf-icon-trash"></span>回收站</li>
-                </ul>
+                <ClassifyMenu v-bind:data="ClassifyData"  v-on:updateClassify="updateClassify"></ClassifyMenu>
                 <ul class="CloudDiskClassify" id="CloudDiskShareClass" style="display: none">
                     <li ripple class="CloudDiskClassifyActive"><span></span>我的分享</li>
                     <li ripple><span></span>已失效的</li>
@@ -81,7 +72,7 @@
                     </div>
                 </div>
                 <div class="CloudDiskMain1" id="CloudDiskMainContainer">
-                    <div class='CloudDiskLoading'><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div></div>
+                    <div class='CloudDiskLoading'><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                 </div>
             </div>
         </div>
@@ -125,8 +116,69 @@
 </template>
 
 <script>
+    import Api from '../api/api';
+    import ClassifyMenu from './DiskWindow/ClassifyMenu';
+    let ipc=require('electron').ipcRenderer;
     export default {
-        name: "DiskWindow"
+        name: "DiskWindow",
+        components:{ClassifyMenu},
+        data(){
+            return{
+                Logined:{},
+                ButtonState:"sf-icon-window-maximize",
+                CurrectClassify:'全部文件',
+                ClassifyData:[
+                    {"name":"全部文件","icon":"sf-icon-hdd","data":"","active":"CloudDiskClassifyActive"},
+                    {"name":"图片","icon":"","data":"","active":""},
+                    {"name":"视频","icon":"","data":"","active":""},
+                    {"name":"文档","icon":"","data":"","active":""},
+                    {"name":"音乐","icon":"","data":"","active":""},
+                    {"name":"种子","icon":"","data":"","active":""},
+                    {"name":"其他","icon":"","data":"","active":""},
+                    {"name":"回收站","icon":"sf-icon-trash","data":"","active":""},
+                ]
+            }
+        },
+        created(){
+            this.Bind();
+            this.GetUserInfo();
+        },
+        methods:{
+            Bind:function(){
+                ipc.on('size',(event,message)=> {
+                    if(message>0){
+                        this.ButtonState='sf-icon-window-restore';
+                    }else {
+                        this.ButtonState='sf-icon-window-maximize';
+                    }
+                });
+            },
+            GetUserInfo:function () {
+                Api.User.UserInfo((rs)=>{
+                    rs[0].userhead=localStorage.server+'/'+rs[0].userhead;
+                    this.Logined=rs[0];
+                },()=>{
+                    this.$Message.error({
+                        content: '账号状态异常，请重新登录！',
+                        onClose:()=> {
+                            /////弹出登录页
+                        }
+                    });
+                })
+            },
+            updateClassify:function(value){//更新网盘分类子组件传回的数据
+                this.CurrectClassify=value;
+            },
+            mini:function () {
+                ipc.send('disk-mini');
+            },
+            close:function () {
+                ipc.send('disk-close');
+            },
+            restore:function () {
+                ipc.send('disk-change');
+            }
+        }
     }
 </script>
 
