@@ -23,7 +23,6 @@
             }
         },
         created(){
-
             this.data.forEach((item)=>{
                 item.disk_size=this.FileSize(item.disk_size);
                 item.icon = this.IconGet(item.disk_realname,item.disk_type)
