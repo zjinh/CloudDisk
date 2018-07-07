@@ -25,7 +25,7 @@
                     <div class="CloudDiskNav">
                         <button class="sf-icon-arrow-left CloudDiskDisable"> 后退</button>
                         <span class="CloudDiskNavLine">|</span>
-                        <button>{{ClassifyName}}</button>
+                        <button @click="NavHomeLoad">{{ClassifyName}}</button>
                         <div class="CloudDiskNavBar" id="CloudDiskNavBar"></div>
                     </div>
                 </div>
@@ -40,7 +40,6 @@
                 <ClassifyMenu v-bind:data="ClassifyData" v-on:updateClassify="updateClassify" v-show="DiskType==='disk'"></ClassifyMenu>
                 <ClassifyMenu v-bind:data="ShareData" v-on:updateClassify="updateClassify" v-show="DiskType==='share'"></ClassifyMenu>
                 <ClassifyMenu v-bind:data="TransData" v-on:updateClassify="updateClassify" v-show="DiskType==='trans'"></ClassifyMenu>
-
                 <div class="CloudDiskSelectTips">已选择N个文件</div>
                 <div class="CloudDiskCapacity">
                     <div class="CloudDiskSliderContainer">
@@ -65,8 +64,8 @@
                         大小
                     </div>
                 </div>
-                <div class="CloudDiskMain1">
-                    <DiskFile v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="DiskData" v-bind:ShowState="DiskShowState" ref="DiskFile"></DiskFile>
+                <div  class="CloudDiskMain1" :on-reach-bottom="LoadMore" @mousewheel="LoadMore">
+                    <DiskFile v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="DiskData" v-bind:ShowState="DiskShowState"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!DiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
                 </div>
@@ -121,6 +120,7 @@
         components:{ClassifyMenu,DiskFile},
         data(){
             return{
+                showChoices :true,
                 Logined:{},
                 DiskData:[],//存放用户网盘数据
                 LoadCompany:false,//是否加载完成
@@ -203,19 +203,6 @@
                     });
                 })
             },
-            changeType:function(type){
-                this.DiskData=[];//清空数据
-                this.DiskType=type;
-                if(type==='disk') {
-                    //this.ClassifyData[0].active='CloudDiskClassifyActive';
-                    this.GetMainFile(null,this.ClassifyData[0].data);
-                }else if(type==='share'){
-                    //this.ShareData[0].active='CloudDiskClassifyActive';
-                    this.GetMainFile(null,type);
-                }else{
-
-                }
-            },//切换网盘分享、传输等
             GetMainFile:function(id,type){
                 if(this.DiskPage===1){
                     this.DiskData=[];//清空数据
@@ -241,36 +228,73 @@
                         this.DiskLoadCount=0;
                     }
                     this.LoadCompany=true;
-                    this.DiskData=rs;
+                    rs.forEach((item)=> {
+                        item.active=false;//设置未选择
+                        item.disk_size=this.FileSize(item.disk_size);//计算文件大小
+                        item.icon = this.IconGet(item.disk_realname,item.disk_main)//区别文件类型设置图表
+                        this.DiskData.push(item);
+                    });
                     if(rs.length){
-                        this.$nextTick(()=>{
-                            this.DiskSize.total=rs[0].max_size;
-                            this.DiskSize.use=rs[0].use_size;
-                            let Percent=(this.DiskSize.use/this.DiskSize.total)*100;
-                            this.DiskSize.Percent=Percent+'%';
-                            this.DiskSize.text=this.$refs.DiskFile.FileSize(this.DiskSize.use)+'/'+this.$refs.DiskFile.FileSize(this.DiskSize.total)
-                            if (65 < Percent && Percent < 85) {
-                                this.DiskSize.Background = '#f7ab21';
-                            } else if (Percent >= 85) {
-                                this.DiskSize.Background = '#e83c3c';
-                            }
-                        });
+                        this.DiskSize.total=rs[0].max_size;
+                        this.DiskSize.use=rs[0].use_size;
+                        let Percent=(this.DiskSize.use/this.DiskSize.total)*100;
+                        this.DiskSize.Percent=Percent+'%';
+                        this.DiskSize.text=this.FileSize(this.DiskSize.use)+'/'+this.FileSize(this.DiskSize.total)
+                        if (65 < Percent && Percent < 85) {
+                            this.DiskSize.Background = '#f7ab21';
+                        } else if (Percent >= 85) {
+                            this.DiskSize.Background = '#e83c3c';
+                        }
                         this.DiskAllCount=rs[0].all_count;
                         this.DiskLoadCount=this.DiskLoadCount+rs.length;
-                        //console.log(this.$.refs.DiskFile.FileSize(this.DiskSize.use))
                     }
-                    console.log(rs)
+                    console.log(this.DiskData)
                 })
             },
             updateClassify:function(value){//更新网盘分类子组件传回的数据
                 this.ClassifyName=value.name;
                 this.loadClassify=value.data;
+                this.DiskPage = 1;
                 this.GetMainFile(null,this.loadClassify);
             },
-            changeState:function(){
-                this.DiskShowState==='CloudDiskMFile'?this.DiskShowState='CloudDiskMList':this.DiskShowState='CloudDiskMFile';
-                this.DiskStateIcon==='sf-icon-th-large'?this.DiskStateIcon='sf-icon-list-ul':this.DiskStateIcon='sf-icon-th-large';
-            },//切换文件显示模式
+            LoadMore:function(){
+                let elm=event.target;
+                if (elm.scrollTop+ elm.offsetHeight >= elm.scrollHeight-32 && this.DiskLoadCount< this.DiskAllCount) {
+                    if (this.LoadCompany) {
+                        this.DiskPage++;
+                        this.GetMainFile(this.NowDiskID, this.loadClassify);
+                    }
+                }
+            },//下拉加载更多
+            /*导航栏首页点击加载*/
+            NavHomeLoad:function(){
+                if(this.DiskType!=='trans') {
+                    this.GetMainFile(null, this.loadClassify);
+                }
+            },
+            changeType:function(type){
+                this.DiskData=[];//清空数据
+                this.DiskType=type;
+                if(type==='disk') {
+                    this.ClassifyData.forEach(function (item) {
+                        item.active='';
+                    });
+                    this.ClassifyName=this.ClassifyData[0].name;
+                    this.loadClassify=this.ClassifyData[0].data;
+                    this.ClassifyData[0].active='CloudDiskClassifyActive';
+                    this.GetMainFile(null,this.ClassifyData[0].data);
+                }else if(type==='share'){
+                    this.ShareData.forEach(function (item) {
+                        item.active='';
+                    });
+                    this.ClassifyName=this.ShareData[0].name;
+                    this.loadClassify=this.ShareData[0].data;
+                    this.ShareData[0].active='CloudDiskClassifyActive';
+                    this.GetMainFile(null,type);
+                }else{
+
+                }
+            },//切换网盘分享、传输等
             /*网盘搜索*/
             SwitchSearch:function(){
                 if(!this.ShowSearch){
@@ -285,6 +309,11 @@
             SearchDisk:function(){
 
             },
+            //切换文件显示模式
+            changeState:function(){
+                this.DiskShowState==='CloudDiskMFile'?this.DiskShowState='CloudDiskMList':this.DiskShowState='CloudDiskMFile';
+                this.DiskStateIcon==='sf-icon-th-large'?this.DiskStateIcon='sf-icon-list-ul':this.DiskStateIcon='sf-icon-th-large';
+            },
             //网盘排序方法(排序自段)
             DiskSort:function(type,key){
                 if(this.DiskSortState[type]==='up'){
@@ -294,6 +323,81 @@
                     this.DiskData=this.ArraySort(this.DiskData, key, '>');
                     this.DiskSortState[type]='up';
                 }
+            },
+            /*通用方法*/
+            FileSize:function (bytes) {
+                bytes=parseFloat(bytes);
+                if (bytes === 0) return '0B';
+                let k = 1024,
+                    sizes = ['B', 'KB', 'MB', 'GB', 'TB'],
+                    i = Math.floor(Math.log(bytes) / Math.log(k));
+                return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
+            },
+            IconGet:function (name,filemain) {
+                let prefix='../../../../static/img/disk/';
+                let type = this.StringBefore(name, ".");
+                if(!filemain){
+                    return prefix+'FolderType.png'
+                }
+                if (this.StringExist(type, '7z,zip,rar,tar.gz')) {
+                    return prefix+'RarType.png';
+                }
+                else if (this.StringExist(type, 'apng,png,jpg,jpeg,bmp,gif,APNG,PNG,JPG,JPEG,BMP,GIF')) {
+                    return prefix+'ImageType.png';
+                }
+                else if (this.StringExist(type, 'mp4,rmvb,mkv,MP4,RMVB,MKV')) {
+                    return prefix+'VideoType.png';
+                }
+                else if (this.StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape,M4A,MP3,OGG,FLAC,F4A,WAV,APE')) {
+                    return prefix+'MusicType.png';
+                }
+                else if (this.StringExist(type, 'doc,docx,DOC,DOCX')) {
+                    return prefix+'DocType.png';
+                }
+                else if (this.StringExist(type, 'ppt,pptx,PPT,PPTX')) {
+                    return prefix+'PptType.png';
+                }
+                else if (this.StringExist(type, 'xls,xlsx,XLS,XLSX')) {
+                    return prefix+'ExcelType.png';
+                }
+                else if (this.StringExist(type, 'pdf,PDF')) {
+                    return prefix+'PdfType.png';
+                }
+                else if (this.StringExist(type, 'ini,txt,md,INI,TXT,MD')) {
+                    return prefix+'TxtType.png';
+                }
+                else if (this.StringExist(type, 'xml,aspx,php,phtml,.htaccesscss,js,c,XML,ASPX,PHP,PHTML,.HTACCESSCSS,JS,C')) {
+                    return prefix+'CodeType.png';
+                }
+                else if (this.StringExist(type, 'htm,html,HTM,HTML')) {
+                    return prefix+'WebType.png';
+                }
+                else if (this.StringExist(type, 'log,LOG')) {
+                    return prefix+'OtherType.png';
+                }
+                else if (this.StringExist(type, 'exe,msi,EXE,MSI')) {
+                    return prefix+'ExeType.png';
+                }
+                else if (this.StringExist(type, 'torrent,TORRENT')) {
+                    return prefix+'BtType.png';
+                }
+                else if (this.StringExist(type, 'vcf,VCF')) {
+                    return prefix+'VcfType.png';
+                }
+                else {
+                    return prefix+'OtherType.png';
+                }
+            },
+            StringExist:function (str, substr) {
+                if(typeof str !== "string"){ return; }
+                if(substr==='|*|'){return true}
+                for(let i=0;i<substr.split(',').length;i++){
+                    if(str.indexOf(substr.split(',')[i]) >= 0 === true ){ return true; }
+                }
+                return false;
+            },
+            StringBefore:function (str,substr) {
+                return str.substring(str.lastIndexOf(substr) + 1, str.length);
             },
             ArraySort:function(array,key,type){
                 var temp,unfix;
