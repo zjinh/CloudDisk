@@ -117,8 +117,6 @@ html,body{
 	width: 100%;
 	height: 4px;
 	background: #fff;
-	-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
-	-webkit-animation-name:slideInLeft;animation-name:slideInLeft
 }
 .CloudDiskFuncLine,.CloudDiskFuncMenu li:hover .CloudDiskFuncLine {
 	-webkit-transition: all .35s;
@@ -290,27 +288,24 @@ html,body{
 }
 .CloudDiskHeadRight button{
 	float: left;
-	line-height: 40px;
 	width: 40px;
+	height: 40px;
+	line-height: 40px;;
 	text-align: center;
 	color: #6d6d6d;
 	background: none;
 	z-index: 2;
-	position: relative;
 }
 .CDsearchInput{
-	background: #e1e1e1;
-	height: 35px;
+	height: 30px;
 	width: 0px;
 	position: absolute;
-	top: 71px;
+	top: 75px;
 	right: 80px;
 	z-index: 1;
-	border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
 	text-indent: 10px;
 	color: #4f4f4f;
+	padding-right: 40px;
 }
 .CloudDiskLeft,.CloudDiskRight{
 	float: left;
@@ -348,7 +343,7 @@ html,body{
 	height: 35px;
 	line-height:35px;
 	color: #424e67;
-	width: calc(20% - 1px);
+	width: calc(23% - 1px);
 	text-align: left;
 	cursor: pointer;
 	padding-left: 10px;
@@ -418,7 +413,7 @@ html,body{
 	width: calc(56% - 45px);
 }
 .CloudDiskMList >.CloudDiskTime{
-	width: 20%;
+	width: 23%;
 	float: left;
 	height: 100%;
 	font-size: 12px;

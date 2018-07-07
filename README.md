@@ -12,11 +12,18 @@ npm install
 npm run dev
 
 # build electron application for production
-npm run build
+npm run build:win
 
+npm run build:linux
+
+npm run build:mac
 
 ```
 
 ---
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[4c6ee7b](https://github.com/SimulatedGREG/electron-vue/tree/4c6ee7bf4f9b4aa647a22ec1c1ca29c2e59c3645) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+#### 2018-07-06 
+1、 新增排序功能
+2、 搜索框实现
+3、 右下角实现查看网盘容量信息
+4、 分享、传输列表修改为组件状态
+5、 添加分页参数

@@ -1,5 +1,5 @@
 <template>
-    <ul class="CloudDiskClassify" >
+    <ul class="CloudDiskClassify">
         <li v-for="(item,index) in data" ripple :class="item.active" @click="change(index)"><span :class="item.icon"></span>{{item.name}}</li>
     </ul>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="data.length">
         <div v-for="(item,index) in data" :class="ShowState" ripple>
             <span>
                 <img :src="item.icon">
