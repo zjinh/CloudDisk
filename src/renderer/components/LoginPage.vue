@@ -2,7 +2,7 @@
     <div>
         <section style="-webkit-app-region: drag" class="CloudIndexSection" v-show="!LoginSuccess">
             <section style="-webkit-app-region: no-drag">
-                <button type="button" class="sf-icon-cog" @click="ServerSetting"></button>
+                <button type="button" class="sf-icon-cog" @click="OpenServerWindow"></button>
                 <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
                 <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
             </section>
@@ -90,7 +90,7 @@
                 </li>
                 <li class="sf-icon-video"></li>
                 <li class="sf-icon-comments"></li>
-                <p>正在加载用户信息</p>
+                <p>{{LoadingText}}</p>
             </ul>
         </div>
     </div>
@@ -107,7 +107,8 @@
         data(){
             return{
                 /*服务器值*/
-                ServerAddress:'http://cloud.com:100',
+                ServerAddress:localStorage.server||'http://cloud.com:100',
+                LoadingText:'正在加载用户信息',//登陆中提示
                 /*这里为组件传值*/
                 RemberPass:false,
                 PostState:false,
@@ -219,9 +220,6 @@
                 this.RemberPass=true;
             }
         },
-        mounted:function () {
-
-        },
         methods:{
             login:function () {
                 let username=this.LoginUserInput.value;
@@ -245,6 +243,10 @@
                 },(rs)=> {
                     rs=rs[0];
                     this.PostState='';
+                    if(!rs.state){
+                        this.$Message.error('服务器错误');
+                        return;
+                    }
                     if(rs.state==='success'){
                         this.LoginSuccess=true;
                         this.User.head=this.ServerAddress+'/'+rs.head;
@@ -259,6 +261,9 @@
                             usehead:rs.head
                         };
                         ipc.send('login-success');
+                        setTimeout(()=>{
+                            this.LoadingText='欢迎回来'+rs.user
+                        },1100)
                     }else{
                         if(rs.msg==='未激活的用户'){
                             this.$Message.info('请查看您的激活邮箱'+rs.email);
@@ -311,6 +316,10 @@
                 }, (rs)=> {
                     rs=rs[0];
                     this.PostState='';
+                    if(!rs.state){
+                        this.$Message.error('服务器错误');
+                        return;
+                    }
                     if(rs.state==='success'){
                         let _this=this;
                         this.$Message[rs.state]({
@@ -362,6 +371,10 @@
                 }, (rs)=> {
                     rs=rs[0];
                     this.PostState='';
+                    if(!rs.state){
+                        this.$Message.error('服务器错误');
+                        return;
+                    }
                     if(rs.state==='success'){
                         let _this=this;
                         this.$Message[rs.state]({
@@ -408,6 +421,10 @@
                 }, (rs)=> {
                     rs=rs[0];
                     this.PostState='';
+                    if(!rs.state){
+                        this.$Message.error('服务器错误');
+                        return;
+                    }
                     if(rs.state==='success'){
                         let _this=this;
                         this.$Message[rs.state]({
@@ -434,35 +451,25 @@
                 this.HeadText.h1=this.ShowState[type].h1;
                 this.HeadText.tips=this.ShowState[type].tips
             },
-            ServerSetting:function(){
-                this.$Modal.confirm({
-                    title: '修改服务地址',
-                    content: '<input type="text" >',
-                    onOk: () => {
-                        this.$Message.info('点击了确定');
-                    },
-                    onCancel: () => {
-                        this.$Message.info('点击了取消');
-                    }
+            OpenServerWindow:function(){
+                this.$prompt('请输入服务器地址', '修改服务器地址', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputValue:this.ServerAddress,
+                    inputPattern: /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])/,
+                    inputErrorMessage: '服务器地址格式不正确'
+                }).then(({ value }) => {
+                    this.$Message.info('正在验证'+value+'是否可用');
+                    Api.Check(value,(rs)=>{
+                        this.$Message.success(value+'可用！');
+                        this.ServerAddress=value;
+                        localStorage.server=value;
+                    },(error)=>{
+                        this.$Message.error(value+'不可用');
+                    })
+                }).catch(() => {
+
                 });
-
-                this.$Modal.confirm({
-                    render: (h) => {
-                        return h('Input', {
-                            props: {
-                                value: this.value,
-                                autofocus: true,
-                                placeholder: 'Please enter your name...'
-                            },
-                            on: {
-                                input: (val) => {
-                                    this.value = val;
-                                }
-                            }
-                        })
-                    }
-                })
-
             },
             mini:function () {
                 ipc.send('login-mini');

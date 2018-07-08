@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div  class="CloudDiskMain1" @mousewheel="LoadMore" @mousedown="ClearSelect">
-                    <DiskFile v-on:SelectFiles="SelectFiles" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
+                    <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
                 </div>
@@ -162,10 +162,11 @@
                 loadClassify:'normal',//网盘加载的分类
 
                 DiskData:{
-                    Clipboard: [],
-                    SelectFiles:[],
-                    KeyFlag: false,
-                    DiskShowState:'CloudDiskMFile',//初始化大图标文件
+                    Clipboard: [],//剪切板的文件
+                    SelectFiles:[],//选择的文件
+                    NavData:[],//记录导航栏数据
+                    KeyFlag: false,//全局键盘记录
+                    DiskShowState:'CloudDiskMFile',//文件显示类型，默认图标
                 },
                 /*排序参数*/
                 DiskSortState:{
@@ -204,7 +205,7 @@
                 document.onkeyup = ()=> {
                     this.DiskData.KeyFlag = false;
                 };
-            },
+            },//键盘事件
             GetUserInfo:function () {
                 Api.User.UserInfo((rs)=>{
                     rs[0].userhead=localStorage.server+'/'+rs[0].userhead;
@@ -218,7 +219,7 @@
                         }
                     });
                 })
-            },
+            },//获取用户信息
             GetMainFile:function(id,type){
                 if(this.DiskPage===1){
                     this.UserDiskData=[];//清空数据
@@ -266,7 +267,7 @@
                     }
                     console.log(this.UserDiskData)
                 })
-            },
+            },//获取用户文件
             updateClassify:function(value){//更新网盘分类子组件传回的数据
                 this.ClassifyName=value.name;
                 this.loadClassify=value.data;
@@ -275,6 +276,7 @@
             },
             LoadMore:function(){
                 let elm=event.target;
+                console.log(elm.getBoundingClientRect().height)
                 if (elm.scrollTop+ elm.offsetHeight >= elm.scrollHeight-32 && this.DiskLoadCount< this.DiskAllCount) {
                     if (this.LoadCompany) {
                         this.DiskPage++;
@@ -356,10 +358,10 @@
                         let Start = index,End;
                         this.ClearSelect();
                         item.active=true;
-                        if(item.active) {
+                        if(item&&item.active) {
                             for (let i = 0; i < this.UserDiskData.length; i++) {
-                                if (this.UserDiskData[i] === item) {
-                                    Start = i;
+                                if (this.UserDiskData[index] === item) {
+                                    Start = index;
                                 }
                                 if (this.UserDiskData[i] === item) {
                                     End = i;
@@ -387,6 +389,12 @@
                     item.active=false;
                     this.DiskData.SelectFiles=[];
                 })
+            },
+            /*导航栏函数*/
+
+            /*打开文件夹/文件*/
+            OpenFile:function(item){
+
             },
             /*通用方法*/
             FileSize:function (bytes) {

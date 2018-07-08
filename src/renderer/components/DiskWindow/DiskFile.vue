@@ -1,6 +1,6 @@
 <template>
     <div v-if="data.length">
-        <div v-for="(item,index) in data" :class="DiskData.DiskShowState+' '+(item.active?'CloudDiskChecked':'')" ripple @mousedown="select(item,index)">
+        <div v-for="(item,index) in data" :class="DiskData.DiskShowState+' '+(item.active?'CloudDiskChecked':'')" ripple @mousedown="select(item,index)" @dbclick="OpenFile">
             <span>
                 <img :src="item.icon" draggable="false">
             </span>
@@ -25,6 +25,9 @@
         methods: {
             select: function (item,index) {
                 this.$emit("SelectFiles",event,item,index)
+            },
+            OpenFile:function (item) {
+                this.$emit("OpenFile",item)
             }
         }
     }

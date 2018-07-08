@@ -77,6 +77,14 @@ let Disk={
         })
     },
 };
+let Check=function (url,callback,error) {
+    Ajax({
+        url:url,
+        data:[],
+        success:callback,
+        error:error
+    })
+};
 export default {
-    Ajax,User,Disk
+    Ajax,User,Disk,Check
 }

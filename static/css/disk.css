@@ -24,10 +24,10 @@ html,body{
     height: 35px;
     margin-top: 10px;
 	margin-right: 10px;
-	-webkit-app-region: no-drag;
 }
 .CloudDiskUser *{
     float: right;
+	-webkit-app-region: no-drag;
 }
 .CloudDiskUser img{
     border-radius: 100%;
@@ -45,7 +45,6 @@ html,body{
 	float: right!important;
 	position: relative;
 	height: 45px!important;
-	-webkit-app-region: no-drag;
 	z-index: 1;
 }
 .CloudDiskHeaderControl span{
@@ -64,6 +63,7 @@ html,body{
 	font-size: 14px;
 	background: none;
 	margin-top: 15px;
+	-webkit-app-region: no-drag;
 }
 .CloudDiskHeaderControl button:hover{
 	background: rgba(255,255,255,0.2);

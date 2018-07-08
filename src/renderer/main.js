@@ -10,6 +10,11 @@ import locale from 'iview/dist/locale/zh-cn';
 import 'iview/dist/styles/iview.css';
 Vue.use(iView, { locale });
 
+import { MessageBox } from 'element-ui';
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 axios.defaults.withCredentials=true;
