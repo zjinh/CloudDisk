@@ -111,7 +111,7 @@ function CreateDiskWindow() {
         minHeight:610,
         height: 610,
         title:'CloudDisk',
-        backgroundColor:'#fff',
+        backgroundColor:'#2682fc',
         frame:false,
         webPreferences:{
             webSecurity:false

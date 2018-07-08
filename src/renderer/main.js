@@ -10,6 +10,7 @@ import locale from 'iview/dist/locale/zh-cn';
 import 'iview/dist/styles/iview.css';
 Vue.use(iView, { locale });
 
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 axios.defaults.withCredentials=true;
 Vue.http = Vue.prototype.$http = axios;

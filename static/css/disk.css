@@ -7,20 +7,22 @@ html,body{
 	-ms-user-select:none;
 	-khtml-user-select:none;
 	user-select:none;
+	background:#2682fc;
 }
 .CloudDiskHeaderDrag{
 	width: 100%;
-	height: 70px;
+	height: 58px;
 	background: #2682fc;
 	padding: 0 2px;
 	-webkit-app-region: drag;
+	margin-top: 2px;
 }
 
 .CloudDiskUser{
     float: right;
     width: 150px;
     height: 35px;
-    margin-top: 16px;
+    margin-top: 10px;
 	margin-right: 10px;
 	-webkit-app-region: no-drag;
 }
@@ -39,11 +41,6 @@ html,body{
     margin-left: 10px;
     color: #fff;
 }
-.CloudDiskHeaderDrag section{
-	float: left;
-	height: calc(100% - 2px);
-	margin-top: 2px;
-}
 .CloudDiskHeaderControl{
 	float: right!important;
 	position: relative;
@@ -53,7 +50,7 @@ html,body{
 }
 .CloudDiskHeaderControl span{
 	float: left;
-	margin-top: 18px;
+	margin-top: 15px;
 	height: 25px;
 	background: rgba(255, 255, 255, 0.77);
 	width: 2px;
@@ -66,7 +63,7 @@ html,body{
 	margin-left: 5px;
 	font-size: 14px;
 	background: none;
-	margin-top: 18px;
+	margin-top: 15px;
 }
 .CloudDiskHeaderControl button:hover{
 	background: rgba(255,255,255,0.2);
@@ -80,13 +77,13 @@ html,body{
 }
 .CloudDiskFuncMenu{
 	float: left;
-	height: 40px;
-	margin-top: 15px;
+	height: 35px;
+	margin-top: 10px;
 	-webkit-app-region: no-drag;
 }
 .CloudDiskFuncMenu img{
     float: left;
-    width: 40px;
+    width: 35px;
 	margin: 0 15px;
 	-webkit-app-region: drag;
 }
@@ -115,7 +112,7 @@ html,body{
 }
 .CloudDiskFuncLine {
 	width: 100%;
-	height: 4px;
+	height: 3px;
 	background: #fff;
 }
 .CloudDiskFuncLine,.CloudDiskFuncMenu li:hover .CloudDiskFuncLine {
@@ -128,7 +125,7 @@ html,body{
 }
 .CloudDiskFuncMain{
 	width: 100%;
-	height: calc(100% - 70px);
+	height: calc(100% - 60px);
 	background: #fff;
 }
 .CloudDiskHead{
@@ -300,7 +297,7 @@ html,body{
 	height: 30px;
 	width: 0px;
 	position: absolute;
-	top: 75px;
+	top: 65px;
 	right: 80px;
 	z-index: 1;
 	text-indent: 10px;
@@ -334,7 +331,7 @@ html,body{
 }
 .CloudDiskMainFunc button{
 	width: 85px;
-	height: 30px;
+	height: 35px;
 	float: right;
 	background: #4086ED;
 	color: #fff;
@@ -346,7 +343,6 @@ html,body{
 	width: calc(23% - 1px);
 	text-align: left;
 	cursor: pointer;
-	padding-left: 10px;
 }
 .CloudDiskFuncBlock:active{
 	background: #e6e3e3;
@@ -413,7 +409,7 @@ html,body{
 	width: calc(56% - 45px);
 }
 .CloudDiskMList >.CloudDiskTime{
-	width: 23%;
+	width: 22%;
 	float: left;
 	height: 100%;
 	font-size: 12px;
@@ -424,7 +420,7 @@ html,body{
 	background: #ececec;
 }
 .CloudDiskChecked{
-	background: #cecece!important;
+	background: rgba(40, 123, 211, 0.28)!important
 }
 .CloudDiskMList>.SlimfCheck{
 	margin-top: 10px;
