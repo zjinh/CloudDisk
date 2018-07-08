@@ -1,5 +1,5 @@
 <template>
-    <div class="CloudDiskMain" v-on:keydown="keyBoard" tabindex="1">
+    <div class="CloudDiskMain" v-on:keydown="keyBoard"  tabindex="1">
         <div class="CloudDiskHeaderDrag">
             <ul class="CloudDiskFuncMenu">
                 <img draggable="false" src="../../../static/img/bar/disk.png"><span>CloudDisk</span>
@@ -30,7 +30,11 @@
                     </div>
                 </div>
                 <div class="CloudDiskHeadRight">
-                    <input class="CDsearchInput" placeholder="搜索" v-model="SearchKey" @blur="ShowSearch=false" :style="ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
+                    <input class="CDsearchInput" placeholder="搜索"
+                           v-model="DiskSearch.SearchKey"
+                           @blur="DiskSearch.ShowSearch=false"
+                           @keyup.enter.native="SearchDisk"
+                           :style="DiskSearch.ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
                     <button class="sf-icon-search" @click="SwitchSearch"></button>
                     <button :class="'sf-icon-sort-amount-'+DiskSortState.amount" @click="DiskSort('amount','disk_name')"></button>
                     <button :class="DiskStateIcon" @click="changeState"></button>
@@ -40,7 +44,7 @@
                 <ClassifyMenu v-bind:data="ClassifyData" v-on:updateClassify="updateClassify" v-show="DiskType==='disk'"></ClassifyMenu>
                 <ClassifyMenu v-bind:data="ShareData" v-on:updateClassify="updateClassify" v-show="DiskType==='share'"></ClassifyMenu>
                 <ClassifyMenu v-bind:data="TransData" v-on:updateClassify="updateClassify" v-show="DiskType==='trans'"></ClassifyMenu>
-                <div class="CloudDiskSelectTips">已选择N个文件</div>
+                <div class="CloudDiskSelectTips">{{DiskData.SelectTips}}</div>
                 <div class="CloudDiskCapacity">
                     <div class="CloudDiskSliderContainer">
                         <div class="CloudDiskSlider" :style="{'width':DiskSize.Percent,background:DiskSize.Background}"></div>
@@ -152,21 +156,26 @@
                     use:0,
                     Percent:'0%',
                     Background:'#2682fc',
-                    text:'0B/0B'
+                    text:'0B/0B',
                 },
+
                 /*网盘一些记录的参数*/
                 DiskPage:1,//网盘加载的页数
                 NowDiskID:null,
                 DiskAllCount:0,
                 DiskLoadCount:0,
                 loadClassify:'normal',//网盘加载的分类
-
+                DiskSearch:{
+                    ShowSearch:false,//搜索框打开关闭
+                    SearchKey:'',//搜索关键词
+                },//搜索参数
                 DiskData:{
                     Clipboard: [],//剪切板的文件
                     SelectFiles:[],//选择的文件
                     NavData:[],//记录导航栏数据
                     KeyFlag: false,//全局键盘记录
-                    DiskShowState:'CloudDiskMFile',//文件显示类型，默认图标
+                    DiskShowState:'CloudDiskMFile',//文件显示类型，默认图标,
+                    SelectTips:'',//选择文件提示
                 },
                 /*排序参数*/
                 DiskSortState:{
@@ -175,9 +184,18 @@
                     mum1:'up',
                     alpha:'up',
                 },
-                ShowSearch:false,//搜索框打开关闭
-                SearchKey:'',//搜索关键词
-
+            }
+        },
+        watch:{
+            UserDiskData: {
+                handler(newValue, oldValue) {
+                    if(this.DiskData.SelectFiles.length){
+                        this.DiskData.SelectTips='已选择'+this.DiskData.SelectFiles.length+'个文件/文件夹'
+                    }else{
+                        this.DiskData.SelectTips='共'+this.UserDiskData.length+'个文件/文件夹'
+                    }
+                },
+                deep: true
             }
         },
         created(){
@@ -240,34 +258,37 @@
                     page: this.DiskPage,
                     loadtype: this.loadClassify
                 },(rs)=>{
-                    if (this.DiskPage === 1) {
-                        this.DiskAllCount=0;
-                        this.DiskLoadCount=0;
-                    }
-                    this.LoadCompany=true;
-                    rs.forEach((item)=> {
-                        item.active=false;//设置未选择
-                        item.size=this.FileSize(item.disk_size);//计算文件大小
-                        item.icon = this.IconGet(item.disk_realname,item.disk_main)//区别文件类型设置图表
-                        this.UserDiskData.push(item);
-                    });
-                    if(rs.length){
-                        this.DiskSize.total=rs[0].max_size;
-                        this.DiskSize.use=rs[0].use_size;
-                        let Percent=(this.DiskSize.use/this.DiskSize.total)*100;
-                        this.DiskSize.Percent=Percent+'%';
-                        this.DiskSize.text=this.FileSize(this.DiskSize.use)+'/'+this.FileSize(this.DiskSize.total)
-                        if (65 < Percent && Percent < 85) {
-                            this.DiskSize.Background = '#f7ab21';
-                        } else if (Percent >= 85) {
-                            this.DiskSize.Background = '#e83c3c';
-                        }
-                        this.DiskAllCount=rs[0].all_count;
-                        this.DiskLoadCount=this.DiskLoadCount+rs.length;
-                    }
-                    console.log(this.UserDiskData)
+                    this.PrintFile(rs);
                 })
             },//获取用户文件
+            PrintFile:function(rs){
+                if (this.DiskPage === 1) {
+                    this.DiskAllCount=0;
+                    this.DiskLoadCount=0;
+                }
+                this.LoadCompany=true;
+                rs.forEach((item)=> {
+                    item.active=false;//设置未选择
+                    item.size=this.FileSize(item.disk_size);//计算文件大小
+                    item.icon = this.IconGet(item.disk_realname,item.disk_main)//区别文件类型设置图表
+                    this.UserDiskData.push(item);
+                });
+                if(rs.length){
+                    this.DiskSize.total=rs[0].max_size;
+                    this.DiskSize.use=rs[0].use_size;
+                    let Percent=(this.DiskSize.use/this.DiskSize.total)*100;
+                    this.DiskSize.Percent=Percent+'%';
+                    this.DiskSize.text=this.FileSize(this.DiskSize.use)+'/'+this.FileSize(this.DiskSize.total)
+                    if (65 < Percent && Percent < 85) {
+                        this.DiskSize.Background = '#f7ab21';
+                    } else if (Percent >= 85) {
+                        this.DiskSize.Background = '#e83c3c';
+                    }
+                    this.DiskAllCount=rs[0].all_count;
+                    this.DiskLoadCount=this.DiskLoadCount+rs.length;
+                }
+                console.log(this.UserDiskData)
+            },
             updateClassify:function(value){//更新网盘分类子组件传回的数据
                 this.ClassifyName=value.name;
                 this.loadClassify=value.data;
@@ -286,7 +307,7 @@
             },//下拉加载更多
             /*导航栏首页点击加载*/
             NavHomeLoad:function(){
-                if(this.DiskType!=='trans') {
+                if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索结果') {
                     this.GetMainFile(null, this.loadClassify);
                 }
             },
@@ -315,16 +336,27 @@
             },//切换网盘分享、传输等
             /*网盘搜索*/
             SwitchSearch:function(){
-                if(!this.ShowSearch){
-                    this.ShowSearch=true;
-                }else if(this.SearchKey&&this.ShowSearch){
-                    this.$Message.info('开始搜索'+this.SearchKey);
+                if(!this.DiskSearch.ShowSearch){
+                    this.DiskSearch.ShowSearch=true;
+                }else if(this.DiskSearch.SearchKey&&this.DiskSearch.ShowSearch){
+                    this.DiskPage=1;
+                    this.UserDiskData=[];
+                    this.ClassifyData.forEach((item)=>{
+                       item.active='';
+                    });
+                    this.ClassifyName='搜索结果';
+                    this.SearchDisk();
                 }else{
-                    this.ShowSearch=false;
+                    this.DiskSearch.ShowSearch=false;
                 }
             },
             SearchDisk:function(){
-
+                Api.Disk.Search({
+                    id:this.DiskSearch.SearchKey,
+                    page: this.DiskPage,
+                },(rs)=>{
+                    this.PrintFile(rs);
+                });
             },
             //切换文件显示模式
             changeState:function(){
@@ -379,7 +411,7 @@
                         this.DiskData.SelectFiles.push(item);
                     }
                 }
-                console.log(this.DiskData.SelectFiles)
+                console.log(this.DiskData.SelectFiles);
             },
             RemoveSelect:function(index){
                 this.DiskData.SelectFiles.splice(index,1)
@@ -388,10 +420,12 @@
                 this.UserDiskData.forEach((item)=>{
                     item.active=false;
                     this.DiskData.SelectFiles=[];
-                })
+                });
             },
             /*导航栏函数*/
+            SwitchNav:function(){
 
+            },
             /*打开文件夹/文件*/
             OpenFile:function(item){
 

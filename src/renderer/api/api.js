@@ -76,6 +76,15 @@ let Disk={
             error:error
         })
     },
+    Search:function (data,callback,error) {
+        data.loadtype='search';
+        Ajax({
+            url:localStorage.server+"/service/disk/GetMainFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    }
 };
 let Check=function (url,callback,error) {
     Ajax({
