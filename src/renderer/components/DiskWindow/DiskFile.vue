@@ -1,6 +1,6 @@
 <template>
     <div v-if="data.length">
-        <div v-for="(item,index) in data" :class="DiskData.DiskShowState+' '+(item.active?'CloudDiskChecked':'')" ripple @mousedown="select(item,index)" @dbclick="OpenFile">
+        <div v-for="(item,index) in data" :class="DiskData.DiskShowState+' '+(item.active?'CloudDiskChecked':'')" ripple @mousedown="select(item,index)" @dblclick="OpenFile(item)">
             <span>
                 <img :src="item.icon" draggable="false">
             </span>

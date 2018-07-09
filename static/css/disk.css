@@ -17,7 +17,6 @@ html,body{
 	-webkit-app-region: drag;
 	margin-top: 2px;
 }
-
 .CloudDiskUser{
     float: right;
     width: 150px;
@@ -279,8 +278,8 @@ html,body{
 	font-size: 16px;
 }
 .CloudDiskHeadRight{
-	float: left;
-	width: 120px;
+	float: right;
+	max-width: 120px;
 	height: 100%;
 }
 .CloudDiskHeadRight button{
@@ -292,6 +291,12 @@ html,body{
 	color: #6d6d6d;
 	background: none;
 	z-index: 2;
+}
+/*按钮禁用样式*/
+.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"]{
+	color: #c7c7c7!important;
+	background: none!important;
+	cursor: no-drop!important;
 }
 .CDsearchInput{
 	height: 30px;
@@ -333,7 +338,7 @@ html,body{
 	width: 85px;
 	height: 35px;
 	float: right;
-	background: #4086ED;
+	background: #f5491f;
 	color: #fff;
 }
 .CloudDiskFuncBlock{

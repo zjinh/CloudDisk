@@ -1,5 +1,5 @@
 <template>
-    <div class="CloudDiskMain" v-on:keydown="keyBoard"  tabindex="1">
+    <div class="CloudDiskMain" v-on:keydown="keyBoard"  tabindex="1"  @mousedown="ClearSelect">
         <div class="CloudDiskHeaderDrag">
             <ul class="CloudDiskFuncMenu">
                 <img draggable="false" src="../../../static/img/bar/disk.png"><span>CloudDisk</span>
@@ -23,10 +23,10 @@
             <div class="CloudDiskHead">
                 <div class="CloudDiskHeadLeft">
                     <div class="CloudDiskNav">
-                        <button class="sf-icon-arrow-left CloudDiskDisable"> 后退</button>
+                        <button class="sf-icon-chevron-left"> 后退</button>
                         <span class="CloudDiskNavLine">|</span>
                         <button @click="NavHomeLoad">{{ClassifyName}}</button>
-                        <div class="CloudDiskNavBar" id="CloudDiskNavBar"></div>
+                        <DiskNav v-bind:data="DiskData" v-on:SwitchNav="SwitchNav"></DiskNav>
                     </div>
                 </div>
                 <div class="CloudDiskHeadRight">
@@ -35,9 +35,9 @@
                            @blur="DiskSearch.ShowSearch=false"
                            @keyup.enter.native="SearchDisk"
                            :style="DiskSearch.ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
-                    <button class="sf-icon-search" @click="SwitchSearch"></button>
-                    <button :class="'sf-icon-sort-amount-'+DiskSortState.amount" @click="DiskSort('amount','disk_name')"></button>
-                    <button :class="DiskStateIcon" @click="changeState"></button>
+                    <button class="sf-icon-search" @click="SwitchSearch" v-show="DiskType!=='trans'" :disabled="DiskType==='share'"></button>
+                    <button :class="'sf-icon-sort-amount-'+DiskSortState.amount" @click="DiskSort('amount','disk_name')" v-show="DiskType!=='trans'"></button>
+                    <button :class="DiskStateIcon" @click="changeState" v-show="DiskType!=='trans'"></button>
                 </div>
             </div>
             <div class="CloudDiskLeft">
@@ -55,9 +55,9 @@
             <div class="CloudDiskRight">
                 <div class="CloudDiskMainFunc" v-show="ClassifyName==='回收站'">
                     <span class="sf-icon-info-circle"> 回收站仍然占用网盘空间，文件保存10天后将被自动清除。</span>
-                    <button id="TrashBtn" class="CloudDiskDisable" onclick="CloudDisk.TrashClean(this)">清空回收站</button>
+                    <button :disabled="ClassifyName==='回收站'&&UserDiskData.length===0">清空回收站</button>
                 </div>
-                <div class="CloudDiskMainFunc" v-show="DiskData.DiskShowState!=='CloudDiskMFile'">
+                <div class="CloudDiskMainFunc" v-show="DiskData.DiskShowState!=='CloudDiskMFile'&&DiskType!=='trans'">
                     <div :class="'CloudDiskFuncBlock sf-icon-sort-alpha-'+DiskSortState.alpha" @click="DiskSort('alpha','disk_name')" ripple style="width:54%;text-indent: 10px;">
                         文件名
                     </div>
@@ -68,7 +68,7 @@
                         大小
                     </div>
                 </div>
-                <div  class="CloudDiskMain1" @mousewheel="LoadMore" @mousedown="ClearSelect">
+                <div  class="CloudDiskMain1" @mousewheel="LoadMore">
                     <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
@@ -118,10 +118,12 @@
     import Api from '../api/api';
     import ClassifyMenu from './DiskWindow/ClassifyMenu';
     import DiskFile from './DiskWindow/DiskFile';
+    import DiskNav from './DiskWindow/DiskNav';
+    import Vue from 'vue'
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskWindow",
-        components:{ClassifyMenu,DiskFile},
+        components:{ClassifyMenu,DiskFile,DiskNav},
         data(){
             return{
                 Logined:{},
@@ -158,7 +160,6 @@
                     Background:'#2682fc',
                     text:'0B/0B',
                 },
-
                 /*网盘一些记录的参数*/
                 DiskPage:1,//网盘加载的页数
                 NowDiskID:null,
@@ -175,7 +176,7 @@
                     NavData:[],//记录导航栏数据
                     KeyFlag: false,//全局键盘记录
                     DiskShowState:'CloudDiskMFile',//文件显示类型，默认图标,
-                    SelectTips:'',//选择文件提示
+                    SelectTips:'共0个文件/文件夹',//选择文件提示
                 },
                 /*排序参数*/
                 DiskSortState:{
@@ -189,6 +190,7 @@
         watch:{
             UserDiskData: {
                 handler(newValue, oldValue) {
+                    this.DiskSearch.ShowSearch=false;
                     if(this.DiskData.SelectFiles.length){
                         this.DiskData.SelectTips='已选择'+this.DiskData.SelectFiles.length+'个文件/文件夹'
                     }else{
@@ -287,18 +289,17 @@
                     this.DiskAllCount=rs[0].all_count;
                     this.DiskLoadCount=this.DiskLoadCount+rs.length;
                 }
-                console.log(this.UserDiskData)
             },
             updateClassify:function(value){//更新网盘分类子组件传回的数据
                 this.ClassifyName=value.name;
                 this.loadClassify=value.data;
                 this.DiskPage = 1;
                 this.GetMainFile(null,this.loadClassify);
+                this.DiskData.NavData=[];
             },
             LoadMore:function(){
                 let elm=event.target;
-                console.log(elm.getBoundingClientRect().height)
-                if (elm.scrollTop+ elm.offsetHeight >= elm.scrollHeight-32 && this.DiskLoadCount< this.DiskAllCount) {
+                if (elm.scrollTop+ elm.getBoundingClientRect().height >= elm.scrollHeight-32 && this.DiskLoadCount< this.DiskAllCount) {
                     if (this.LoadCompany) {
                         this.DiskPage++;
                         this.GetMainFile(this.NowDiskID, this.loadClassify);
@@ -309,10 +310,12 @@
             NavHomeLoad:function(){
                 if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索结果') {
                     this.GetMainFile(null, this.loadClassify);
+                    this.DiskData.NavData=[];
                 }
             },
             changeType:function(type){
                 this.UserDiskData=[];//清空数据
+                this.DiskData.NavData=[];
                 this.DiskType=type;
                 if(type==='disk') {
                     this.ClassifyData.forEach(function (item) {
@@ -335,7 +338,7 @@
                 }
             },//切换网盘分享、传输等
             /*网盘搜索*/
-            SwitchSearch:function(){
+            SwitchSearch:function(){//搜索有问题
                 if(!this.DiskSearch.ShowSearch){
                     this.DiskSearch.ShowSearch=true;
                 }else if(this.DiskSearch.SearchKey&&this.DiskSearch.ShowSearch){
@@ -346,6 +349,7 @@
                     });
                     this.ClassifyName='搜索结果';
                     this.SearchDisk();
+                    this.DiskData.NavData=[];
                 }else{
                     this.DiskSearch.ShowSearch=false;
                 }
@@ -411,7 +415,7 @@
                         this.DiskData.SelectFiles.push(item);
                     }
                 }
-                console.log(this.DiskData.SelectFiles);
+                //console.log(this.DiskData.SelectFiles);
             },
             RemoveSelect:function(index){
                 this.DiskData.SelectFiles.splice(index,1)
@@ -419,16 +423,28 @@
             ClearSelect:function(){
                 this.UserDiskData.forEach((item)=>{
                     item.active=false;
-                    this.DiskData.SelectFiles=[];
                 });
+                this.DiskData.SelectFiles=[];
             },
             /*导航栏函数*/
-            SwitchNav:function(){
-
+            SwitchNav:function(item){
+                for (let i = this.DiskData.NavData.length - 1; i > 0; i--) {
+                    if (item ===  this.DiskData.NavData[i]) {
+                        break;
+                    }
+                    this.DiskData.NavData.splice(i,1);
+                }
+                this.GetMainFile(item.disk_id, 'normal');
             },
             /*打开文件夹/文件*/
             OpenFile:function(item){
-
+                if(!item.disk_main){
+                    this.DiskData.NavData.push(item);
+                    this.ClearSelect();
+                    this.GetMainFile(item.disk_id, 'normal');
+                }else{
+                    this.$Message.info('无法打开文件')
+                }
             },
             /*通用方法*/
             FileSize:function (bytes) {
