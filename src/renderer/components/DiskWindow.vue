@@ -23,7 +23,7 @@
             <div class="CloudDiskHead">
                 <div class="CloudDiskHeadLeft">
                     <div class="CloudDiskNav">
-                        <button class="sf-icon-chevron-left"> 后退</button>
+                        <button class="sf-icon-chevron-left" @click="NavBack" :disabled="DiskData.NavData.length===0"> 后退</button>
                         <span class="CloudDiskNavLine">|</span>
                         <button @click="NavHomeLoad">{{ClassifyName}}</button>
                         <DiskNav v-bind:data="DiskData" v-on:SwitchNav="SwitchNav"></DiskNav>
@@ -68,10 +68,11 @@
                         大小
                     </div>
                 </div>
-                <div  class="CloudDiskMain1" @mousewheel="LoadMore">
+                <div  class="CloudDiskMain1" @mousewheel="LoadMore" @mousedown="MouseSelect">
                     <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
+                    <div class="SlimfMouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
                 </div>
             </div>
         </div>
@@ -119,7 +120,6 @@
     import ClassifyMenu from './DiskWindow/ClassifyMenu';
     import DiskFile from './DiskWindow/DiskFile';
     import DiskNav from './DiskWindow/DiskNav';
-    import Vue from 'vue'
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskWindow",
@@ -185,6 +185,13 @@
                     mum1:'up',
                     alpha:'up',
                 },
+                /*拖拽选择参数*/
+                MouseSelectData:{
+                    left:0,
+                    top:0,
+                    width:0,
+                    height:0
+                }
             }
         },
         watch:{
@@ -306,13 +313,6 @@
                     }
                 }
             },//下拉加载更多
-            /*导航栏首页点击加载*/
-            NavHomeLoad:function(){
-                if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索结果') {
-                    this.GetMainFile(null, this.loadClassify);
-                    this.DiskData.NavData=[];
-                }
-            },
             changeType:function(type){
                 this.UserDiskData=[];//清空数据
                 this.DiskData.NavData=[];
@@ -377,7 +377,7 @@
                     this.DiskSortState[type]='up';
                 }
             },
-            /*数据操作方法*/
+            /*选择文件数据操作方法*/
             SelectFiles:function(event,item,index){
                 event.stopPropagation();
                 event.preventDefault();
@@ -436,6 +436,19 @@
                 }
                 this.GetMainFile(item.disk_id, 'normal');
             },
+            NavHomeLoad:function(){
+                if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索结果') {
+                    this.GetMainFile(null, this.loadClassify);
+                    this.DiskData.NavData=[];
+                }
+            },//导航栏首页点击加载
+            NavBack:function(){
+                if(this.DiskData.NavData.length>1) {
+                    this.SwitchNav(this.DiskData.NavData[this.DiskData.NavData.length - 2])
+                }else{
+                    this.NavHomeLoad();
+                }
+            },//导航栏后退
             /*打开文件夹/文件*/
             OpenFile:function(item){
                 if(!item.disk_main){
@@ -447,6 +460,68 @@
                 }
             },
             /*通用方法*/
+            MouseSelect:function(){
+                let area=event.target.parentNode;
+                let start={
+                    x:event.clientX-area.getBoundingClientRect().left+area.scrollLeft,
+                    y:event.clientY-area.getBoundingClientRect().top+area.scrollTop,
+                    maxy:area.scrollHeight
+                };
+                this.MouseSelectData.left=start.x;
+                this.MouseSelectData.top=start.y;
+                document.onmouseup=()=> {
+                    this.MouseSelectData={
+                        left:0,
+                        top:0,
+                        width:0,
+                        height:0
+                    };
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+                document.onmousemove=(ev)=> {
+                    let end={
+                        x:ev.clientX-area.getBoundingClientRect().left+area.scrollLeft,
+                        y:ev.clientY-area.getBoundingClientRect().top+area.scrollTop,
+                        scrolldown:Math.min(ev.clientY - area.getBoundingClientRect().top, event.clientY - area.getBoundingClientRect().top)+10+area.offsetHeight,
+                        scrollup:Math.min(ev.clientY - area.getBoundingClientRect().top, event.clientY - area.getBoundingClientRect().top)
+                    };
+                    this.MouseSelectData={
+                        left:Math.min(start.x,end.x) + "px",
+                        top:Math.min(start.y,end.y) + "px",
+                        width:Math.abs(end.x-start.x) + "px",
+                        height:Math.abs(end.y-start.y) + "px"
+                    };
+                    let area_data={
+                        left:Math.min(start.x,end.x),
+                        top:Math.min(start.y,end.y),
+                        width:Math.abs(end.x-start.x),
+                        height:Math.abs(end.y-start.y)
+                    };
+                    let selList=document.getElementsByClassName(this.DiskData.DiskShowState);
+                    /*if (end.scrolldown >= area.offsetHeight && (end.y-start.y > 0)) {
+                        area.scrollTop = area.scrollTop + (selList[0].offsetHeight/8);
+                    } else if (end.scrollup<=10&&area.scrollTop) {
+                        area.scrollTop = area.scrollTop - (selList[0].offsetHeight/8);
+                    }*///自动滚动
+                    for (let i = 0; i < selList.length; i++) {
+                        let sl = selList[i].offsetWidth + selList[i].offsetLeft,st = selList[i].offsetHeight + selList[i].offsetTop;
+                        let area_l= area_data.left + area_data.width;
+                        let area_t=area_data.top + area_data.height;
+                        if (sl > area_data.left && st > area_data.top && selList[i].offsetLeft <area_l && selList[i].offsetTop < area_t) {
+                            if(this.UserDiskData[i].active===false){
+                                this.UserDiskData[i].active=true;
+                                this.DiskData.SelectFiles.push(this.UserDiskData[i]);
+                            }
+                        } else {
+                            if(this.UserDiskData[i].active){
+                                this.UserDiskData[i].active=false;
+                                this.RemoveSelect(i)
+                            }
+                        }
+                    }
+                };
+            },
             FileSize:function (bytes) {
                 bytes=parseFloat(bytes);
                 if (bytes === 0) return '0B';

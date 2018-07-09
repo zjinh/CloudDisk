@@ -73,6 +73,7 @@ html,body{
 }
 .CloudDiskMain1{
 	overflow: auto;
+	position: relative;
 }
 .CloudDiskFuncMenu{
 	float: left;
@@ -293,7 +294,7 @@ html,body{
 	z-index: 2;
 }
 /*按钮禁用样式*/
-.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"]{
+.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"],.CloudDiskNav button[disabled="disabled"]{
 	color: #c7c7c7!important;
 	background: none!important;
 	cursor: no-drop!important;
@@ -387,7 +388,7 @@ html,body{
 	color: #333333;
 	text-overflow: ellipsis;
 	word-break: break-all;
-	font-size: 12px;
+	font-size: 11px;
 }
 .CloudDiskMFile>.CloudDiskTime{
 	display: none;
@@ -581,3 +582,51 @@ html,body{
 .CloudDiskLoading-beat > div:nth-child(2n-1) {
 	-webkit-animation-delay: 0.35s !important;
 	animation-delay: 0.35s !important; }
+/*拖选框*/
+.SlimfMouseSelect{
+	position: absolute;
+	background: rgba(38, 130, 252, 0.75);
+	opacity: .5;
+	border: 1px solid #868686;
+}
+/*滚动条*/
+*::-webkit-scrollbar{
+	width:7px;
+	height:7px;
+	background:none;
+}
+*::-webkit-scrollbar-button    {
+	display:none;
+}
+*::-webkit-scrollbar-track     {
+	background:none;
+}
+*::-webkit-scrollbar-track-piece {
+	display:none;
+}
+*::-webkit-scrollbar-thumb{
+	background : rgba(0,0,0,0.3);
+	position   : absolute;
+	width      : 3px;
+	right      : 0;
+	top        : 0;
+	bottom     : 0;
+	visibility : hidden\9; /* Target only IE7 and IE8 with this hack */
+	opacity    : .01;
+	-webkit-transition    : .2s;
+	-moz-transition       : .2s;
+	-o-transition         : .2s;
+	transition            : .2s;
+	-moz-border-radius    : 3px;
+	-webkit-border-radius : 3px;
+	border-radius         : 3px;
+}
+*::-webkit-scrollbar-thumb:active,*::-webkit-scrollbar-thumb:hover{
+	background : rgba(0,0,0,.50);
+}
+*::-webkit-scrollbar-corner {
+	display:none;
+}
+*::-webkit-scrollbar-resizer  {
+	display:none;
+}
