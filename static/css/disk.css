@@ -321,7 +321,28 @@ html,body{
 	height:35px;
 	line-height: 35px;
 }
-.CloudDiskMainFunc span{
+/*顶部全选*/
+.CloudDiskMainFunc>.ivu-checkbox-wrapper{
+	float: left;
+	margin-top: 10px;
+	margin-right: 0px;
+	margin-left: 5px;
+}
+/*顶部排序*/
+.CloudDiskFuncBlock{
+	height: 35px;
+	line-height:35px;
+	color: #424e67;
+	width: calc(23% - 10px);
+	text-align: left;
+	cursor: pointer;
+	text-indent: 10px;
+}
+.CloudDiskFuncBlock:active{
+	background: #e6e3e3;
+}
+/*回收站提示*/
+.TrashTips{
 	height: 35px;
 	display: block;
 	font-size: 12px;
@@ -342,29 +363,11 @@ html,body{
 	background: #f5491f;
 	color: #fff;
 }
-.CloudDiskFuncBlock{
-	height: 35px;
-	line-height:35px;
-	color: #424e67;
-	width: calc(23% - 1px);
-	text-align: left;
-	cursor: pointer;
-}
-.CloudDiskFuncBlock:active{
-	background: #e6e3e3;
-}
 .CloudDiskRight{
 	width: calc(100% - 200px);
 	border:none;
 }
-.CloudDiskDisable{
-	color: #c7c7c7!important;
-	background: none!important;
-	cursor: no-drop!important;
-}
-.CloudDiskDisable:hover{
-	color: #dcdcdc!important;
-}
+/*文件图标视图*/
 .CloudDiskMFile{
 	width: 90px;
 	height: 80px;
@@ -376,7 +379,7 @@ html,body{
 	-moz-border-radius: 5px;
 	cursor: pointer;
 }
-.CloudDiskMFile span{
+.CloudDiskMFile>.CloudDisk-icon{
 	font-size: 30px;
 	width: 100%;
 	height: 40px;
@@ -384,15 +387,17 @@ html,body{
 	margin-top: 5px;
 	display: block;
 }
-.CloudDiskMFile p,.CloudDiskMList p{
+.CloudDiskMFile>.CloudDisk-name{
 	color: #333333;
 	text-overflow: ellipsis;
 	word-break: break-all;
 	font-size: 11px;
+	width: 100%;
 }
 .CloudDiskMFile>.CloudDiskTime{
 	display: none;
 }
+/*文件列表视图*/
 .CloudDiskMList{
 	width: 100%;
 	height: 35px;
@@ -404,15 +409,24 @@ html,body{
 	width: 20px;
 	height: 20px;
 }
-.CloudDiskMList span,.CloudDiskMList p{
+.CloudDiskMList>.CloudDisk-icon,.CloudDiskMList>.CloudDisk-name{
 	float: left;
 	display: inline-block;
 	height: 35px;
 	line-height: 35px;
 	margin-left: 5px;
+	font-size: 12px;
 }
-.CloudDiskMList p{
-	width: calc(56% - 45px);
+.CloudDiskMList>.ivu-checkbox-wrapper{
+	float: left;
+	margin-top: 8px;
+	margin-right: 3px;
+}
+.CloudDiskMList>.CloudDisk-icon{
+	padding-top: 5px;
+}
+.CloudDiskMList .CloudDisk-name{
+	width: calc(56% - 60px);
 }
 .CloudDiskMList >.CloudDiskTime{
 	width: 22%;
@@ -425,16 +439,11 @@ html,body{
 .CloudDiskMFile:hover,.CloudDiskMList:hover{
 	background: #ececec;
 }
+/*选中样式*/
 .CloudDiskChecked{
 	background: rgba(40, 123, 211, 0.28)!important
 }
-.CloudDiskMList>.SlimfCheck{
-	margin-top: 10px;
-}
-.CloudDiskMList span {
-	line-height: 38px;
-	padding-top: 3px;
-}
+/*文件选择提示*/
 .CloudDiskSelectTips{
 	width: 100%;
 	height: 25px;

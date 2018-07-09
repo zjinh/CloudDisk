@@ -32,7 +32,6 @@
                 <div class="CloudDiskHeadRight">
                     <input class="CDsearchInput" placeholder="搜索"
                            v-model="DiskSearch.SearchKey"
-                           @blur="DiskSearch.ShowSearch=false"
                            @keyup.enter.native="SearchDisk"
                            :style="DiskSearch.ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
                     <button class="sf-icon-search" @click="SwitchSearch" v-show="DiskType!=='trans'" :disabled="DiskType==='share'"></button>
@@ -54,11 +53,12 @@
             </div>
             <div class="CloudDiskRight">
                 <div class="CloudDiskMainFunc" v-show="ClassifyName==='回收站'">
-                    <span class="sf-icon-info-circle"> 回收站仍然占用网盘空间，文件保存10天后将被自动清除。</span>
+                    <span class="sf-icon-info-circle TrashTips"> 回收站仍然占用网盘空间，文件保存10天后将被自动清除</span>
                     <button :disabled="ClassifyName==='回收站'&&UserDiskData.length===0">清空回收站</button>
                 </div>
                 <div class="CloudDiskMainFunc" v-show="DiskData.DiskShowState!=='CloudDiskMFile'&&DiskType!=='trans'">
-                    <div :class="'CloudDiskFuncBlock sf-icon-sort-alpha-'+DiskSortState.alpha" @click="DiskSort('alpha','disk_name')" ripple style="width:54%;text-indent: 10px;">
+                    <Checkbox ></Checkbox>
+                    <div :class="'CloudDiskFuncBlock sf-icon-sort-alpha-'+DiskSortState.alpha" @click="DiskSort('alpha','disk_name')" ripple style="width:53%;">
                         文件名
                     </div>
                     <div :class="'CloudDiskFuncBlock sf-icon-sort-numeric-'+DiskSortState.mum" @click="DiskSort('mum','create_time')" ripple>
@@ -68,7 +68,7 @@
                         大小
                     </div>
                 </div>
-                <div  class="CloudDiskMain1" @mousewheel="LoadMore" @mousedown="MouseSelect">
+                <div  class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MouseSelect">
                     <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
@@ -91,13 +91,13 @@
         </ul>
         <ul class="SlimfMouseMenu" id="CloudDiskFileMouseMenu">
             <li onclick="CloudDisk.MouseMenuFile.open();">打开</li>
-            <li id="CloudDiskDownLoadButton" onclick="CloudDisk.MouseMenuFile.Download();">下载</li>
+            <li onclick="CloudDisk.MouseMenuFile.Download();">下载</li>
             <li onclick="CloudDisk.MouseMenuFile.moveto()">移动到</li>
-            <li id="CloudDiskCopyButton" onclick="CloudDisk.MouseMenuFile.Copy()">复制</li>
+            <li onclick="CloudDisk.MouseMenuFile.Copy()">复制</li>
             <li onclick="CloudDisk.MouseMenuFile.Cut()">剪切</li>
             <li onclick="CloudDisk.MouseMenuFile.Rename()">重命名</li>
             <li onclick="CloudDisk.MouseMenuFile.Delete()">删除</li>
-            <li id="CloudDiskShareButton" onclick="CloudDisk.MouseMenuFile.share()">分享</li>
+            <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
             <li onclick="CloudDisk.MouseMenuFile.Info()">属性</li>
         </ul>
         <ul class="SlimfMouseMenu" id="CloudDiskShareMouseMenu">
@@ -192,6 +192,8 @@
                     width:0,
                     height:0
                 }
+                /*右键菜单参数*/
+
             }
         },
         watch:{
@@ -306,7 +308,7 @@
             },
             LoadMore:function(){
                 let elm=event.target;
-                if (elm.scrollTop+ elm.getBoundingClientRect().height >= elm.scrollHeight-32 && this.DiskLoadCount< this.DiskAllCount) {
+                if (elm.scrollTop+ elm.offsetHeight >= elm.scrollHeight-32 && this.DiskLoadCount< this.DiskAllCount) {
                     if (this.LoadCompany) {
                         this.DiskPage++;
                         this.GetMainFile(this.NowDiskID, this.loadClassify);
@@ -339,9 +341,9 @@
             },//切换网盘分享、传输等
             /*网盘搜索*/
             SwitchSearch:function(){//搜索有问题
-                if(!this.DiskSearch.ShowSearch){
+                if(this.DiskSearch.ShowSearch===false){
                     this.DiskSearch.ShowSearch=true;
-                }else if(this.DiskSearch.SearchKey&&this.DiskSearch.ShowSearch){
+                }else if(this.DiskSearch.SearchKey.length&&this.DiskSearch.ShowSearch){
                     this.DiskPage=1;
                     this.UserDiskData=[];
                     this.ClassifyData.forEach((item)=>{
@@ -411,8 +413,13 @@
                         }
                     }else if(!this.DiskData.KeyFlag){//单选
                         this.ClearSelect();
-                        item.active=true;
-                        this.DiskData.SelectFiles.push(item);
+                        if(item.active){
+                            item.active=false;
+                            this.RemoveSelect(index);
+                        }else{
+                            item.active=true;
+                            this.DiskData.SelectFiles.push(item);
+                        }
                     }
                 }
                 //console.log(this.DiskData.SelectFiles);
@@ -439,6 +446,9 @@
             NavHomeLoad:function(){
                 if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索结果') {
                     this.GetMainFile(null, this.loadClassify);
+                    this.DiskData.NavData=[];
+                }else if(this.ClassifyName==='搜索结果'){
+                    this.changeType('disk');
                     this.DiskData.NavData=[];
                 }
             },//导航栏首页点击加载
@@ -488,13 +498,13 @@
                     };
                     this.MouseSelectData={
                         left:Math.min(start.x,end.x) + "px",
-                        top:Math.min(start.y,end.y) + "px",
+                        top:this.DiskData.DiskShowState==='CloudDiskMList'?Math.min(start.y,end.y)-35+ "px":Math.min(start.y,end.y)+ "px",
                         width:Math.abs(end.x-start.x) + "px",
                         height:Math.abs(end.y-start.y) + "px"
                     };
                     let area_data={
                         left:Math.min(start.x,end.x),
-                        top:Math.min(start.y,end.y),
+                        top:this.DiskData.DiskShowState==='CloudDiskMList'?Math.min(start.y,end.y)-35:Math.min(start.y,end.y),
                         width:Math.abs(end.x-start.x),
                         height:Math.abs(end.y-start.y)
                     };
@@ -597,9 +607,9 @@
                 return str.substring(str.lastIndexOf(substr) + 1, str.length);
             },
             ArraySort:function(array,key,type){
-                var temp,unfix;
+                let temp,unfix;
                 for (unfix = array.length - 1; unfix > 0; unfix--) {
-                    for (var i = 0; i < unfix; i++) {
+                    for (let i = 0; i < unfix; i++) {
                         if (array[i][key] < array[i + 1][key] && type === '<') {
                             temp = array[i];
                             array.splice(i, 1, array[i + 1]);
