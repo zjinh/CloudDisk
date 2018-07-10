@@ -143,33 +143,6 @@ option {
     min-height: 30px;
 }
 
-.SlimfMouseMenu {
-    position:absolute;
-    z-index:22;
-    display:none;
-    width:auto;
-    height:auto;
-    min-width:90pt;
-    background:#fff;
-    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-    -moz-user-select:none;
-    -webkit-user-select:none;
-    -ms-user-select:none;
-    -khtml-user-select:none;
-    user-select:none;
-}
-.SlimfMouseMenu li {
-    font-size:12px;
-    padding: 6px 8px;
-    color: #333;
-    text-align: left;
-    white-space: nowrap;
-}
-.SlimfMouseMenu li:hover {
-    background-color:#4281f4;
-    color:#fff;
-    cursor:pointer;
-}
 
 
 .animated{-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both}

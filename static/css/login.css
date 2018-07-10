@@ -137,7 +137,6 @@ input[type="text"]:disabled{
 .CloudIndex-LineContainer label,.CloudIndex-LineContainer span,.CloudIndex-LineContainer p{
 	font-size: 12px;
 	color: #b8b7b7;
-	margin-top: 1px;
 }
 .CloudIndex-LineContainer a{
 	float: right;

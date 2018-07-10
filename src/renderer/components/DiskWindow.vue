@@ -83,13 +83,20 @@
             <li onclick="CloudDisk.MouseMenu.refues()">切换账户</li>
             <li onclick="CloudDisk.MouseMenu.refues()">退出</li>
         </ul>
-        <ul class="SlimfMouseMenu" id="CloudDiskMouseMenu">
-            <li onclick="CloudDisk.MouseMenu.upload();">上传文件</li>
+        <ul class="SlimfMouseMenu" id="CloudDiskShareMouseMenu">
+            <li onclick="CloudDisk.MouseMenuFile.open();">打开</li>
+            <li onclick="CloudDisk.MouseMenuFile.Rename()">重命名</li>
+            <li onclick="CloudDisk.MouseMenuFile.Delete()">删除</li>
+            <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
+            <li onclick="CloudDisk.MouseMenuFile.Info()">属性</li>
+        </ul>
+        <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
+            <li @click="UploadFile">上传文件</li>
             <li onclick="CloudDisk.MouseMenu.CreateFolder()">新建文件夹</li>
             <li id="CloudDiskPasteButton" class="CloudDiskDisable" onclick="CloudDisk.MouseMenu.paste(this)">粘贴</li>
             <li onclick="CloudDisk.MouseMenu.refues()">刷新</li>
         </ul>
-        <ul class="SlimfMouseMenu" id="CloudDiskFileMouseMenu">
+        <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
             <li onclick="CloudDisk.MouseMenuFile.open();">打开</li>
             <li onclick="CloudDisk.MouseMenuFile.Download();">下载</li>
             <li onclick="CloudDisk.MouseMenuFile.moveto()">移动到</li>
@@ -100,14 +107,7 @@
             <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
             <li onclick="CloudDisk.MouseMenuFile.Info()">属性</li>
         </ul>
-        <ul class="SlimfMouseMenu" id="CloudDiskShareMouseMenu">
-            <li onclick="CloudDisk.MouseMenuFile.open();">打开</li>
-            <li onclick="CloudDisk.MouseMenuFile.Rename()">重命名</li>
-            <li onclick="CloudDisk.MouseMenuFile.Delete()">删除</li>
-            <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
-            <li onclick="CloudDisk.MouseMenuFile.Info()">属性</li>
-        </ul>
-        <ul class="SlimfMouseMenu" id="CloudDiskTrashMouseMenu">
+        <ul class="SlimfMouseMenu" v-show="DiskMouseState.TrashFileMenu.show" ref="TrashFileMenu">
             <li onclick="CloudDisk.TrashMouseMenu.Restore()">还原</li>
             <li onclick="CloudDisk.TrashMouseMenu.Delete()">删除</li>
             <li onclick="CloudDisk.MouseMenuFile.Info()">属性</li>
@@ -175,6 +175,7 @@
                     SelectFiles:[],//选择的文件
                     NavData:[],//记录导航栏数据
                     KeyFlag: false,//全局键盘记录
+                    NowSelect:false,//记录一个选择的文件
                     DiskShowState:'CloudDiskMFile',//文件显示类型，默认图标,
                     SelectTips:'共0个文件/文件夹',//选择文件提示
                 },
@@ -191,9 +192,31 @@
                     top:0,
                     width:0,
                     height:0
-                }
-                /*右键菜单参数*/
-
+                },
+                /*右键菜单状态*/
+                DiskMouseState:{
+                    DiskMainMenu:{
+                        show:false,
+                        top:0,
+                        left:0
+                    },
+                    DiskFileMenu:{
+                        show:false,
+                        top:0,
+                        left:0
+                    },
+                    TrashFileMenu:{
+                        show:false,
+                        top:0,
+                        left:0
+                    }
+                },
+                DiskMouseData:[
+                    {"name":"上传文件","func":""},
+                    {"name":"新建文件夹","func":""},
+                    {"name":"粘贴","func":""},
+                    {"name":"刷新","func":""},
+                ],
             }
         },
         watch:{
@@ -204,6 +227,9 @@
                         this.DiskData.SelectTips='已选择'+this.DiskData.SelectFiles.length+'个文件/文件夹'
                     }else{
                         this.DiskData.SelectTips='共'+this.UserDiskData.length+'个文件/文件夹'
+                    }
+                    for(let item in this.DiskMouseState){
+                        this.DiskMouseState[item].show = false
                     }
                 },
                 deep: true
@@ -394,19 +420,17 @@
                         }
                     }else if(this.DiskData.KeyFlag==='Shift'){//Shift多选
                         let Start = index,End;
-                        this.ClearSelect();
                         item.active=true;
-                        if(item&&item.active) {
+                        if(this.DiskData.NowSelect) {
                             for (let i = 0; i < this.UserDiskData.length; i++) {
-                                if (this.UserDiskData[index] === item) {
-                                    Start = index;
+                                if (this.UserDiskData[i] ===  this.DiskData.NowSelect) {
+                                    Start = i;
                                 }
                                 if (this.UserDiskData[i] === item) {
                                     End = i;
                                 }
                             }
                         }
-                        console.log(Start,End)
                         for (let j =  Math.min(End,Start); j < Math.max(End,Start) +1 ; j++) {
                             this.UserDiskData[j].active=true;
                             this.DiskData.SelectFiles.push(this.UserDiskData[j]);
@@ -418,9 +442,12 @@
                             this.RemoveSelect(index);
                         }else{
                             item.active=true;
+                            this.DiskData.NowSelect=item;
                             this.DiskData.SelectFiles.push(item);
                         }
                     }
+                }else if(event.button===2){
+                    this.MouseMenu('DiskFileMenu',event);
                 }
                 //console.log(this.DiskData.SelectFiles);
             },
@@ -469,7 +496,34 @@
                     this.$Message.info('无法打开文件')
                 }
             },
+            /*右键菜单函数*/
+            UploadFile:function(){
+
+            },
             /*通用方法*/
+            MouseMenu:function(menu_main,e){
+                e.preventDefault();
+                e.stopPropagation();
+                for(let item in this.DiskMouseState){
+                    this.DiskMouseState[item].show = false
+                }
+                this.DiskMouseState[menu_main].show = true;
+                let createNode=document.body;
+                let menu=this.$refs[menu_main];
+                document.onmouseup=()=> {
+                    if (e.button === 2) {
+                        menu.style.left = e.pageX + -parseFloat(createNode.getBoundingClientRect().left)+createNode.offsetLeft+ 'px';
+                        menu.style.top = e.pageY + -parseFloat(createNode.getBoundingClientRect().top)+createNode.offsetTop+ 'px';
+                        if((menu.getBoundingClientRect().left+menu.offsetHeight)-createNode.getBoundingClientRect().left>createNode.offsetWidth){
+                            menu.style.left=menu.style.left.split('px')[0]-menu.offsetWidth+'px';
+                        }
+                        if((menu.getBoundingClientRect().top+menu.offsetHeight)-createNode.getBoundingClientRect().top>createNode.offsetHeight){
+                            menu.style.top=menu.style.top.split('px')[0]-menu.offsetHeight+'px';
+                        }
+                        document.onmouseup = null;
+                    }
+                };
+            },
             MouseSelect:function(){
                 let area=event.target.parentNode;
                 let start={
@@ -514,6 +568,7 @@
                     } else if (end.scrollup<=10&&area.scrollTop) {
                         area.scrollTop = area.scrollTop - (selList[0].offsetHeight/8);
                     }*///自动滚动
+                    this.ClearSelect();
                     for (let i = 0; i < selList.length; i++) {
                         let sl = selList[i].offsetWidth + selList[i].offsetLeft,st = selList[i].offsetHeight + selList[i].offsetTop;
                         let area_l= area_data.left + area_data.width;
