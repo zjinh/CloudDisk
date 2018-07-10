@@ -79,7 +79,7 @@ width: 100%;
 height: 100%;
 }
 .CloudDiskMain1{
-overflow: auto;
+overflow-y: auto;
 position: relative;
 }
 .CloudDiskFuncMenu{

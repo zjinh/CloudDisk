@@ -68,7 +68,7 @@
                         大小
                     </div>
                 </div>
-                <div  class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MouseSelect">
+                <div  class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MainMouseFunc">
                     <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
@@ -223,6 +223,12 @@
             UserDiskData: {
                 handler(newValue, oldValue) {
                     this.DiskSearch.ShowSearch=false;
+                    this.DiskData.SelectFiles=[];
+                    this.UserDiskData.forEach((item)=>{
+                        if (item.active){
+                            this.DiskData.SelectFiles.push(item);
+                        }
+                    });
                     if(this.DiskData.SelectFiles.length){
                         this.DiskData.SelectTips='已选择'+this.DiskData.SelectFiles.length+'个文件/文件夹'
                     }else{
@@ -413,10 +419,8 @@
                     if(this.DiskData.KeyFlag==='Ctrl'){//Ctrl多选
                         if(item.active){
                             item.active=false;
-                            this.RemoveSelect(index);
                         }else{
                             item.active=true;
-                            this.DiskData.SelectFiles.push(item);
                         }
                     }else if(this.DiskData.KeyFlag==='Shift'){//Shift多选
                         let Start = index,End;
@@ -433,17 +437,14 @@
                         }
                         for (let j =  Math.min(End,Start); j < Math.max(End,Start) +1 ; j++) {
                             this.UserDiskData[j].active=true;
-                            this.DiskData.SelectFiles.push(this.UserDiskData[j]);
                         }
                     }else if(!this.DiskData.KeyFlag){//单选
                         this.ClearSelect();
                         if(item.active){
                             item.active=false;
-                            this.RemoveSelect(index);
                         }else{
                             item.active=true;
                             this.DiskData.NowSelect=item;
-                            this.DiskData.SelectFiles.push(item);
                         }
                     }
                 }else if(event.button===2){
@@ -501,17 +502,28 @@
 
             },
             /*通用方法*/
+            MainMouseFunc:function(){
+                this.ClearSelect();
+                this.MouseMenu('DiskMainMenu',event);
+                this.MouseSelect(event);
+            },
             MouseMenu:function(menu_main,e){
                 e.preventDefault();
                 e.stopPropagation();
+                this.MouseSelectData={
+                    left:0,
+                    top:0,
+                    width:0,
+                    height:0
+                };
                 for(let item in this.DiskMouseState){
                     this.DiskMouseState[item].show = false
                 }
-                this.DiskMouseState[menu_main].show = true;
                 let createNode=document.body;
                 let menu=this.$refs[menu_main];
-                document.onmouseup=()=> {
+                createNode.onmouseup=()=> {
                     if (e.button === 2) {
+                        this.DiskMouseState[menu_main].show = true;
                         menu.style.left = e.pageX + -parseFloat(createNode.getBoundingClientRect().left)+createNode.offsetLeft+ 'px';
                         menu.style.top = e.pageY + -parseFloat(createNode.getBoundingClientRect().top)+createNode.offsetTop+ 'px';
                         if((menu.getBoundingClientRect().left+menu.offsetHeight)-createNode.getBoundingClientRect().left>createNode.offsetWidth){
@@ -520,11 +532,17 @@
                         if((menu.getBoundingClientRect().top+menu.offsetHeight)-createNode.getBoundingClientRect().top>createNode.offsetHeight){
                             menu.style.top=menu.style.top.split('px')[0]-menu.offsetHeight+'px';
                         }
-                        document.onmouseup = null;
+                    }
+                };
+                document.onclick=document.onmousewheel=()=>{
+                    for(let item in this.DiskMouseState){
+                        this.DiskMouseState[item].show = false
                     }
                 };
             },
-            MouseSelect:function(){
+            MouseSelect:function(event){
+                event.preventDefault();
+                event.stopPropagation();
                 let area=event.target.parentNode;
                 let start={
                     x:event.clientX-area.getBoundingClientRect().left+area.scrollLeft,
@@ -534,54 +552,52 @@
                 this.MouseSelectData.left=start.x;
                 this.MouseSelectData.top=start.y;
                 document.onmouseup=()=> {
-                    this.MouseSelectData={
-                        left:0,
-                        top:0,
-                        width:0,
-                        height:0
+                    this.MouseSelectData = {
+                        left: 0,
+                        top: 0,
+                        width: 0,
+                        height: 0
                     };
                     document.onmousemove = null;
-                    document.onmouseup = null;
                 };
                 document.onmousemove=(ev)=> {
-                    let end={
-                        x:ev.clientX-area.getBoundingClientRect().left+area.scrollLeft,
-                        y:ev.clientY-area.getBoundingClientRect().top+area.scrollTop,
-                        scrolldown:Math.min(ev.clientY - area.getBoundingClientRect().top, event.clientY - area.getBoundingClientRect().top)+10+area.offsetHeight,
-                        scrollup:Math.min(ev.clientY - area.getBoundingClientRect().top, event.clientY - area.getBoundingClientRect().top)
+                    let end = {
+                        x: ev.clientX - area.getBoundingClientRect().left + area.scrollLeft,
+                        y: ev.clientY - area.getBoundingClientRect().top + area.scrollTop,
+                        scrolldown: Math.min(ev.clientY - area.getBoundingClientRect().top, event.clientY - area.getBoundingClientRect().top) + 10 + area.offsetHeight,
+                        scrollup: Math.min(ev.clientY - area.getBoundingClientRect().top, event.clientY - area.getBoundingClientRect().top)
                     };
-                    this.MouseSelectData={
-                        left:Math.min(start.x,end.x) + "px",
-                        top:this.DiskData.DiskShowState==='CloudDiskMList'?Math.min(start.y,end.y)-35+ "px":Math.min(start.y,end.y)+ "px",
-                        width:Math.abs(end.x-start.x) + "px",
-                        height:Math.abs(end.y-start.y) + "px"
+                    this.MouseSelectData = {
+                        left: Math.min(start.x, end.x) + "px",
+                        top: this.DiskData.DiskShowState === 'CloudDiskMList' ? Math.min(start.y, end.y) - 35 + "px" : Math.min(start.y, end.y) + "px",
+                        width: Math.abs(end.x - start.x) + "px",
+                        height: Math.abs(end.y - start.y) + "px"
                     };
-                    let area_data={
-                        left:Math.min(start.x,end.x),
-                        top:this.DiskData.DiskShowState==='CloudDiskMList'?Math.min(start.y,end.y)-35:Math.min(start.y,end.y),
-                        width:Math.abs(end.x-start.x),
-                        height:Math.abs(end.y-start.y)
+                    let area_data = {
+                        left: Math.min(start.x, end.x),
+                        top: this.DiskData.DiskShowState === 'CloudDiskMList' ? Math.min(start.y, end.y) - 35 : Math.min(start.y, end.y),
+                        width: Math.abs(end.x - start.x),
+                        height: Math.abs(end.y - start.y)
                     };
-                    let selList=document.getElementsByClassName(this.DiskData.DiskShowState);
+                    let selList = document.getElementsByClassName(this.DiskData.DiskShowState);
                     /*if (end.scrolldown >= area.offsetHeight && (end.y-start.y > 0)) {
-                        area.scrollTop = area.scrollTop + (selList[0].offsetHeight/8);
-                    } else if (end.scrollup<=10&&area.scrollTop) {
-                        area.scrollTop = area.scrollTop - (selList[0].offsetHeight/8);
-                    }*///自动滚动
+                    area.scrollTop = area.scrollTop + (selList[0].offsetHeight/8);
+                } else if (end.scrollup<=10&&area.scrollTop) {
+                    area.scrollTop = area.scrollTop - (selList[0].offsetHeight/8);
+                }*///自动滚动
                     this.ClearSelect();
                     for (let i = 0; i < selList.length; i++) {
-                        let sl = selList[i].offsetWidth + selList[i].offsetLeft,st = selList[i].offsetHeight + selList[i].offsetTop;
-                        let area_l= area_data.left + area_data.width;
-                        let area_t=area_data.top + area_data.height;
-                        if (sl > area_data.left && st > area_data.top && selList[i].offsetLeft <area_l && selList[i].offsetTop < area_t) {
-                            if(this.UserDiskData[i].active===false){
-                                this.UserDiskData[i].active=true;
-                                this.DiskData.SelectFiles.push(this.UserDiskData[i]);
+                        let sl = selList[i].offsetWidth + selList[i].offsetLeft,
+                            st = selList[i].offsetHeight + selList[i].offsetTop;
+                        let area_l = area_data.left + area_data.width;
+                        let area_t = area_data.top + area_data.height;
+                        if (sl > area_data.left && st > area_data.top && selList[i].offsetLeft < area_l && selList[i].offsetTop < area_t) {
+                            if (this.UserDiskData[i].active === false) {
+                                this.UserDiskData[i].active = true;
                             }
                         } else {
-                            if(this.UserDiskData[i].active){
-                                this.UserDiskData[i].active=false;
-                                this.RemoveSelect(i)
+                            if (this.UserDiskData[i].active) {
+                                this.UserDiskData[i].active = false;
                             }
                         }
                     }
