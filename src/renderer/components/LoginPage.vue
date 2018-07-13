@@ -66,7 +66,7 @@
                     <Logininput v-bind:data="VerifyPassInput"></Logininput>
                     <Logininput v-bind:data="VerifyCodeInput"  @keyup.enter.native="verify"></Logininput>
                     <div class="CloudIndex-Tips">
-                        <p style="text-align: left">没有收到邮件&nbsp<span id="resendBtn">重新发送</span></p>
+                        <p style="text-align: left">没有收到邮件&nbsp<span @click="ReSend">{{ResendData.Text}}</span></p>
                     </div>
                     <div class="CloudIndex-postBut">
                         <button @click="verify" :class="PostState">激活</button>
@@ -211,6 +211,11 @@
                 /*登录成功的值*/
                 User:{
                     head:null
+                },
+                /*重新发送邮件*/
+                ResendData:{
+                    State:true,
+                    Text:'重新发送'
                 }
             }
         },
@@ -441,6 +446,39 @@
                 },(err)=>{
                     this.PostState='';
                     this.$Message.error('请求失败'+err);
+                })
+            },
+            ReSend:function(){
+                if(!this.ResendData.State){
+                    this.$Message.warning('激活邮件已发送或正在发送，请不要重复操作！');
+                    return false
+                }
+                this.ResendData.Text='正在发送';
+                this.ResendData.State=false;
+                Api.User.ReSend({
+                    name:this.VerifyUserInput.value
+                },(rs)=>{
+                    rs=rs[0];
+                    if(!rs.state){
+                        this.$Message.error('服务器错误');
+                        return;
+                    }
+                    if(rs.state==='success') {
+                        let time = 61;
+                        let a = setInterval(() => {
+                            time--;
+                            this.ResendData.State = false;
+                            this.ResendData.Text = time + 's后可重新发送';
+                            if (time === 0) {
+                                this.ResendData.State = true;
+                                this.ResendData.Text = '重新发送';
+                                clearInterval(a);
+                            }
+                        }, 1000);
+                    }else{
+                        this.ResendData.State = true;
+                    }
+                    this.$Message[rs.state](rs.msg);
                 })
             },
             changeType:function (type) {

@@ -62,7 +62,15 @@ let User={
             success:callback,
             error:error
         })
-    }
+    },
+    ReSend:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/resend",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
 };
 let Disk={
     LoadTreeFile:function () {
@@ -116,7 +124,31 @@ let Disk={
             success:callback,
             error:error
         })
-    }
+    },
+    Trash:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/TrashFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Delete:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/DeleteFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Restore:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/RestoreFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
 };
 let Check=function (url,callback,error) {
     Ajax({

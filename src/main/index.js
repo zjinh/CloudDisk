@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 //const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,SettingWindow;
+let LoginWindow,DiskWindow,SettingWindow,DiskInfo;
 let message={
     appName:'CloudDisk',
     error:'检查更新出错, 请联系开发人员',
@@ -45,6 +45,9 @@ const LoginURL = process.env.NODE_ENV === 'development'
 const DiskURL= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/main`
     : `file://${__dirname}/main.html`;
+const InfoURL= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/info`
+    : `file://${__dirname}/info.html`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -127,6 +130,28 @@ function CreateDiskWindow() {
     });
     DiskWindow.on('unmaximize',function () {
         DiskWindow.webContents.send('size', -1);
+    });
+    CreateDiskInfo();
+}
+function CreateDiskInfo() {
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    DiskInfo = new BrowserWindow({
+        width: 300,
+        height: 450,
+        title:'CloudDisk-登录',
+        useContentSize: true,
+        maximizable:false,
+        minimizable:false,
+        resizable:false,
+        webPreferences:{
+            webSecurity:false
+        },
+        parent:DiskWindow
+    });
+    DiskInfo.loadURL(InfoURL);
+    DiskInfo.on('closed', function() {
+        DiskInfo = null;
     });
 }
 function BindIpc() {

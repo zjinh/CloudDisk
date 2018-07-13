@@ -18,7 +18,7 @@
   },
   "build": {
     "productName": "CloudDisk",
-    "appId": "org.simulatedgreg.electron-vue",
+    "appId": "zjinh.app.cloud.disk",
     "directories": {
       "output": "build"
     },

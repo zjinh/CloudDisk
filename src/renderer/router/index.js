@@ -15,6 +15,11 @@ export default new Router({
           name: 'DiskWindow',
           component: require('@/components/DiskWindow').default
       },
+      {
+          path: '/info',
+          name: 'DiskWindow',
+          component: require('@/components/DiskInfo').default
+      },
     {
       path: '*',
       redirect: '/'
