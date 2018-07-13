@@ -1,6 +1,6 @@
 <template>
     <div class="CloudDiskNavBar">
-        <div v-for="(item,index) in data.NavData" class="CloudDiskNavBlock" @click="SwitchNav(item)">{{item.disk_name}}</div>
+        <div v-for="(item,index) in data.NavData" class="CloudDiskNavBlock" @click="SwitchNav(item)">{{item.disk_name}}<span>/</span></div>
     </div>
 </template>
 

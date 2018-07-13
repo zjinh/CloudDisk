@@ -92,6 +92,30 @@ let Disk={
             success:callback,
             error:error
         })
+    },
+    Copy:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/CopyFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Cut:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/MoveFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Rename:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/RenameFile",
+            data:data,
+            success:callback,
+            error:error
+        })
     }
 };
 let Check=function (url,callback,error) {

@@ -165,13 +165,10 @@ height: 40px;
 .CloudDiskNavBlock{
 float: left;
 height: 40px;
-line-height: 37px;
+line-height: 40px;
 color: #757575;
 max-width: 80px;
 text-overflow: ellipsis;
-}
-.CloudDiskNavBlock:after{
-content: ' 	>';
 }
 .CloudDiskHeadLeft{
 float: left;
@@ -271,7 +268,8 @@ color: #ecc220;
 font-size: 17px;
 }
 .CloudDiskNavBlock span{
-line-height: 41px;
+	line-height: 40px;
+	padding: 0 2px;
 }
 .CloudDFoContainer div{
 float: left;
@@ -642,10 +640,10 @@ z-index: 2;
 	height:7px;
 	background:none;
 }
-*::-webkit-scrollbar-button    {
+*::-webkit-scrollbar-button{
 	display:none;
 }
-*::-webkit-scrollbar-track     {
+*::-webkit-scrollbar-track{
 	background:none;
 }
 *::-webkit-scrollbar-track-piece {
@@ -694,6 +692,6 @@ z-index: 2;
 .el-message-box__input{
 	padding-top:10px;
 }
-.el-message-box__content{
-	padding: 0px 15px 0px;
+.el-message-box__errormsg{
+	min-height: unset!important;
 }
