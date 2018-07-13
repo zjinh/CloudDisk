@@ -84,6 +84,14 @@ let Disk={
             success:callback,
             error:error
         })
+    },
+    NewFolder:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/NewFolder",
+            data:data,
+            success:callback,
+            error:error
+        })
     }
 };
 let Check=function (url,callback,error) {

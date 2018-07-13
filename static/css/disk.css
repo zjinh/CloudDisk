@@ -301,7 +301,7 @@ background: none;
 z-index: 2;
 }
 /*按钮禁用样式*/
-.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"],.CloudDiskNav button[disabled="disabled"]{
+.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"],.CloudDiskNav button[disabled="disabled"],.SlimfMouseMenu li[disabled="disabled"]{
 	color: #c7c7c7!important;
 	background: none!important;
 	cursor: no-drop!important;
@@ -433,7 +433,7 @@ z-index: 2;
 	padding-top: 5px;
 }
 .CloudDiskMList .CloudDisk-name{
-	width: calc(56% - 60px);
+	width: calc(56% - 52px);
 }
 .CloudDiskMList >.CloudDiskTime{
 	width: 22%;
@@ -442,6 +442,7 @@ z-index: 2;
 	font-size: 12px;
 	line-height: 35px;
 	text-align: left;
+	text-indent: 10px;
 }
 .CloudDiskMFile:hover,.CloudDiskMList:hover{
 	background: #ececec;
@@ -612,6 +613,8 @@ z-index: 2;
 	-ms-user-select:none;
 	-khtml-user-select:none;
 	user-select:none;
+	-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	-webkit-animation-name:fadeIn;animation-name:fadeIn;
 }
 .SlimfMouseMenu li {
 	font-size:12px;
@@ -631,6 +634,7 @@ z-index: 2;
 	background: rgba(38, 130, 252, 0.75);
 	opacity: .5;
 	border: 1px solid #868686;
+	z-index: 1;
 }
 /*滚动条*/
 *::-webkit-scrollbar{
@@ -672,4 +676,24 @@ z-index: 2;
 }
 *::-webkit-scrollbar-resizer  {
 	display:none;
+}
+/*iview组件处理*/
+.v-modal{
+	opacity: 0;
+}
+.el-message-box{
+	width: 350px;
+}
+.el-input{
+	height: 35px;
+}
+.el-input__inner{
+	height: 35px;
+	line-height: 35px;
+}
+.el-message-box__input{
+	padding-top:10px;
+}
+.el-message-box__content{
+	padding: 0px 15px 0px;
 }

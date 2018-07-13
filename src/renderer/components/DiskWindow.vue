@@ -92,16 +92,16 @@
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
             <li @click="UploadFile">上传文件</li>
-            <li onclick="CloudDisk.MouseMenu.CreateFolder()">新建文件夹</li>
-            <li id="CloudDiskPasteButton" class="CloudDiskDisable" onclick="CloudDisk.MouseMenu.paste(this)">粘贴</li>
-            <li onclick="CloudDisk.MouseMenu.refues()">刷新</li>
+            <li @click="CreateFolder">新建文件夹</li>
+            <li :disabled="DiskData.Clipboard.length===0" @click="DiskPaste">粘贴</li>
+            <li @click="DiskRefush">刷新</li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
-            <li onclick="CloudDisk.MouseMenuFile.open();">打开</li>
+            <li :disabled="DiskData.SelectFiles.length!==0" @click="OpenFile">打开</li>
             <li onclick="CloudDisk.MouseMenuFile.Download();">下载</li>
             <li onclick="CloudDisk.MouseMenuFile.moveto()">移动到</li>
-            <li onclick="CloudDisk.MouseMenuFile.Copy()">复制</li>
-            <li onclick="CloudDisk.MouseMenuFile.Cut()">剪切</li>
+            <li @click="DiskCopy">复制</li>
+            <li @click="DiskCut">剪切</li>
             <li onclick="CloudDisk.MouseMenuFile.Rename()">重命名</li>
             <li onclick="CloudDisk.MouseMenuFile.Delete()">删除</li>
             <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
@@ -239,7 +239,7 @@
                     }
                 },
                 deep: true
-            }
+            },
         },
         created(){
             this.Bind();
@@ -255,6 +255,13 @@
                         this.ButtonState='sf-icon-window-maximize';
                     }
                 });
+                document.onclick=document.onmousewheel=()=>{
+                    event.preventDefault();
+                    event.stopPropagation();
+                    for(let item in this.DiskMouseState){
+                        this.DiskMouseState[item].show = false
+                    }
+                };
             },
             keyBoard:function(e){
                 e.stopPropagation();
@@ -304,6 +311,13 @@
                     this.PrintFile(rs);
                 })
             },//获取用户文件
+            InsertFileData:function(item){
+                item.active=false;//设置未选择
+                item.size=this.FileSize(item.disk_size);//计算文件大小
+                item.type=this.StringBefore(item.disk_realname, ".");
+                item.icon =this.IconGet(item);//区别文件类型设置图表
+                this.UserDiskData.push(item);
+            },
             PrintFile:function(rs){
                 if (this.DiskPage === 1) {
                     this.DiskAllCount=0;
@@ -311,10 +325,7 @@
                 }
                 this.LoadCompany=true;
                 rs.forEach((item)=> {
-                    item.active=false;//设置未选择
-                    item.size=this.FileSize(item.disk_size);//计算文件大小
-                    item.icon = this.IconGet(item.disk_realname,item.disk_main)//区别文件类型设置图表
-                    this.UserDiskData.push(item);
+                    this.InsertFileData(item);
                 });
                 if(rs.length){
                     this.DiskSize.total=rs[0].max_size;
@@ -440,14 +451,11 @@
                         }
                     }else if(!this.DiskData.KeyFlag){//单选
                         this.ClearSelect();
-                        if(item.active){
-                            item.active=false;
-                        }else{
-                            item.active=true;
-                            this.DiskData.NowSelect=item;
-                        }
+                        item.active=true;
+                        this.DiskData.NowSelect=item;
                     }
                 }else if(event.button===2){
+                    this.DiskData.NowSelect=item;
                     this.MouseMenu('DiskFileMenu',event);
                 }
                 //console.log(this.DiskData.SelectFiles);
@@ -489,6 +497,7 @@
             },//导航栏后退
             /*打开文件夹/文件*/
             OpenFile:function(item){
+                console.log(this.DiskData.NowSelect)
                 if(!item.disk_main){
                     this.DiskData.NavData.push(item);
                     this.ClearSelect();
@@ -501,9 +510,59 @@
             UploadFile:function(){
 
             },
+            CreateFolder:function(){
+                this.InputConfrim({
+                    title:"新建文件夹",
+                    tips:'请输入文件夹名称',
+                    callback:(value)=>{
+                        Api.Disk.NewFolder({
+                            name:value,
+                            parent_id:this.NowDiskID,
+                            value:'新建文件夹'
+                        },(rs)=>{
+                            rs=rs[0];
+                            if(rs.disk_id){
+                                this.InsertFileData(rs);
+                                this.$Message.success(value+'已创建')
+                            }else{
+                                this.$Message.error(value+'已存在');
+                            }
+                        });
+                    }
+                })
+            },//右键新建文件夹
+            DiskPaste:function(){
+                if(this.DiskData.Clipboard.length){
+
+                }else{
+
+                }
+            },//右键粘贴
+            DiskCopy:function(){
+                //ebugger
+                this.DiskData.Clipboard=[];
+                if(this.DiskData.SelectFiles.length){
+                    this.DiskData.Clipboard=this.DiskData.SelectFiles;
+                    this.$Message.info('所选'+this.DiskData.Clipboard.length+'个文件/文件夹已复制到剪贴板')
+                }else{
+                    this.DiskData.Clipboard.push(this.DiskData.NowSelect);
+                    this.$Message.info(this.DiskData.NowSelect.disk_name+' 已复制到剪贴板');
+                }
+            },
+            DiskCut:function(){
+                if(this.DiskData.SelectFiles.length){
+                    this.DiskData.Clipboard=this.DiskData.SelectFiles;
+                }else{
+                    this.DiskData.Clipboard=this.DiskData.NowSelect;
+                }
+            },
+            DiskRefush:function(){
+                this.DiskPage=1;
+                this.GetMainFile(this.NowDiskID, this.loadClassify);
+            },//右键刷新
             /*通用方法*/
             MainMouseFunc:function(){
-                this.ClearSelect();
+                //this.ClearSelect();
                 this.MouseMenu('DiskMainMenu',event);
                 this.MouseSelect(event);
             },
@@ -519,24 +578,19 @@
                 for(let item in this.DiskMouseState){
                     this.DiskMouseState[item].show = false
                 }
-                let createNode=document.body;
                 let menu=this.$refs[menu_main];
+                let createNode=menu.parentNode;
+                menu.style.left = e.pageX + -parseFloat(createNode.getBoundingClientRect().left)+createNode.offsetLeft+ 'px';
+                menu.style.top = e.pageY + -parseFloat(createNode.getBoundingClientRect().top)+createNode.offsetTop+ 'px';
+                if((menu.getBoundingClientRect().left+menu.offsetHeight)-createNode.getBoundingClientRect().left>createNode.offsetWidth){
+                    menu.style.left=menu.style.left.split('px')[0]-menu.offsetWidth+'px';
+                }
+                if((menu.getBoundingClientRect().top+menu.offsetHeight)-createNode.getBoundingClientRect().top>createNode.offsetHeight){
+                    menu.style.top=menu.style.top.split('px')[0]-menu.offsetHeight+'px';
+                }
                 createNode.onmouseup=()=> {
                     if (e.button === 2) {
                         this.DiskMouseState[menu_main].show = true;
-                        menu.style.left = e.pageX + -parseFloat(createNode.getBoundingClientRect().left)+createNode.offsetLeft+ 'px';
-                        menu.style.top = e.pageY + -parseFloat(createNode.getBoundingClientRect().top)+createNode.offsetTop+ 'px';
-                        if((menu.getBoundingClientRect().left+menu.offsetHeight)-createNode.getBoundingClientRect().left>createNode.offsetWidth){
-                            menu.style.left=menu.style.left.split('px')[0]-menu.offsetWidth+'px';
-                        }
-                        if((menu.getBoundingClientRect().top+menu.offsetHeight)-createNode.getBoundingClientRect().top>createNode.offsetHeight){
-                            menu.style.top=menu.style.top.split('px')[0]-menu.offsetHeight+'px';
-                        }
-                    }
-                };
-                document.onclick=document.onmousewheel=()=>{
-                    for(let item in this.DiskMouseState){
-                        this.DiskMouseState[item].show = false
                     }
                 };
             },
@@ -603,6 +657,16 @@
                     }
                 };
             },
+            InputConfrim:function(options){
+                this.$prompt(options.tips, options.title, {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputValue:options.value||'',
+                }).then(({ value }) => {
+                    options.callback(value)
+                }).catch(() => {
+                });
+            },
             FileSize:function (bytes) {
                 bytes=parseFloat(bytes);
                 if (bytes === 0) return '0B';
@@ -611,10 +675,10 @@
                     i = Math.floor(Math.log(bytes) / Math.log(k));
                 return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
             },
-            IconGet:function (name,filemain) {
+            IconGet:function (item) {
                 let prefix='../../../../static/img/disk/';
-                let type = this.StringBefore(name, ".");
-                if(!filemain){
+                let type = item.type;
+                if(!item.disk_main){
                     return prefix+'FolderType.png'
                 }
                 if (this.StringExist(type, '7z,zip,rar,tar.gz')) {
