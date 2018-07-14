@@ -1,12 +1,12 @@
 <template>
     <div>
-        <section style="-webkit-app-region: drag" class="CloudIndexSection" v-show="!LoginSuccess">
-            <section style="-webkit-app-region: no-drag">
+        <div class="CloudIndexSection" v-show="!LoginSuccess">
+            <section>
                 <button type="button" class="sf-icon-cog" @click="OpenServerWindow"></button>
                 <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
                 <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
             </section>
-        </section>
+        </div>
         <div class="CloudIndexMain">
             <div class="CloudIndexLeft">
                 <div class="CloudIndexHead" style="-webkit-app-region: drag" >
@@ -100,7 +100,9 @@
     import Logininput from './LoginPage/l-input';
     import VerifyInput from './LoginPage/Verify-Input';
     import Api from '../api/api';
-    let ipc=require('electron').ipcRenderer;
+    import electron from 'electron';
+    let ipc=electron.ipcRenderer;
+    let LoginWindow=electron.remote.getCurrentWindow();
     export default {
         name: "LoginPage",
         components:{Logininput,VerifyInput},
@@ -265,6 +267,7 @@
                             username:rs.user,
                             usehead:rs.head
                         };
+                        LoginWindow.setSize(800,300);
                         ipc.send('login-success');
                         setTimeout(()=>{
                             this.LoadingText='欢迎回来'+rs.user
@@ -510,10 +513,10 @@
                 });
             },
             mini:function () {
-                ipc.send('login-mini');
+                LoginWindow.minimize();
             },
             close:function () {
-                ipc.send('login-close');
+                LoginWindow.close();
             }
         }
     }

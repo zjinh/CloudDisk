@@ -10,6 +10,7 @@ body {
 	-ms-user-select: none;
 	-khtml-user-select: none;
 	user-select: none;
+	padding: 0!important;
 }
 input[type="text"]:disabled{
 	background: none;
@@ -22,10 +23,12 @@ input[type="text"]:disabled{
 	top: 0px;
 	left: 0px;
 	position: absolute;
+	-webkit-app-region: drag;
 }
 .CloudIndexSection 	section{
 	float: right;
 	height: 100%;
+	-webkit-app-region: no-drag;
 }
 .CloudIndexSection button{
 	float: left;
@@ -71,10 +74,12 @@ input[type="text"]:disabled{
 .CloudIndexHead h1{
 	color: #81bffa;
 	font-weight: lighter;
+	font-size: 25px;
 }
 .CloudIndexHead p{
 	margin-top: 5px;
 	color: #888888;
+	font-size: 14px;
 }
 .CloudIndexForm{
 	width: 100%;
@@ -97,6 +102,7 @@ input[type="text"]:disabled{
 	position: absolute;
 	text-align: center;
 	line-height: 40px;
+	font-size: 14px;
 }
 .CloudIndex-Input input{
 	width: 100%;
@@ -201,6 +207,7 @@ input[type="text"]:disabled{
 .CloudIndex-OtherLogin ul li{
 	width: 124px;
 	cursor: pointer;
+	font-size: 14px;
 	color: #3d4f4f;
 }
 .CloudIndex-OtherLogin ul li span{
@@ -242,6 +249,7 @@ input[type="text"]:disabled{
 	background: -moz-linear-gradient(75deg, #600fff 40%, #4f93f4,#4f93f4);
 	background: linear-gradient(75deg, #600fff 40%, #4f93f4,#4f93f4);
 	text-align: center;
+	-webkit-app-region: drag;
 }
 .CloudIndexLogining ul{
 	width: 100%;

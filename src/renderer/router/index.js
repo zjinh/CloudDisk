@@ -10,16 +10,16 @@ export default new Router({
       name: 'LoginPage',
       component: require('@/components/LoginPage').default
     },
-      {
-          path: '/main',
-          name: 'DiskWindow',
-          component: require('@/components/DiskWindow').default
-      },
-      {
-          path: '/info',
-          name: 'DiskWindow',
-          component: require('@/components/DiskInfo').default
-      },
+    {
+      path: '/main',
+      name: 'DiskWindow',
+      component: require('@/components/DiskWindow').default
+    },
+    {
+      path: '/info',
+      name: 'DiskInfo',
+      component: require('@/components/DiskInfo').default
+    },
     {
       path: '*',
       redirect: '/'

@@ -120,6 +120,8 @@
     import ClassifyMenu from './DiskWindow/ClassifyMenu';
     import DiskFile from './DiskWindow/DiskFile';
     import DiskNav from './DiskWindow/DiskNav';
+    import electron from 'electron';
+    let DiskWindow=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskWindow",
@@ -1016,13 +1018,17 @@
                 return array;
             },
             mini:function () {
-                ipc.send('disk-mini');
+                DiskWindow.minimize();
             },
             close:function () {
-                ipc.send('disk-close');
+                DiskWindow.hide();
             },
             restore:function () {
-                ipc.send('disk-change');
+                if (DiskWindow.isMaximized()) {
+                    DiskWindow.restore();
+                } else {
+                    DiskWindow.maximize();
+                }
             }
         }
     }

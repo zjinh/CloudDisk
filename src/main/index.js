@@ -44,10 +44,10 @@ const LoginURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`;
 const DiskURL= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/main`
-    : `file://${__dirname}/main.html`;
+    : `file://${__dirname}/index.html#/main`;
 const InfoURL= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/info`
-    : `file://${__dirname}/info.html`;
+    : `file://${__dirname}/index.html#/info`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -91,13 +91,14 @@ function CreateLoginWindow () {
         }
     });
     LoginWindow.loadURL(LoginURL);
+    LoginWindow.webContents.openDevTools();
     LoginWindow.on('closed', function() {
         LoginWindow = null;
     });
 }
 function CreateDiskWindow() {
     Menu.setApplicationMenu(null);
-    let trayIcon = path.join(__dirname, '../../static/icons');
+    let trayIcon = path.join(__static, '/icons');
     appTray = new Tray(path.join(trayIcon, 'icon.ico'));
     //图标的上下文菜单
     const contextMenu = Menu.buildFromTemplate(trayMenuTemplate);
@@ -114,14 +115,12 @@ function CreateDiskWindow() {
         minHeight:610,
         height: 610,
         title:'CloudDisk',
-        backgroundColor:'#2682fc',
         frame:false,
         webPreferences:{
             webSecurity:false
         }
     });
     DiskWindow.loadURL(DiskURL);
-    DiskWindow.webContents.openDevTools();
     DiskWindow.on('closed', function() {
         DiskWindow = null;
     });
@@ -131,7 +130,6 @@ function CreateDiskWindow() {
     DiskWindow.on('unmaximize',function () {
         DiskWindow.webContents.send('size', -1);
     });
-    CreateDiskInfo();
 }
 function CreateDiskInfo() {
     Menu.setApplicationMenu(null);
@@ -155,38 +153,18 @@ function CreateDiskInfo() {
     });
 }
 function BindIpc() {
-    /*登录窗口*/
+    /*登录窗口指令*/
     ipcMain.on('login-success', function () {
-        LoginWindow.setSize(800,300);
         let a=setTimeout(function () {
             clearTimeout(a);
             CreateDiskWindow();
             LoginWindow.close();
         },2000)
     });
-    ipcMain.on('login-mini', function () {
-        LoginWindow.minimize();
-    });
-    ipcMain.on('login-close', function () {
-        app.quit()
-    });
-    /*网盘窗口*/
-    ipcMain.on('disk-mini', function () {
-        DiskWindow.minimize();
-    });
+    /*网盘窗口指令*/
     ipcMain.on('disk-error', function () {
         CreateLoginWindow();
         DiskWindow.close();
-    });
-    ipcMain.on('disk-change',function () {
-        if (DiskWindow.isMaximized()) {
-            DiskWindow.restore();
-        } else {
-            DiskWindow.maximize();
-        }
-    });
-    ipcMain.on('disk-close', function () {
-        DiskWindow.hide()
     });
     /*更新*/
     /*检查更新*/

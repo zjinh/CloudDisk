@@ -1,6 +1,6 @@
 {
   "name": "CloudDisk",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "ZJINH",
   "description": "Cloud-网盘",
   "license": "ZJINH",
@@ -17,6 +17,7 @@
     "postinstall": ""
   },
   "build": {
+    "asar":false,
     "productName": "CloudDisk",
     "appId": "zjinh.app.cloud.disk",
     "directories": {
@@ -63,6 +64,7 @@
     }
   },
   "dependencies": {
+    "asar": "^0.14.3",
     "axios": "^0.16.1",
     "element-ui": "^2.4.3",
     "iview": "^2.14.3",

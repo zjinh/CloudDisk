@@ -1,5 +1,6 @@
 #app{
 	height: 100%;
+	background: #2682fc;
 }
 html,body{
 	-moz-user-select:none;
@@ -45,6 +46,7 @@ max-width: 105px;
 height: 35px;
 line-height: 35px;
 margin-left: 10px;
+	font-size: 14px;
 color: #fff;
 }
 .CloudDiskHeaderControl{
@@ -101,6 +103,7 @@ color: #fff;
 line-height: 40px;
 padding: 0 10px 0px 0px;
 -webkit-app-region: drag;
+	font-size: 14px;
 }
 .CloudDiskFuncMenu li {
 float: left;
@@ -153,6 +156,7 @@ line-height: 40px;
 color: #6d6d6d;
 background: none;
 padding: 0 10px;
+	font-size: 14px;
 }
 .CloudDiskNav button:hover,.CloudDiskNavBlock:hover,.CloudDiskHeadRight button:hover{
 color: #3b8cff;
@@ -186,6 +190,7 @@ height: 40px;
 line-height: 40px;
 color: #424e67;
 cursor: pointer;
+	font-size: 14px;
 }
 .CloudDiskClassify li:hover,.CloudDiskClassifyActive{
 background: rgba(12, 12, 12, 0.12);
@@ -295,6 +300,7 @@ height: 40px;
 line-height: 40px;;
 text-align: center;
 color: #6d6d6d;
+	font-size: 14px;
 background: none;
 z-index: 2;
 }
