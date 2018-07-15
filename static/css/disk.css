@@ -621,15 +621,24 @@ z-index: 2;
 	-webkit-animation-name:fadeIn;animation-name:fadeIn;
 }
 .SlimfMouseMenu li {
-	font-size:12px;
-	padding: 6px 8px;
+	width: auto;
+	max-width: 400px;
+	font-size: 12px;
+	padding: 6px 10px;
 	color: #333;
 	text-align: left;
 	white-space: nowrap;
+	margin-bottom: 2px;
+}
+.SlimfMouseMenu li span{
+	float: right;
+	font-size: 12px;
+	margin-left: 40px;
+	color: #bfbfbf;
 }
 .SlimfMouseMenu li:hover {
-	background-color:#4281f4;
-	color:#fff;
+	background-color:#eee;
+	color:#000;
 	cursor:pointer;
 }
 /*拖选框*/

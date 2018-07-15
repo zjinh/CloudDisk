@@ -1,5 +1,5 @@
 <template>
-    <div class="CloudDiskMain" v-on:keydown="keyBoard"  tabindex="1">
+    <div class="CloudDiskMain" v-on:keydown="keyBoard"  tabindex="1" ref="CloudDiskMain">
         <div class="CloudDiskHeaderDrag">
             <ul class="CloudDiskFuncMenu">
                 <img draggable="false" src="../../../static/img/bar/disk.png"><span>CloudDisk</span>
@@ -93,19 +93,20 @@
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
             <li @click="UploadFile" :disabled="ClassifyName!=='全部文件'" >上传文件</li>
             <li @click="CreateFolder" :disabled="ClassifyName!=='全部文件'" >新建文件夹</li>
-            <li @click="DiskPaste" v-if="this.ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0" >粘贴</li>
+            <li @click="DiskData.Clipboard=[]" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0" >清空剪切板</li>
+            <li @click="DiskPaste" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0" >粘贴<span>Ctrl+V</span></li>
             <li @click="DiskRefush">刷新</li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
-            <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1" >打开</li>
+            <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1">打开<span>Ctrl+O</span></li>
             <li onclick="CloudDisk.MouseMenuFile.Download();">下载</li>
             <li @click="DiskMoveTo">移动到</li>
-            <li @click="DiskCopy">复制</li>
-            <li @click="DiskCut">剪切</li>
+            <li @click="DiskCopy">复制<span>Ctrl+C</span></li>
+            <li @click="DiskCut">剪切<span>Ctrl+X</span></li>
             <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名</li>
-            <li @click="DiskTrash">删除</li>
+            <li @click="DiskTrash">删除<span>Delete</span></li>
             <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
-            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性</li>
+            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Ctrl+R</span></li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.TrashFileMenu.show" ref="TrashFileMenu">
             <li @click="DiskRestore">还原</li>
@@ -274,7 +275,14 @@
             },
             keyBoard:function(e){
                 e.stopPropagation();
-                if (e.ctrlKey) {
+                e.preventDefault();
+                if((e.ctrlKey)&&(e.keyCode===67)){//复制快捷键
+                    this.DiskCopy();
+                }else if((e.ctrlKey)&&(e.keyCode===88)){//剪切快捷键
+                    this.DiskCut();
+                }else if((e.ctrlKey)&&(e.keyCode===86)){//粘贴快捷键
+                    this.DiskPaste();
+                }else if (e.ctrlKey) {
                     this.DiskData.KeyFlag = 'Ctrl';
                 } else if (e.shiftKey) {
                     this.DiskData.KeyFlag = 'Shift';
@@ -346,15 +354,14 @@
                         this.DiskSize.Background = '#f7ab21';
                     } else if (Percent >= 85) {
                         this.DiskSize.Background = '#e83c3c';
+                    }else{
+                        this.DiskSize.Background = '#2682fc';
                     }
                     this.DiskAllCount=rs[0].all_count;
                     this.DiskLoadCount=this.DiskLoadCount+rs.length;
                 }
             },
             updateClassify:function(value){//更新网盘分类子组件传回的数据
-                if(this.DiskPosting){
-
-                }
                 this.ClassifyName=value.name;
                 this.loadClassify=value.data;
                 this.DiskPage = 1;
@@ -436,6 +443,7 @@
             },
             /*选择文件数据操作方法*/
             SelectFiles:function(event,item,index){
+                this.$refs.CloudDiskMain.focus();
                 event.stopPropagation();
                 event.preventDefault();
                 if(event.button===0){
@@ -565,6 +573,14 @@
                 if(this.DiskData.Clipboard.length&&this.ClassifyName==='全部文件'){
                     let data=this.MakeSelectData(this.DiskData.Clipboard);
                     if(this.DiskData.ClipboardState==='copy'){
+                        let size=0;
+                        this.DiskData.Clipboard.forEach((item)=>{
+                            size=size+parseInt(item.disk_size);
+                        });
+                        if(size>(this.DiskSize.total-this.DiskSize.use)){
+                            this.$Message.error('空间不足！请清理一些文件后重试');
+                            return false;
+                        }
                         this.$Message.info('正在粘贴文件，请稍候');
                         Api.Disk.Copy({
                             id:data,
@@ -572,10 +588,20 @@
                         },(rs)=>{
                             rs=rs[0];
                             if(rs.state==='success'){
+                                let copy_flag=false;//判断是否有复制和粘贴时同一个目录的
                                 this.DiskData.Clipboard.forEach((item)=>{
-                                    item.disk_name=item.disk_name+'-复制';
-                                    this.InsertFileData(item)
+                                    if(item.parent_id===this.NowDiskID){
+                                        copy_flag=true;
+                                    }
                                 });
+                                if(copy_flag){
+                                    this.DiskRefush();
+                                }else{
+                                    this.DiskData.Clipboard.forEach((item)=>{
+                                        item.disk_name=item.disk_name+'-复制';
+                                        this.InsertFileData(item)
+                                    });
+                                }
                                 this.$Message.success('复制成功，共'+this.DiskData.Clipboard.length+'个文件/文件夹');
                                 this.DiskData.Clipboard=[];
                             }else{
