@@ -91,7 +91,6 @@ function CreateLoginWindow () {
         }
     });
     LoginWindow.loadURL(LoginURL);
-    LoginWindow.webContents.openDevTools();
     LoginWindow.on('closed', function() {
         LoginWindow = null;
     });
@@ -175,6 +174,23 @@ function BindIpc() {
     ipcMain.on('update', function(event, arg) {
         autoUpdater.quitAndInstall();
     });
+}
+
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {});
+if (shouldQuit) {
+    if (DiskWindow) {
+        if (DiskWindow.isMinimized()) {
+            DiskWindow.restore();
+            DiskWindow.focus()
+        }
+    }
+    if(LoginWindow){
+        if (LoginWindow.isMinimized()) {
+            LoginWindow.restore();
+            LoginWindow.focus()
+        }
+    }
+    app.quit();
 }
 
 app.on('ready', function (){

@@ -121,6 +121,7 @@
     import DiskFile from './DiskWindow/DiskFile';
     import DiskNav from './DiskWindow/DiskNav';
     import electron from 'electron';
+    const path = require('path');
     let DiskWindow=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
@@ -164,6 +165,7 @@
                 },
                 /*网盘一些记录的参数*/
                 DiskPage:1,//网盘加载的页数
+                DiskPosting:false,
                 NowDiskID:null,
                 DiskAllCount:0,
                 DiskLoadCount:0,
@@ -350,6 +352,9 @@
                 }
             },
             updateClassify:function(value){//更新网盘分类子组件传回的数据
+                if(this.DiskPosting){
+
+                }
                 this.ClassifyName=value.name;
                 this.loadClassify=value.data;
                 this.DiskPage = 1;
@@ -560,6 +565,7 @@
                 if(this.DiskData.Clipboard.length&&this.ClassifyName==='全部文件'){
                     let data=this.MakeSelectData(this.DiskData.Clipboard);
                     if(this.DiskData.ClipboardState==='copy'){
+                        this.$Message.info('正在粘贴文件，请稍候');
                         Api.Disk.Copy({
                             id:data,
                             parent_id:this.NowDiskID
@@ -934,7 +940,7 @@
                 return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
             },
             IconGet:function (item) {
-                let prefix='../../../../static/img/disk/';
+                let prefix=path.join(__static, '/img/disk/');
                 let type = item.type;
                 if(!item.disk_main){
                     return prefix+'FolderType.png'

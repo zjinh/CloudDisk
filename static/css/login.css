@@ -275,6 +275,7 @@ input[type="text"]:disabled{
 }
 .CloudIndexLogining p{
 	width: 100%;
+	font-size: 14px;
 }
 .circle {
 	width: 56px;

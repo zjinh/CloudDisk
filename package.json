@@ -17,7 +17,6 @@
     "postinstall": ""
   },
   "build": {
-    "asar":false,
     "productName": "CloudDisk",
     "appId": "zjinh.app.cloud.disk",
     "directories": {

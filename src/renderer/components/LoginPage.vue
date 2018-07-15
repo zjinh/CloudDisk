@@ -270,7 +270,7 @@
                         LoginWindow.setSize(800,300);
                         ipc.send('login-success');
                         setTimeout(()=>{
-                            this.LoadingText='欢迎回来'+rs.user
+                            this.LoadingText='欢迎回来 '+rs.user
                         },1100)
                     }else{
                         if(rs.msg==='未激活的用户'){
