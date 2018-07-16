@@ -87,15 +87,16 @@
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1" >打开</li>
             <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名</li>
             <li @click="DiskTrash">删除</li>
-            <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
-            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性</li>
+            <li onclick="CloudDisk.MouseMenuFile.share()" :disabled="DiskData.SelectFiles.length>1">查看分享</li>
+            <li onclick="CloudDisk.MouseMenuFile.share()" :disabled="DiskData.SelectFiles.length>1">取消分享</li>
+            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
-            <li @click="UploadFile" :disabled="ClassifyName!=='全部文件'" >上传文件</li>
-            <li @click="CreateFolder" :disabled="ClassifyName!=='全部文件'" >新建文件夹</li>
-            <li @click="DiskData.Clipboard=[]" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0" >清空剪切板</li>
-            <li @click="DiskPaste" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0" >粘贴<span>Ctrl+V</span></li>
-            <li @click="DiskRefush">刷新</li>
+            <li @click="UploadFile" :disabled="ClassifyName!=='全部文件'">上传文件<span>Ctrl+U</span></li>
+            <li @click="CreateFolder" :disabled="ClassifyName!=='全部文件'">新建文件夹<span>Ctrl+N</span></li>
+            <li @click="DiskData.Clipboard=[]" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0">清空剪切板</li>
+            <li @click="DiskPaste" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0">粘贴<span>Ctrl+V</span></li>
+            <li @click="DiskRefush">刷新<span>F5</span></li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1">打开<span>Ctrl+O</span></li>
@@ -103,16 +104,17 @@
             <li @click="DiskMoveTo">移动到</li>
             <li @click="DiskCopy">复制<span>Ctrl+C</span></li>
             <li @click="DiskCut">剪切<span>Ctrl+X</span></li>
-            <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名</li>
+            <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名<span>Ctrl+M/F2</span></li>
             <li @click="DiskTrash">删除<span>Delete</span></li>
-            <li onclick="CloudDisk.MouseMenuFile.share()">分享</li>
-            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Ctrl+R</span></li>
+            <li onclick="CloudDisk.MouseMenuFile.share()" :disabled="DiskData.SelectFiles.length>1">分享</li>
+            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.TrashFileMenu.show" ref="TrashFileMenu">
-            <li @click="DiskRestore">还原</li>
-            <li @click="DiskDelete">删除</li>
-            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性</li>
+            <li @click="DiskRestore">还原<span>Ctrl+R</span></li>
+            <li @click="DiskDelete">删除<span>Ctrl+Del</span></li>
+            <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
+        <DiskTreeDialog></DiskTreeDialog>
     </div>
 </template>
 
@@ -121,13 +123,14 @@
     import ClassifyMenu from './DiskWindow/ClassifyMenu';
     import DiskFile from './DiskWindow/DiskFile';
     import DiskNav from './DiskWindow/DiskNav';
+    import DiskTreeDialog from './DiskWindow/DiskTreeDialog';
     import electron from 'electron';
     const path = require('path');
     let DiskWindow=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskWindow",
-        components:{ClassifyMenu,DiskFile,DiskNav},
+        components:{ClassifyMenu,DiskFile,DiskNav,DiskTreeDialog},
         data(){
             return{
                 Logined:{},
@@ -222,12 +225,6 @@
                         left:0
                     }
                 },
-                DiskMouseData:[
-                    {"name":"上传文件","func":""},
-                    {"name":"新建文件夹","func":""},
-                    {"name":"粘贴","func":""},
-                    {"name":"刷新","func":""},
-                ],
             }
         },
         watch:{
@@ -277,11 +274,41 @@
                 e.stopPropagation();
                 e.preventDefault();
                 if((e.ctrlKey)&&(e.keyCode===67)){//复制快捷键
-                    this.DiskCopy();
+                    if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
+                        this.DiskCopy();
+                    }
                 }else if((e.ctrlKey)&&(e.keyCode===88)){//剪切快捷键
-                    this.DiskCut();
+                    if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
+                        this.DiskCut();
+                    }
                 }else if((e.ctrlKey)&&(e.keyCode===86)){//粘贴快捷键
-                    this.DiskPaste();
+                    if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
+                        this.DiskPaste();
+                    }
+                }else if((e.ctrlKey)&&(e.keyCode===85)){//上传快捷键
+                    if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
+                        this.UploadFile();
+                    }
+                }else if((e.ctrlKey)&&(e.keyCode===82)){//恢复快捷键
+                    if(this.loadClassify==='trash'&&this.DiskType==='disk'){
+                        this.DiskRestore();
+                    }
+                }else if((!e.ctrlKey)&&(e.keyCode===46)){//删除快捷键
+                    if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
+                        this.DiskTrash();
+                    }
+                }else if((e.ctrlKey)&&(e.keyCode===46)){//彻底删除快捷键
+                    if(this.loadClassify==='trash'&&this.DiskType==='disk'){
+                        this.DiskDelete();
+                    }
+                }else if((e.ctrlKey)&&(e.keyCode===79)){//打开快捷键
+                    if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
+                        this.OpenFile('');
+                    }
+                }else if((e.ctrlKey)&&(e.keyCode===77)||(e.keyCode===113)){//重名名快捷键
+                    if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
+                        this.DiskRename();
+                    }
                 }else if (e.ctrlKey) {
                     this.DiskData.KeyFlag = 'Ctrl';
                 } else if (e.shiftKey) {
@@ -509,10 +536,13 @@
                 this.GetMainFile(item.disk_id, 'normal');
             },///导航栏点击切换
             NavHomeLoad:function(){
-                if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索结果') {
-                    this.GetMainFile(null, this.loadClassify);
+               if(this.DiskType==='share'){
+                    this.changeType('share');
                     this.DiskData.NavData=[];
-                }else if(this.ClassifyName==='搜索结果'){
+                }else if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索结果') {
+                   this.GetMainFile(null, this.loadClassify);
+                   this.DiskData.NavData=[];
+               }else if(this.ClassifyName==='搜索结果'){
                     this.changeType('disk');
                     this.DiskData.NavData=[];
                 }
@@ -551,7 +581,6 @@
                     this.InputConfrim({
                         title: "新建文件夹",
                         tips: '请输入文件夹名称',
-                        value: '新建文件夹',
                         callback: (value) => {
                             Api.Disk.NewFolder({
                                 name: value,
@@ -941,6 +970,8 @@
                 this.$confirm(options.tips, options.title, {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    message:options.message||'',
+                    dangerouslyUseHTMLString:true,
                     type: 'warning'
                 }).then(() => {
                     options.callback()

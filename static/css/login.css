@@ -313,3 +313,6 @@ input[type="text"]:disabled{
 		filter: opacity(0);
 	}
 }
+.v-modal{
+	opacity: 0;
+}

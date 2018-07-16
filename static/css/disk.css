@@ -193,11 +193,11 @@ cursor: pointer;
 	font-size: 14px;
 }
 .CloudDiskClassify li:hover,.CloudDiskClassifyActive{
-background: rgba(12, 12, 12, 0.12);
+background: rgba(43, 133, 228, 0.12);
 }
 .CloudDiskClassifyActive{
-color: #2682fc!important;
-background: rgba(12, 12, 12, 0.12);
+	color: #2682fc!important;
+	background: rgba(43, 133, 228, 0.12);
 }
 .CloudDiskCapacity{
 width: 100%;
@@ -709,4 +709,16 @@ z-index: 2;
 }
 .el-message-box__errormsg{
 	min-height: unset!important;
+}
+.el-dialog__header{
+	padding: 15px 15px 10px;
+}
+.el-dialog__title{
+	font-size: 18px;
+}
+.el-dialog__body{
+	padding: 5px 20px;
+}
+.el-dialog__footer{
+	padding: 10px 14px 18px;
 }
