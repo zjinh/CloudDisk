@@ -141,7 +141,6 @@
         components:{ClassifyMenu,DiskFile,DiskNav,DiskTree},
         data(){
             return{
-                dialogVisible: true,
                 Logined:{},
                 UserDiskData:[],//存放用户网盘数据
                 LoadCompany:false,//是否加载完成
@@ -198,7 +197,7 @@
                     SelectTips:'共0个文件/文件夹',//选择文件提示
                 },
                 /*树目录参数*/
-                showTree:true,
+                showTree:false,
                 /*排序参数*/
                 DiskSortState:{
                     amount:'up',
@@ -991,7 +990,6 @@
                 this.$confirm(options.tips, options.title, {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    message:options.message||'',
                     dangerouslyUseHTMLString:true,
                     type: 'warning'
                 }).then(() => {
