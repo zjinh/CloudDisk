@@ -99,7 +99,7 @@
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1">打开<span>Ctrl+O</span></li>
-            <li onclick="CloudDisk.MouseMenuFile.Download();">下载</li>
+            <li @click="DiskDownload">下载</li>
             <li @click="DiskMoveTo">移动到</li>
             <li @click="DiskCopy">复制<span>Ctrl+C</span></li>
             <li @click="DiskCut">剪切<span>Ctrl+X</span></li>
@@ -596,8 +596,12 @@
             UploadFile:function(){
                 if(this.loadClassify==='normal') {
                     this.$Message.info('正在开发')
+                    this.$Message.info('最后阶段完成，敬请期待')
                 }
             },//上传文件
+            DiskDownload:function(){
+                this.$Message.info('最后阶段完成，敬请期待')
+            },//下载文件
             CreateFolder:function(){
                 if(this.ClassifyName==='全部文件') {
                     this.InputConfrim({
@@ -880,12 +884,12 @@
             },//文件还原
             Share:function(){
                 this.$refs.DiskShareModel.ShareFile(this.DiskData.NowSelect)
-            },
+            },//提交文件分享
             updateShare:function(address){
                 this.FindInDisk(this.DiskData.NowSelect,(item)=>{
                     item.share=address;
                 });
-            },
+            },//更新文件分享状态
             DiskShare:function(){
                 if(this.DiskData.SelectFiles.length<2) {
                     if (this.DiskData.NowSelect.share) {
@@ -903,7 +907,7 @@
                         this.showShare = true;
                     }
                 }
-            },
+            },//文件分享
             CancelShare:function(){
                 if(this.DiskData.SelectFiles.length<2) {
                     this.Confrim({
@@ -934,7 +938,7 @@
                         }
                     })
                 }
-            },
+            },//取消分享
             DiskInfo:function(){
                 if(this.DiskData.SelectFiles.length<2) {
                     ipc.send('DiskInfo',this.DiskData.NowSelect);
