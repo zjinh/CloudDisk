@@ -4,12 +4,12 @@ import axios from 'axios'
 import App from './App'
 import router from './router'
 import store from './store'
-
+//引入iview组件
 import iView from 'iview';
 import locale from 'iview/dist/locale/zh-cn';
 import 'iview/dist/styles/iview.css';
 Vue.use(iView, { locale });
-
+//引入element的部分组件
 import { MessageBox,Dialog} from 'element-ui';
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;

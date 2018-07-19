@@ -2,13 +2,13 @@
     <div>
         <ul class="CloudDiskTreesContainer" v-for="(item,index) in DiskTreeData?DiskTreeData:UserDiskTreeData">
             <div :class="item.disk_name==='全部文件'?'CloudDFoContainer':'CloudDFoContainer childFolder'">
-                <li class="CloudDiskTree" @dblclick="ToggleDiskTree(item,index)" @mousedown="SelectTree(item,index)" :parent="item.parent_id" :id="item.disk_id">
+                <li class="CloudDiskTree" @dblclick.stop="ToggleDiskTree(item,index)" @mousedown="SelectTree(item)">
                     <Icon v-if="!item.show&&item.load!=='loading'" type="ios-folder"></Icon>
                     <Icon v-if="item.load==='loading'" type="load-c sf-spin"></Icon>
                     <Icon v-if="item.show&&item.load!=='loading'" type="folder" style="font-size: 23px;"></Icon>
                     <div>{{item.disk_name}}</div>
                 </li>
-                <DiskTree v-bind:DiskTreeData="item.child" v-show="item.show"></DiskTree>
+                <DiskTree v-bind:DiskTreeData="item.child" v-show="item.show" v-on:SelectDiskTree="SelectTree"></DiskTree>
             </div>
         </ul>
     </div>
@@ -16,6 +16,7 @@
 
 <script>
     import Api from '../../api/api';
+    // import {mapGetters,mapMutations} from 'vuex';
     export default {
         name: "DiskTree",
         props:{
@@ -31,6 +32,9 @@
           }
         },
         methods:{
+           /* ...mapMutations([
+                'set_SelectTree',
+            ]),//这是vuex的方法*/
             init(){
                 this.UserDiskTreeData=[
                     {"disk_name":"全部文件","disk_id":"null","parent_id":"","show":false,"load":false,"child":[]}
@@ -65,7 +69,7 @@
                     this.LoadTreeData(item);
                 }
             },
-            SelectTree:function (item,index) {
+            SelectTree:function (item) {
                 let CloudDiskTree=document.getElementsByClassName('CloudDiskTree');
                 for (let i = 0; i < CloudDiskTree.length; i++) {
                     CloudDiskTree[i].className = 'CloudDiskTree';
@@ -76,7 +80,8 @@
                         path[j].className='CloudDiskTree CloudDiskTreeActive'
                     }
                 }
-                this.$emit("SelectDiskTree",item,index)
+                // this.set_SelectTree(item);//这是vuex的方法
+                this.$emit("SelectDiskTree",item)
             }
         }
     }

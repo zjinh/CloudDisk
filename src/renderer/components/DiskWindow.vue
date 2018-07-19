@@ -120,7 +120,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <button class="el-button el-button--default el-button--small" @click="showTree = false">取 消</button>
-                <button class="el-button el-button--default el-button--small el-button--primary" @click="showTree = false">确 定</button>
+                <button class="el-button el-button--default el-button--small el-button--primary" @click="DiskMoveUp">确 定</button>
             </span>
         </el-dialog>
     </div>
@@ -198,6 +198,7 @@
                 },
                 /*树目录参数*/
                 showTree:false,
+                SelectTrees:false,
                 /*排序参数*/
                 DiskSortState:{
                     amount:'up',
@@ -872,11 +873,40 @@
                 }
             },//文件属性
             /*树目录操作方法*/
-            TreesInit:function(){
-
+            DiskMoveUp:function(){
+                if(this.DiskData.SelectFiles.length) {
+                    this.DiskData.SelectFiles.forEach((item, index) => {
+                        if (this.SelectTrees.disk_id === item.disk_id) {
+                            this.DiskData.SelectFiles.splice(index, 1);
+                        }
+                    });
+                    let data=this.MakeSelectData(this.DiskData.SelectFiles);
+                    if(this.DiskData.SelectFiles[0].parent_id===this.SelectTrees.disk_id){
+                        this.$Message.warning('操作取消,所选 '+this.SelectTrees.disk_name+' 为当前所在目录');
+                        this.showTree=false;
+                        this.SelectTrees=false;
+                        return
+                    }
+                    Api.Disk.Cut({
+                        parent_id: this.SelectTrees.disk_id,
+                        id: data
+                    },(rs)=>{
+                        rs=rs[0];
+                        if(rs.state==='success'){
+                            this.RemoveSelectData(this.DiskData.SelectFiles);
+                            this.$Message.success('已移动到 '+this.SelectTrees.disk_name);
+                            this.showTree=false;
+                            this.SelectTrees=false;
+                        }else{
+                            this.$Message.error('移动失败')
+                        }
+                    })
+                }else {
+                    this.$Message.warning('操作终止！没有选中任何文件')
+                }
             },
-            SelectDiskTree:function(item,index){
-
+            SelectDiskTree:function(item){
+                this.SelectTrees=item;
             },//选择树目录
             /*通用方法*/
             MakeSelectData :function (orgin_data) {
