@@ -74,6 +74,10 @@
                 }else{
                     ShareType=2;
                 }
+                if(this.ShareResult.success){
+                    this.$emit('close');
+                    return
+                }
                 Api.Disk.Share({
                     shareType:ShareType,
                     id: item.disk_id
@@ -85,7 +89,7 @@
                     this.$nextTick(()=>{
                         this.ShareResult.success=true;
                         if (rs[0].share) {
-                            this.$Message.warning('该资源已经分享,请不要重复分享')
+                            this.$Message.warning('该资源已经分享,请不要重复分享');
                         }
                         this.ShareResult.address=localStorage.server+'/s/' + rs[0].addres;
                         this.ShareResult.Copy='链接：'+this.ShareResult.address;
