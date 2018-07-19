@@ -1,7 +1,6 @@
 <template>
     <div v-if="data.length">
         <div v-for="(item,index) in data" :class="DiskData.DiskShowState+(item.active?' CloudDiskChecked':'')" ripple @mousedown="select(item,index)" @dblclick="OpenFile(item)">
-            <Checkbox v-model="item.active" v-show="DiskData.DiskShowState!=='CloudDiskMFile'"  @mousedown="select(item,index)"></Checkbox>
             <span class="CloudDisk-icon">
                 <img :src="item.icon" draggable="false">
             </span>

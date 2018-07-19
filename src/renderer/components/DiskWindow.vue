@@ -57,14 +57,13 @@
                     <button :disabled="ClassifyName==='回收站'&&UserDiskData.length===0" @click="DiskCleanTrash">清空回收站</button>
                 </div>
                 <div class="CloudDiskMainFunc" v-show="DiskData.DiskShowState!=='CloudDiskMFile'&&DiskType!=='trans'">
-                    <Checkbox ></Checkbox>
                     <div :class="'CloudDiskFuncBlock sf-icon-sort-alpha-'+DiskSortState.alpha" @click="DiskSort('alpha','disk_name')" ripple style="width:53%;">
                         文件名
                     </div>
                     <div :class="'CloudDiskFuncBlock sf-icon-sort-numeric-'+DiskSortState.mum" @click="DiskSort('mum','create_time')" ripple>
                         修改日期
                     </div>
-                    <div :class="'CloudDiskFuncBlock sf-icon-sort-numeric-'+DiskSortState.mum1" @click="DiskSort('mum1','disk_size')" ripple>
+                    <div :class="'CloudDiskFuncBlock sf-icon-sort-numeric-'+DiskSortState.mum1" @click="DiskSort('mum1','disk_size')" ripple style="width: 25%">
                         大小
                     </div>
                 </div>
@@ -106,7 +105,7 @@
             <li @click="DiskCut">剪切<span>Ctrl+X</span></li>
             <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名<span>Ctrl+M/F2</span></li>
             <li @click="DiskTrash">删除<span>Delete</span></li>
-            <li onclick="CloudDisk.MouseMenuFile.share()" :disabled="DiskData.SelectFiles.length>1">分享</li>
+            <li @click="DiskShare" :disabled="DiskData.SelectFiles.length>1">分享</li>
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.TrashFileMenu.show" ref="TrashFileMenu">
@@ -867,6 +866,9 @@
                     }
                 })
             },//文件还原
+            DiskShare:function(){
+
+            },
             DiskInfo:function(){
                 if(this.DiskData.SelectFiles.length<2) {
                     ipc.send('DiskInfo',this.DiskData.NowSelect);

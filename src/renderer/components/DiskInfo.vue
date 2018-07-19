@@ -79,7 +79,7 @@
             ipcRenderer.on('DiskInfo', (event, data)=>{//接收打开文件的数据
                 this.DiskData=data;
                 DiskInfo.setTitle(data.disk_name+' 属性');
-                this.$refs.share.value=localStorage.server+'/'+data.share;
+                this.$refs.share.value=localStorage.server+'/s/'+data.share;
                 Api.Disk.Address(data.disk_id,(rs)=>{
                     this.$refs.address.innerHTML='我的网盘'+rs;
                     this.$nextTick(()=>{
