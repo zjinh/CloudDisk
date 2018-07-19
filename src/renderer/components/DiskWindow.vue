@@ -114,7 +114,15 @@
             <li @click="DiskDelete">删除<span>Ctrl+Del</span></li>
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
-        <DiskTreeDialog></DiskTreeDialog>
+        <el-dialog title="请选择目标文件夹" :visible.sync="showTree" width="350px">
+            <div style="height: 200px; overflow: auto">
+                <DiskTree v-on:SelectDiskTree="SelectDiskTree" ref="DiskTree"></DiskTree>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <button class="el-button el-button--default el-button--small" @click="showTree = false">取 消</button>
+                <button class="el-button el-button--default el-button--small el-button--primary" @click="showTree = false">确 定</button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -123,16 +131,17 @@
     import ClassifyMenu from './DiskWindow/ClassifyMenu';
     import DiskFile from './DiskWindow/DiskFile';
     import DiskNav from './DiskWindow/DiskNav';
-    import DiskTreeDialog from './DiskWindow/DiskTreeDialog';
+    import DiskTree from './DiskWindow/DiskTree';
     import electron from 'electron';
     const path = require('path');
     let DiskWindow=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskWindow",
-        components:{ClassifyMenu,DiskFile,DiskNav,DiskTreeDialog},
+        components:{ClassifyMenu,DiskFile,DiskNav,DiskTree},
         data(){
             return{
+                dialogVisible: true,
                 Logined:{},
                 UserDiskData:[],//存放用户网盘数据
                 LoadCompany:false,//是否加载完成
@@ -188,6 +197,8 @@
                     DiskShowState:'CloudDiskMFile',//文件显示类型，默认图标,
                     SelectTips:'共0个文件/文件夹',//选择文件提示
                 },
+                /*树目录参数*/
+                showTree:true,
                 /*排序参数*/
                 DiskSortState:{
                     amount:'up',
@@ -674,7 +685,10 @@
                 }
             },//右键粘贴
             DiskMoveTo:function(){
-
+                this.showTree=true;
+                this.$nextTick(()=>{
+                    this.$refs.DiskTree.init();
+                });
             },
             DiskCopy:function(){
                 this.DiskData.Clipboard=[];
@@ -858,6 +872,13 @@
                     this.$Message.info('查看'+this.DiskData.NowSelect.disk_name)
                 }
             },//文件属性
+            /*树目录操作方法*/
+            TreesInit:function(){
+
+            },
+            SelectDiskTree:function(item,index){
+
+            },//选择树目录
             /*通用方法*/
             MakeSelectData :function (orgin_data) {
                 let data = '';
