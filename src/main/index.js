@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 //const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,SettingWindow,DiskInfo;
+let LoginWindow,DiskWindow,SettingWindow;
 let message={
     appName:'CloudDisk',
     error:'检查更新出错, 请联系开发人员',
@@ -122,6 +122,7 @@ function CreateDiskWindow() {
     DiskWindow.loadURL(DiskURL);
     DiskWindow.on('closed', function() {
         DiskWindow = null;
+        app.quit();
     });
     DiskWindow.on('maximize',function () {
         DiskWindow.webContents.send('size', 1);
@@ -130,30 +131,35 @@ function CreateDiskWindow() {
         DiskWindow.webContents.send('size', -1);
     });
 }
-function CreateDiskInfo() {
+function CreateDiskInfo(data) {
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
-    DiskInfo = new BrowserWindow({
+    let id= 'DiskInfo'+data.disk_id;
+    id= new BrowserWindow({
         width: 300,
         height: 450,
-        title:'CloudDisk-登录',
+        title:'文件属性',
         useContentSize: true,
         maximizable:false,
         minimizable:false,
         resizable:false,
+        frame:false,
         webPreferences:{
             webSecurity:false
         },
-        parent:DiskWindow
     });
-    DiskInfo.loadURL(InfoURL);
-    DiskInfo.on('closed', function() {
-        DiskInfo = null;
+    id.loadURL(InfoURL);
+    id.on('closed', function() {
+        id = null;
     });
+    id.webContents.on('did-finish-load', ()=>{
+        id.webContents.send('DiskInfo',data);
+    });
+
 }
 function BindIpc() {
     /*登录窗口指令*/
-    ipcMain.on('login-success', function () {
+    ipcMain.on('login-success', ()=> {
         let a=setTimeout(function () {
             clearTimeout(a);
             CreateDiskWindow();
@@ -161,17 +167,21 @@ function BindIpc() {
         },2000)
     });
     /*网盘窗口指令*/
-    ipcMain.on('disk-error', function () {
+    ipcMain.on('disk-error', ()=> {
         CreateLoginWindow();
         DiskWindow.close();
     });
+    ipcMain.on('DiskInfo', (e,msg)=> {
+        CreateDiskInfo(msg)
+    });
+
     /*更新*/
     /*检查更新*/
-    ipcMain.on('check-for-update', function(event, arg) {
+    ipcMain.on('check-for-update',(event, arg)=> {
         CheckUpdate(event);
         autoUpdater.checkForUpdates();
     });
-    ipcMain.on('update', function(event, arg) {
+    ipcMain.on('update', (event, arg)=> {
         autoUpdater.quitAndInstall();
     });
 }

@@ -48,7 +48,7 @@ a,a:hover,a:link,a:visited,button,button:focus,button:hover,i,i:hover,img,img:ho
 a:hover,a:link,a:visited {
     text-decoration:none;
 }
-button,button:hover {
+button:hover {
     opacity: .8;
     cursor:pointer;
     overflow: hidden;

@@ -869,7 +869,7 @@
             },//文件还原
             DiskInfo:function(){
                 if(this.DiskData.SelectFiles.length<2) {
-                    this.$Message.info('查看'+this.DiskData.NowSelect.disk_name)
+                    ipc.send('DiskInfo',this.DiskData.NowSelect);
                 }
             },//文件属性
             /*树目录操作方法*/

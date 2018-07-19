@@ -1,12 +1,12 @@
 <template>
-  <div id="app">
+  <div id="Cloud-Disk">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'clouddisk'
+    name: 'Cloud-Disk'
   }
 </script>
 

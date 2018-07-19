@@ -1,4 +1,4 @@
-#app{
+#Cloud-Disk{
 	height: 100%;
 	background: #2682fc;
 }
@@ -464,55 +464,107 @@ z-index: 2;
 	text-indent: 10px;
 	color: #616161;
 }
+/*文件属性窗口*/
 .CloudDiskInfoContainer{
 	width: 100%;
-	max-height: 350px;
+	height: 100%;
+	background: #fff;
+	color: #000;
+	-webkit-app-region: drag;
+	box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+	border: 1px solid #38f;
+}
+.CloudDiskInfoControl{
+	width: 100%;
+	height: 30px;
+}
+.CloudDiskInfoControl p{
+	float: left;
+	font-size: 13px;
+	line-height: 30px;
+	text-indent: 5px;
+	width: calc(100% - 30px);
+	text-overflow: ellipsis;
+	word-wrap: normal;
+	word-break: break-all;
+}
+.CloudDiskInfoControl button{
+	float: right;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+	-webkit-app-region: no-drag;
+	background: none;
+}
+.CloudDiskInfoControl button:hover{
+	background: #E83C3C;
+	color: #fff;
 }
 .CloudDiskInfoHead{
 	height: 50px;
 	border-bottom: 1px solid #ccc;
+	padding: 7px;
+}
+.CloudDiskInfoHead img{
+	width: 35px;
 }
 .CloudDiskInfoHead *{
 	display: inline-block;
 	float: left;
-	line-height: 44px;
+	line-height: 35px;
 	text-indent: 10px;
 	text-overflow: ellipsis;
 }
 .CloudDiskInfoHead span{
-	width: 280px;
+	width: 240px;
 }
 .CloudDiskInfoList{
 	width: 100%;
+	padding: 0 10px;
 	font-size: 13px;
-	line-height: 30px;
+	line-height: 32px;
 }
 .CloudDiskInfoList button{
+	float: right;
 	border-radius: 0;
 	-webkit-border-radius: 0;
 	-moz-border-radius: 0;
-	margin-right: 3px;
-	border: 1px solid #ccc;
-	background: #eee;
-	color: #4f4f4f;
+	border: none;
+	background: #3a8ee6;
+	color: #ffffff;
+	padding: 0 10px;
+	height: 25px;
+	line-height: 23px;
+	-webkit-app-region: no-drag;
 }
 .CloudDiskInfoList input{
-    width: 143px;
+    width: 160px;
     border-radius: 0px;
     height: 29px;
+	-webkit-app-region: no-drag;
 }
 .CloudDiskInfoList span{
+	float: left;
 	height: 30px;
 	display: block;
-	float: left;
+	padding-right: 10px;
+}
+.CloudDiskInfoLine{
+	width: 100%;
+	height: 1px;
+	background: #eee;
+	margin: 5px 0;
 }
 .CloudDiskInfoList div{
-	width: 266px;
+	float: left;
+	width: 200px;
+	line-height: 20px;
+	padding-top: 6px;
 	word-break: break-all;
+	color: #2d2d2d;
 }
-.CloudDiskInfoList a{
-	color: #000;
-}
+/*分享窗口*/
 .CloudDiskShareWindow{
 	width: 100%;
 	height: 100%;
@@ -544,6 +596,7 @@ z-index: 2;
 	overflow: auto;
 	background: #fcfcfc;
 }
+/*加载动画*/
 .CloudDiskLoading{
 	text-align: center;
 	color: #2682fc;

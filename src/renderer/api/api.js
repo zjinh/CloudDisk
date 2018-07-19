@@ -156,6 +156,14 @@ let Disk={
             error:error
         })
     },
+    Address:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/AddresFile/"+data,
+            method:'get',
+            success:callback,
+            error:error
+        })
+    },
 };
 let Check=function (url,callback,error) {
     Ajax({
