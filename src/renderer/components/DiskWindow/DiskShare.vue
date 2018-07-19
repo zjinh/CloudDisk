@@ -99,7 +99,8 @@
                             this.ShareResult.Copy='链接：'+this.ShareResult.address+',密码：'+this.ShareResult.pass
                         }
                         if(rs[0].state==='success'){
-                            this.$Message.success('分享链接已生成，复制给好友吧')
+                            this.$Message.success('分享链接已生成，复制给好友吧');
+                            this.$emit('updateShare',rs[0].addres)
                         }
                     });
                 })

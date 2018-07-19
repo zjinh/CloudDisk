@@ -125,7 +125,7 @@
         <el-dialog title="分享方式" :visible.sync="showShare" width="350px" top="150px">
             <div style="height: 150px;">
                 <p class="CloudDiskShareTips">准备分享<span>{{DiskData.NowSelect.disk_name}}</span></p>
-                <DiskShare ref="DiskShareModel" v-on:close="showShare=false"></DiskShare>
+                <DiskShare ref="DiskShareModel" v-on:close="showShare=false" v-on:updateShare="updateShare"></DiskShare>
             </div>
             <span slot="footer" class="dialog-footer">
                 <button class="el-button el-button--default el-button--small" @click="showShare = false">取 消</button>
@@ -880,6 +880,11 @@
             },//文件还原
             Share:function(){
                 this.$refs.DiskShareModel.ShareFile(this.DiskData.NowSelect)
+            },
+            updateShare:function(address){
+                this.FindInDisk(this.DiskData.NowSelect,(item)=>{
+                    item.share=address;
+                });
             },
             DiskShare:function(){
                 if(this.DiskData.SelectFiles.length<2) {
