@@ -91,6 +91,14 @@ let Disk={
             error:error
         })
     },
+    UnZip:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/UnZipFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
     Search:function (data,callback,error) {
         data.loadtype='search';
         Ajax({
@@ -160,6 +168,22 @@ let Disk={
         Ajax({
             url:localStorage.server+"/service/disk/AddresFile/"+data,
             method:'get',
+            success:callback,
+            error:error
+        })
+    },
+    Share:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/ShareFile",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    CancelShare:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/CancelShareFile",
+            data:data,
             success:callback,
             error:error
         })

@@ -472,7 +472,7 @@ z-index: 2;
 	color: #000;
 	-webkit-app-region: drag;
 	box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-	border: 1px solid #38f;
+	border: 1px solid #409EFF;
 }
 .CloudDiskInfoControl{
 	width: 100%;
@@ -576,19 +576,64 @@ z-index: 2;
 .CloudDiskShareWindow ul>li{
 	width: 50%;
 	float: left;
+	height: 35px;
+	line-height: 33px;
 	text-align: center;
+	cursor: pointer;
+}
+.CloudDiskShareTips{
+	font-size: 16px;
+	padding-bottom: 10px;
+}
+.CloudDiskShareTips span{
+	color: #409EFF;
+}
+.CloudDiskShareLine{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	margin-bottom: 10px;
+}
+.CloudDiskShareLine *{
+	float: left;
+}
+.CloudDiskShareLine span{
+
+}
+.CloudDiskShareLine input{
+	border: 1px solid #eee;
+	height: 32px;
+	padding: 0px 10px;
+	margin-top: 4px;
+	border-radius: 3px;
+}
+.CloudDiskShareLine input:focus{
+	border: 1px solid #409EFF;
+}
+.CloudDiskShareLine button{
+	float: right;
+	height: 32px;
+	background: #409EFF;
+	color: #fff;
+	margin-top: 4px;
+	line-height: 32px;
+	padding: 0px 10px;
+	border: 1px solid #eee;
+	border-radius: 3px;
 }
 .CloudDiskShareActive{
 	border-bottom: 2px solid #3b8cff;
 }
 .CloudDiskShareWContent{
-	display: none;
 	width: 100%;
 	height: 60px;
+	background: #eee;
+	margin-top: 10px;
 }
 .CloudDiskShareWindow p{
 	font-size: 14px;
-	line-height: 40px;
+	line-height: 60px;
+	text-indent: 20px;
 }
 .CloudDiskViewContent{
 	width: 100%;

@@ -86,8 +86,8 @@
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1" >打开</li>
             <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名</li>
             <li @click="DiskTrash">删除</li>
-            <li onclick="CloudDisk.MouseMenuFile.share()" :disabled="DiskData.SelectFiles.length>1">查看分享</li>
-            <li onclick="CloudDisk.MouseMenuFile.share()" :disabled="DiskData.SelectFiles.length>1">取消分享</li>
+            <li @click="DiskShare" :disabled="DiskData.SelectFiles.length>1">查看分享</li>
+            <li @click="CancelShare" :disabled="DiskData.SelectFiles.length>1">取消分享</li>
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
         <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
@@ -113,13 +113,23 @@
             <li @click="DiskDelete">删除<span>Ctrl+Del</span></li>
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
-        <el-dialog title="请选择目标文件夹" :visible.sync="showTree" width="350px">
+        <el-dialog title="选择目标文件夹" :visible.sync="showTree" width="350px">
             <div style="height: 200px; overflow: auto">
                 <DiskTree v-on:SelectDiskTree="SelectDiskTree" ref="DiskTree"></DiskTree>
             </div>
             <span slot="footer" class="dialog-footer">
                 <button class="el-button el-button--default el-button--small" @click="showTree = false">取 消</button>
                 <button class="el-button el-button--default el-button--small el-button--primary" @click="DiskMoveUp">确 定</button>
+            </span>
+        </el-dialog>
+        <el-dialog title="分享方式" :visible.sync="showShare" width="350px" top="150px">
+            <div style="height: 150px;">
+                <p class="CloudDiskShareTips">准备分享<span>{{DiskData.NowSelect.disk_name}}</span></p>
+                <DiskShare ref="DiskShareModel"></DiskShare>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <button class="el-button el-button--default el-button--small" @click="showShare = false">取 消</button>
+                <button class="el-button el-button--default el-button--small el-button--primary" @click="Share">确 定</button>
             </span>
         </el-dialog>
     </div>
@@ -131,13 +141,14 @@
     import DiskFile from './DiskWindow/DiskFile';
     import DiskNav from './DiskWindow/DiskNav';
     import DiskTree from './DiskWindow/DiskTree';
+    import DiskShare from './DiskWindow/DiskShare';
     import electron from 'electron';
     const path = require('path');
     let DiskWindow=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskWindow",
-        components:{ClassifyMenu,DiskFile,DiskNav,DiskTree},
+        components:{ClassifyMenu,DiskFile,DiskNav,DiskTree,DiskShare},
         data(){
             return{
                 Logined:{},
@@ -198,6 +209,8 @@
                 /*树目录参数*/
                 showTree:false,
                 SelectTrees:false,
+                /*分享窗口参数*/
+                showShare:false,
                 /*排序参数*/
                 DiskSortState:{
                     amount:'up',
@@ -524,7 +537,6 @@
                         this.MouseMenu('DiskShareMenu', event);
                     }
                 }
-                //console.log(this.DiskData.SelectFiles);
             },
             RemoveSelect:function(index){
                 this.DiskData.SelectFiles.splice(index,1)
@@ -866,8 +878,57 @@
                     }
                 })
             },//文件还原
+            Share:function(){
+                this.$refs.DiskShareModel.ShareFile(this.DiskData.NowSelect)
+            },
             DiskShare:function(){
-
+                if(this.DiskData.SelectFiles.length<2) {
+                    if (this.DiskData.NowSelect.share) {
+                        let message = '该文件分享地址为:' + localStorage.server + '/s/' + this.DiskData.NowSelect.share;
+                        this.Confrim({
+                            title: '分享信息',
+                            tips: message,
+                            type:'info',
+                            callback: () => {}
+                        })
+                    } else {
+                        this.$nextTick(() => {
+                            this.$refs.DiskShareModel.init();
+                        });
+                        this.showShare = true;
+                    }
+                }
+            },
+            CancelShare:function(){
+                if(this.DiskData.SelectFiles.length<2) {
+                    this.Confrim({
+                        title: '取消分享',
+                        tips: '您确认取消分享'+this.DiskData.NowSelect.disk_name+'吗',
+                        callback: () => {
+                            Api.Disk.CancelShare({
+                                id: this.DiskData.NowSelect.disk_id,
+                                share_id: this.DiskData.NowSelect.share
+                            },(rs)=>{
+                                if (rs[0].state==='success') {
+                                    this.$Message.success('分享已取消');
+                                    this.$nextTick(()=>{
+                                        if(this.loadClassify==='share'){
+                                            let data=[];
+                                            data.push(this.DiskData.NowSelect);
+                                            this.RemoveSelectData(data);
+                                        }else{
+                                            this.FindInDisk(this.DiskData.NowSelect,(item)=>{
+                                                item.share='';
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    this.$Message.error('操作失败');
+                                }
+                            })
+                        }
+                    })
+                }
             },
             DiskInfo:function(){
                 if(this.DiskData.SelectFiles.length<2) {
@@ -957,6 +1018,8 @@
                 createNode.onmouseup=()=> {
                     if (e.button === 2) {
                         this.DiskMouseState[menu_main].show = true;
+                        createNode.onmousedown=null;
+                        createNode.onmouseup=null;
                     }
                 };
             },
@@ -1023,11 +1086,21 @@
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     dangerouslyUseHTMLString:true,
-                    type: 'warning'
+                    type: options.type||'warning',
                 }).then(() => {
                     options.callback()
                 }).catch(() => {
                 });
+            },
+            FindInDisk:function(list,callback){
+                let result=null;
+                this.UserDiskData.forEach((item)=>{
+                    if(item.disk_id===list.disk_id){
+                        result=item;
+                        callback(item);
+                    }
+                });
+                return result;
             },
             InputConfrim:function(options){
                 this.$prompt(options.tips, options.title, {
