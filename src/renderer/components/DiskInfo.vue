@@ -37,13 +37,13 @@
         <div class="CloudDiskInfoList">
             <span>文件分享:</span>
             <input v-show="DiskData.share.length" @focus="copy" ref="share" type="text" >
-            <button v-show="DiskData.share" @click="copy" style="margin-top: 4px;">复制</button>
+            <button v-show="DiskData.share" @click="copy" style="margin-top: 2px;">复制</button>
             <div v-if="!DiskData.share">未分享</div>
         </div>
         <div class="CloudDiskInfoLine"></div>
         <div class="CloudDiskInfoList" style="position: absolute;bottom: 10px;">
-            <button @click="close">取消</button>
-            <button @click="close" style="margin-right: 10px">确定</button>
+            <button @click="close">确定</button>
+            <button @click="close" class="CloudDiskInfoBack">取消</button>
         </div>
     </div>
 </template>

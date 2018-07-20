@@ -381,7 +381,7 @@
             InsertFileData:function(item){
                 item.active=false;//设置未选择
                 item.size=this.FileSize(item.disk_size);//计算文件大小
-                item.type=this.StringBefore(item.disk_realname, ".");
+                item.type=this.StringBefore(item.disk_realname, ".").toLowerCase();
                 item.icon =this.IconGet(item);//区别文件类型设置图表
                 this.UserDiskData.push(item);
             },
@@ -589,6 +589,61 @@
                     this.ClearSelect();
                     this.GetMainFile(item.disk_id, 'normal');
                 }else{
+                    let type=this.DiskData.NowSelect.type;
+                    if (type==='zip') {
+                        this.$Message.info('解压文件')
+                    }
+                    else if (this.StringExist(type, 'apng,png,jpg,jpeg,bmp,gif')) {
+                        this.$Message.info('查看图片')
+                    }
+                    else if (this.StringExist(type, 'mp4,rmvb,mkv')) {
+                        this.$Message.info('查看视频')
+                    }
+                    else if (this.StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape')) {
+                        let data=[];
+                        this.UserDiskData.forEach((item)=>{
+                            if(this.StringExist(item.type, 'm4a,mp3,ogg,flac,f4a,wav,ape')){
+                                data.push(item)
+                            }
+                        });
+                        ipc.send('Music-player',data);
+                    }
+                    else if (this.StringExist(type, 'doc,docx')) {
+                        return prefix+'DocType.png';
+                    }
+                    else if (this.StringExist(type, 'ppt,pptx')) {
+                        return prefix+'PptType.png';
+                    }
+                    else if (this.StringExist(type, 'xls,xlsx')) {
+                        return prefix+'ExcelType.png';
+                    }
+                    else if (type==='pdf') {
+                        return prefix+'PdfType.png';
+                    }
+                    else if (this.StringExist(type, 'ini,txt,md')) {
+                        return prefix+'TxtType.png';
+                    }
+                    else if (this.StringExist(type, 'xml,aspx,php,phtml,.htaccesscss,js,c')) {
+                        return prefix+'CodeType.png';
+                    }
+                    else if (this.StringExist(type, 'htm,html')) {
+                        return prefix+'WebType.png';
+                    }
+                    else if (type==='log') {
+                        return prefix+'OtherType.png';
+                    }
+                    else if (this.StringExist(type, 'exe,msi')) {
+                        return prefix+'ExeType.png';
+                    }
+                    else if (type=== 'torrent') {
+                        return prefix+'BtType.png';
+                    }
+                    else if (type==='vcf') {
+                        return prefix+'VcfType.png';
+                    }
+                    else {
+                        return prefix+'OtherType.png';
+                    }
                     this.$Message.info('无法打开文件')
                 }
             },
@@ -1129,6 +1184,9 @@
                     i = Math.floor(Math.log(bytes) / Math.log(k));
                 return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
             },
+            GetSameDataByType:function(){
+
+            },
             IconGet:function (item) {
                 let prefix=path.join(__static, '/img/disk/');
                 let type = item.type;
@@ -1138,46 +1196,46 @@
                 if (this.StringExist(type, '7z,zip,rar,tar.gz')) {
                     return prefix+'RarType.png';
                 }
-                else if (this.StringExist(type, 'apng,png,jpg,jpeg,bmp,gif,APNG,PNG,JPG,JPEG,BMP,GIF')) {
+                else if (this.StringExist(type, 'apng,png,jpg,jpeg,bmp,gif')) {
                     return prefix+'ImageType.png';
                 }
-                else if (this.StringExist(type, 'mp4,rmvb,mkv,MP4,RMVB,MKV')) {
+                else if (this.StringExist(type, 'mp4,rmvb,mkv')) {
                     return prefix+'VideoType.png';
                 }
-                else if (this.StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape,M4A,MP3,OGG,FLAC,F4A,WAV,APE')) {
+                else if (this.StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape')) {
                     return prefix+'MusicType.png';
                 }
-                else if (this.StringExist(type, 'doc,docx,DOC,DOCX')) {
+                else if (this.StringExist(type, 'doc,docx')) {
                     return prefix+'DocType.png';
                 }
-                else if (this.StringExist(type, 'ppt,pptx,PPT,PPTX')) {
+                else if (this.StringExist(type, 'ppt,pptx')) {
                     return prefix+'PptType.png';
                 }
-                else if (this.StringExist(type, 'xls,xlsx,XLS,XLSX')) {
+                else if (this.StringExist(type, 'xls,xlsx')) {
                     return prefix+'ExcelType.png';
                 }
-                else if (this.StringExist(type, 'pdf,PDF')) {
+                else if (type==='pdf') {
                     return prefix+'PdfType.png';
                 }
-                else if (this.StringExist(type, 'ini,txt,md,INI,TXT,MD')) {
+                else if (this.StringExist(type, 'ini,txt,md')) {
                     return prefix+'TxtType.png';
                 }
-                else if (this.StringExist(type, 'xml,aspx,php,phtml,.htaccesscss,js,c,XML,ASPX,PHP,PHTML,.HTACCESSCSS,JS,C')) {
+                else if (this.StringExist(type, 'xml,aspx,php,phtml,.htaccesscss,js,c')) {
                     return prefix+'CodeType.png';
                 }
-                else if (this.StringExist(type, 'htm,html,HTM,HTML')) {
+                else if (this.StringExist(type, 'htm,html')) {
                     return prefix+'WebType.png';
                 }
-                else if (this.StringExist(type, 'log,LOG')) {
+                else if (type==='log') {
                     return prefix+'OtherType.png';
                 }
-                else if (this.StringExist(type, 'exe,msi,EXE,MSI')) {
+                else if (this.StringExist(type, 'exe,msi')) {
                     return prefix+'ExeType.png';
                 }
-                else if (this.StringExist(type, 'torrent,TORRENT')) {
+                else if (type=== 'torrent') {
                     return prefix+'BtType.png';
                 }
-                else if (this.StringExist(type, 'vcf,VCF')) {
+                else if (type==='vcf') {
                     return prefix+'VcfType.png';
                 }
                 else {

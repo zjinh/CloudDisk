@@ -477,6 +477,9 @@ z-index: 2;
 .CloudDiskInfoControl{
 	width: 100%;
 	height: 30px;
+	-webkit-app-region: drag;
+	position: relative;
+	z-index: 2;
 }
 .CloudDiskInfoControl p{
 	float: left;
@@ -498,6 +501,9 @@ z-index: 2;
 	background: none;
 }
 .CloudDiskInfoControl button:hover{
+	background: #eee;
+}
+.CloudDiskInfoControl button.sf-icon-times:hover{
 	background: #E83C3C;
 	color: #fff;
 }
@@ -527,19 +533,23 @@ z-index: 2;
 }
 .CloudDiskInfoList button{
 	float: right;
-	border-radius: 0;
-	-webkit-border-radius: 0;
-	-moz-border-radius: 0;
-	border: none;
+	border-radius: 3px;
+	border: 1px solid #3a8ee6;
 	background: #3a8ee6;
 	color: #ffffff;
-	padding: 0 10px;
-	height: 25px;
-	line-height: 23px;
+	padding: 0 15px;
+	height: 30px;
+	line-height: 30px;
 	-webkit-app-region: no-drag;
 }
+.CloudDiskInfoBack{
+	margin-right: 10px;
+	background: #fff!important;
+	border: 1px solid #dcdfe6!important;
+	color: #606266!important;
+}
 .CloudDiskInfoList input{
-    width: 160px;
+    width: 150px;
     border-radius: 0px;
     height: 29px;
 	-webkit-app-region: no-drag;
@@ -746,6 +756,186 @@ z-index: 2;
 	opacity: .5;
 	border: 1px solid #868686;
 	z-index: 1;
+}
+/*音乐播放器*/
+.SlimfAudioContainer{
+	background-color: #fff;
+	width:100%;
+	height: 100%;
+}
+.SlimfAudioContainer audio{
+	display: none;
+}
+.SlimfAudioPlayerContainer{
+	width: 100%;
+	height: 150px;
+	border-bottom: 2px solid #3b8cff;
+}
+.SlimfAudioPlayerContainer canvas{
+	position: absolute;
+	top: 0;
+	z-index: 1;
+	opacity: .75;
+}
+.SlimfAudioPlayerContainer ul{
+	width: 252px;
+	height: 60px;
+	margin: 0px auto;
+	position: relative;
+	z-index: 2;
+}
+.SlimfAudioPlayerContainer ul>li{
+	float: left;
+}
+.SlimfAudioPlayerTitle{
+	width: 100%;
+	height: 35px;
+	text-align: center;
+	color: #585858;
+	font-weight: 700;
+	font-size: 14px;
+	position: relative;
+	z-index: 2;
+	-webkit-app-region: drag;
+}
+.SlimfABtnbig,.SlimfABtnsmall{
+	border: 2px solid #3b8cff;
+	display: block;
+	border-radius: 25px;
+	-webkit-border-radius: 25px;
+	-moz-border-radius: 25px;
+	text-align: center;
+	color: #409EFF;
+	font-size: 18px;
+	cursor: pointer;
+}
+.SlimfABtnbig:hover,.SlimfABtnsmall:hover{
+	opacity: .8;
+}
+.SlimfABtnbig{
+	width: 50px;
+	height: 50px;
+	line-height: 46px;
+	background: #3b8cff;
+	color: #fff;
+}
+.SlimfABtnsmall{
+	width: 35px;
+	height: 35px;
+	line-height: 31px;
+	font-size: 14px;
+	margin: 8px;
+}
+.SlimfABtnmidue{
+	width: 30px;
+	color: #3b8cff;
+	height: 30px;
+	line-height: 30px;
+	margin: 10px;
+	font-size: 14px;
+}
+.SlimfAudioTime{
+	width: 91%;
+	height: 25px;
+	line-height: 20px;
+	font-size: 12px;
+	text-align: right;
+	color: #585858;
+	font-weight: bold;
+	position: relative;
+	z-index: 2;
+}
+.SlimfAudioSliderContainer{
+	width: 85%;
+	margin: 0px auto;
+	overflow:initial;
+	height: 5px;
+	background: #eee;;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	position: relative;
+	z-index: 2;
+}
+.SlimfAudioSlider{
+	position:relative;
+	z-index:2;
+	overflow:initial;
+	width:0;
+	height:5px;
+	background:#2196f3;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.SlimfVideoSliderBar span,.SlimfVideoVolumnSliderBar span,.SlimfAudioSlider span {
+	position:relative;
+	top:-2px;
+	right:-2px;
+	z-index:1;
+	float:right;
+	display:block;
+	width:10px;
+	height:10px;
+	border-radius:10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	background:#1d8ad8;
+}
+.SlimfAudioListContainer{
+	width: 100%;
+	height: calc(100% - 180px);
+	overflow-y: auto;
+	background: #fff;
+}
+.SlimfAudioListContainer li{
+	width: 100%;
+	height: 35px;
+	line-height: 35px;
+	color: #4a4a4a;
+	border-top: 1px solid #dcdbdb;
+	text-indent: 10px;
+}
+.SlimfAudioListContainer li:hover{
+	color: #409EFF;
+	cursor: pointer;
+}
+.SlimfAudioVolumn{
+	width: 30px;
+	height: 129px;
+	background: #fff;
+	position: absolute;
+	float: right;
+	right: 66px;
+	top: 105px;
+	padding: 12px;
+	border: 1px solid #eee;
+	z-index: 3;
+}
+.SlimfVideoVolumnSlider {
+	overflow:initial;
+	float:left;
+	width:6px;
+	height:100px;
+	background:#bbbbbb;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	position:relative;
+	bottom:0;
+	overflow: unset!important;
+}
+.SlimfVideoVolumnSliderBar {
+	position:relative;
+	top:0;
+	width:100%;
+	height:100%;
+	background: #409EFF;
+	overflow: unset!important;
+}
+.SlimfAudioPlayThis{
+	background: #409EFF;
+	color: #fff!important;
 }
 /*滚动条*/
 *::-webkit-scrollbar{

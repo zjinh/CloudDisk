@@ -1,4 +1,4 @@
-import { app, BrowserWindow,ipcMain,Menu,Tray,autoUpdater } from 'electron'
+import { app, BrowserWindow,ipcMain,Menu,Tray,autoUpdater,nativeImage } from 'electron'
 const path = require('path');
 
 //import { autoUpdater } from 'electron-updater'
@@ -12,7 +12,37 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 //const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,SettingWindow;
+let LoginWindow,DiskWindow,SettingWindow,MusicPlayer;
+/*播放按钮*/
+let PlayFunc;
+let PlayerIcon = path.join(__static, '/img/player');
+let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
+let PlayBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'play.png'));
+let PauseBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'pause.png'));
+let PrevBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'prev.png'));
+let thumbarButtons = [
+    {
+        tooltip: '上一曲',
+        icon: PrevBtn,
+        click: () => {
+            MusicPlayer.webContents.send('Prev');
+        }
+    },
+    {
+        tooltip: '播放',
+        icon: PlayBtn,
+        click: () => {
+            MusicPlayer.webContents.send('Play');
+        }
+    },
+    {
+        tooltip: '下一曲',
+        icon:NextBtn,
+        click: () => {
+            MusicPlayer.webContents.send('Next');
+        }
+    }
+];
 let message={
     appName:'CloudDisk',
     error:'检查更新出错, 请联系开发人员',
@@ -48,6 +78,9 @@ const DiskURL= process.env.NODE_ENV === 'development'
 const InfoURL= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/info`
     : `file://${__dirname}/index.html#/info`;
+const MusicPlayerURL= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/music-player`
+    : `file://${__dirname}/index.html#/music-player`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -155,7 +188,36 @@ function CreateDiskInfo(data) {
     id.webContents.on('did-finish-load', ()=>{
         id.webContents.send('DiskInfo',data);
     });
-
+}
+function CreateMusicPlayer(data) {
+    if(MusicPlayer){
+        MusicPlayer.focus();
+        MusicPlayer.webContents.send('MusicList',data);
+        return
+    }
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    MusicPlayer= new BrowserWindow({
+        width: 350,
+        height: 500,
+        title:'音乐播放器',
+        useContentSize: true,
+        maximizable:false,
+        minimizable:false,
+        resizable:false,
+        frame:false,
+        webPreferences:{
+            webSecurity:false
+        },
+    });
+    MusicPlayer.setThumbarButtons(thumbarButtons);
+    MusicPlayer.loadURL(MusicPlayerURL);
+    MusicPlayer.on('closed', function() {
+        MusicPlayer = null;
+    });
+    MusicPlayer.webContents.on('did-finish-load', ()=>{
+        MusicPlayer.webContents.send('MusicList',data);
+    });
 }
 function BindIpc() {
     /*登录窗口指令*/
@@ -174,7 +236,19 @@ function BindIpc() {
     ipcMain.on('DiskInfo', (e,msg)=> {
         CreateDiskInfo(msg)
     });
-
+    ipcMain.on('Music-player',(e,msg)=>{
+        CreateMusicPlayer(msg)
+    });
+    ipcMain.on('play-state',(e,msg)=>{
+        if(msg==='pause') {
+            thumbarButtons[1].icon = PauseBtn;
+            thumbarButtons[1].tooltip='暂停'
+        }else{
+            thumbarButtons[1].icon =PlayBtn;
+            thumbarButtons[1].tooltip='播放'
+        }
+        MusicPlayer.setThumbarButtons(thumbarButtons);
+    });
     /*更新*/
     /*检查更新*/
     ipcMain.on('check-for-update',(event, arg)=> {

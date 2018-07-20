@@ -21,6 +21,11 @@ export default new Router({
       component: require('@/components/DiskInfo').default
     },
     {
+        path: '/music-player',
+        name: 'DiskInfo',
+        component: require('@/components/DiskMusicPlayer').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
