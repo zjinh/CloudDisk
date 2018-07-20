@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 //const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,SettingWindow,MusicPlayer;
+let LoginWindow,DiskWindow,SettingWindow,MusicPlayer,VideoPlayer;
 /*播放按钮*/
 let PlayFunc;
 let PlayerIcon = path.join(__static, '/img/player');
@@ -20,7 +20,7 @@ let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
 let PlayBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'play.png'));
 let PauseBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'pause.png'));
 let PrevBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'prev.png'));
-let thumbarButtons = [
+let MusicButtons = [
     {
         tooltip: '上一曲',
         icon: PrevBtn,
@@ -40,6 +40,29 @@ let thumbarButtons = [
         icon:NextBtn,
         click: () => {
             MusicPlayer.webContents.send('Next');
+        }
+    }
+];
+let VideoButtons = [
+    {
+        tooltip: '上一个',
+        icon: PrevBtn,
+        click: () => {
+            VideoPlayer.webContents.send('video-Prev');
+        }
+    },
+    {
+        tooltip: '播放',
+        icon: PlayBtn,
+        click: () => {
+            VideoPlayer.webContents.send('video-Play');
+        }
+    },
+    {
+        tooltip: '下一个',
+        icon:NextBtn,
+        click: () => {
+            VideoPlayer.webContents.send('video-Next');
         }
     }
 ];
@@ -81,6 +104,9 @@ const InfoURL= process.env.NODE_ENV === 'development'
 const MusicPlayerURL= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/music-player`
     : `file://${__dirname}/index.html#/music-player`;
+const VideoPlayerURL= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/video-player`
+    : `file://${__dirname}/index.html#/video-player`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -155,13 +181,9 @@ function CreateDiskWindow() {
     DiskWindow.loadURL(DiskURL);
     DiskWindow.on('closed', function() {
         DiskWindow = null;
-        app.quit();
-    });
-    DiskWindow.on('maximize',function () {
-        DiskWindow.webContents.send('size', 1);
-    });
-    DiskWindow.on('unmaximize',function () {
-        DiskWindow.webContents.send('size', -1);
+        if(!LoginWindow) {
+            app.quit();
+        }
     });
 }
 function CreateDiskInfo(data) {
@@ -210,13 +232,43 @@ function CreateMusicPlayer(data) {
             webSecurity:false
         },
     });
-    MusicPlayer.setThumbarButtons(thumbarButtons);
+    MusicPlayer.setThumbarButtons(MusicButtons);
     MusicPlayer.loadURL(MusicPlayerURL);
     MusicPlayer.on('closed', function() {
         MusicPlayer = null;
     });
     MusicPlayer.webContents.on('did-finish-load', ()=>{
         MusicPlayer.webContents.send('MusicList',data);
+    });
+}
+function CreateVideoPlayer(data) {
+    if(VideoPlayer){
+        VideoPlayer.focus();
+        VideoPlayer.webContents.send('VideoList',data);
+        return
+    }
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    VideoPlayer= new BrowserWindow({
+        width: 800,
+        height: 600,
+        title:'视频播放器',
+        useContentSize: true,
+        maximizable:false,
+        minimizable:false,
+        resizable:false,
+        frame:false,
+        webPreferences:{
+            webSecurity:false
+        },
+    });
+    VideoPlayer.setThumbarButtons(VideoButtons);
+    VideoPlayer.loadURL(VideoPlayerURL);
+    VideoPlayer.on('closed', function() {
+        VideoPlayer = null;
+    });
+    VideoPlayer.webContents.on('did-finish-load', ()=>{
+        VideoPlayer.webContents.send('VideoList',data);
     });
 }
 function BindIpc() {
@@ -241,13 +293,16 @@ function BindIpc() {
     });
     ipcMain.on('play-state',(e,msg)=>{
         if(msg==='pause') {
-            thumbarButtons[1].icon = PauseBtn;
-            thumbarButtons[1].tooltip='暂停'
+            MusicButtons[1].icon = PauseBtn;
+            MusicButtons[1].tooltip='暂停'
         }else{
-            thumbarButtons[1].icon =PlayBtn;
-            thumbarButtons[1].tooltip='播放'
+            MusicButtons[1].icon =PlayBtn;
+            MusicButtons[1].tooltip='播放'
         }
-        MusicPlayer.setThumbarButtons(thumbarButtons);
+        MusicPlayer.setThumbarButtons(MusicButtons);
+    });
+    ipcMain.on('Video-player',(e,msg)=>{
+        CreateVideoPlayer(msg)
     });
     /*更新*/
     /*检查更新*/

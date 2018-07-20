@@ -122,6 +122,15 @@
                 <button class="el-button el-button--default el-button--small el-button--primary" @click="DiskMoveUp">确 定</button>
             </span>
         </el-dialog>
+        <el-dialog title="解压到" :visible.sync="ShowUnZip" width="350px">
+            <div style="height: 200px; overflow: auto">
+                <DiskTree v-on:SelectDiskTree="SelectDiskTree" ref="DiskTree"></DiskTree>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <button class="el-button el-button--default el-button--small" @click="ShowUnZip = false">取 消</button>
+                <button class="el-button el-button--default el-button--small el-button--primary" @click="DiskUnZip">确 定</button>
+            </span>
+        </el-dialog>
         <el-dialog title="分享方式" :visible.sync="showShare" width="350px" top="150px">
             <div style="height: 150px;">
                 <p class="CloudDiskShareTips">准备分享<span>{{DiskData.NowSelect.disk_name}}</span></p>
@@ -209,6 +218,8 @@
                 /*树目录参数*/
                 showTree:false,
                 SelectTrees:false,
+                /*解压到参数*/
+                ShowUnZip:false,
                 /*分享窗口参数*/
                 showShare:false,
                 /*排序参数*/
@@ -280,12 +291,11 @@
         },
         methods:{
             Bind:function(){
-                ipc.on('size',(event,message)=> {
-                    if(message>0){
-                        this.ButtonState='sf-icon-window-restore';
-                    }else {
-                        this.ButtonState='sf-icon-window-maximize';
-                    }
+                DiskWindow.on('maximize',()=>{
+                    this.ButtonState='sf-icon-window-restore';
+                });
+                DiskWindow.on('unmaximize',()=>{
+                    this.ButtonState='sf-icon-window-maximize';
                 });
                 document.onclick=document.onmousewheel=()=>{
                     for(let item in this.DiskMouseState){
@@ -591,13 +601,22 @@
                 }else{
                     let type=this.DiskData.NowSelect.type;
                     if (type==='zip') {
-                        this.$Message.info('解压文件')
+                        this.ShowUnZip=true;
+                        this.$nextTick(()=>{
+                            this.$refs.DiskTree.init();
+                        });
                     }
                     else if (this.StringExist(type, 'apng,png,jpg,jpeg,bmp,gif')) {
                         this.$Message.info('查看图片')
                     }
                     else if (this.StringExist(type, 'mp4,rmvb,mkv')) {
-                        this.$Message.info('查看视频')
+                        let data=[];
+                        this.UserDiskData.forEach((item)=>{
+                            if(this.StringExist(item.type, 'mp4,rmvb,mkv')){
+                                data.push(item)
+                            }
+                        });
+                        ipc.send('Video-player',data);
                     }
                     else if (this.StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape')) {
                         let data=[];
@@ -644,7 +663,6 @@
                     else {
                         return prefix+'OtherType.png';
                     }
-                    this.$Message.info('无法打开文件')
                 }
             },
             /*右键菜单函数*/
@@ -855,6 +873,7 @@
                     title:'清空回收站',
                     tips:'该操作将清空回收站且不可恢复,是否继续',
                     callback:()=> {
+                        this.$Message.info('正在清空回收站');
                         Api.Disk.Delete({
                             id: ''
                         },(rs)=>{
@@ -999,6 +1018,31 @@
                     ipc.send('DiskInfo',this.DiskData.NowSelect);
                 }
             },//文件属性
+            DiskUnZip:function(){
+                this.ShowUnZip=false;
+                if(this.DiskData.NowSelect.disk_size>209715200){
+                    this.$Message.warning('为了更好的性能，目前只能解压小于200M的压缩包');
+                    return
+                }
+                this.$Message.info('开始解压，这可能需要一点时间');
+                Api.Disk.UnZip({
+                    url: this.DiskData.NowSelect.disk_main,
+                    parent_id: this.SelectTrees.disk_id,
+                },(rs)=>{
+                    if(!rs[0]){
+                        this.$Message.error('解压失败');
+                        return;
+                    }
+                    rs=rs[0];
+                    if(rs.state==='success'){
+                        this.$Message.success('解压完成');
+                        this.ShowUnZip=false;
+                        this.SelectTrees=false;
+                    }else{
+                        this.$Message.error('解压失败')
+                    }
+                })
+            },
             /*树目录操作方法*/
             DiskMoveUp:function(){
                 if(this.DiskData.SelectFiles.length) {
@@ -1183,9 +1227,6 @@
                     sizes = ['B', 'KB', 'MB', 'GB', 'TB'],
                     i = Math.floor(Math.log(bytes) / Math.log(k));
                 return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
-            },
-            GetSameDataByType:function(){
-
             },
             IconGet:function (item) {
                 let prefix=path.join(__static, '/img/disk/');

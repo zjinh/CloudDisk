@@ -857,17 +857,6 @@ z-index: 2;
 	position: relative;
 	z-index: 2;
 }
-.SlimfAudioSlider{
-	position:relative;
-	z-index:2;
-	overflow:initial;
-	width:0;
-	height:5px;
-	background:#2196f3;
-	border-radius:3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-}
 .SlimfVideoSliderBar span,.SlimfVideoVolumnSliderBar span,.SlimfAudioSlider span {
 	position:relative;
 	top:-2px;
@@ -936,6 +925,129 @@ z-index: 2;
 .SlimfAudioPlayThis{
 	background: #409EFF;
 	color: #fff!important;
+}
+/*视频播放器*/
+.SlimfWindowContainer{
+	background: #fff;
+}
+.SlimfVideoContainer {
+	background:#000;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	-khtml-user-select:none;
+	user-select:none;
+	width:100%;
+	height:100%;
+}
+.SlimfVideoContainer video {
+	width:100%;
+	height:calc(100% - 40px);
+	z-index: 9999999;
+}
+.SlimfVideoControl {
+	position:absolute;
+	bottom:0;
+	padding:5px;
+	width:100%;
+	height:40px;
+	background:#fff;
+	-webkit-transition:all .35s;
+	-moz-transition:all .35s;
+	-o-transition:all .35s;
+}
+.SlimfVideoSlider{
+	float:left;
+	overflow:initial;
+	width:calc(100% - 210px);
+	height:5px;
+	background: #cecece;
+	margin-top:13px;
+	margin-left:10px;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.SlimfVideoSliderBar,.SlimfVideoVolumnSliderBar,.SlimfAudioSlider{
+	position:relative;
+	z-index:2;
+	overflow:initial;
+	width:0;
+	height:5px;
+	background:#2196f3;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.SlimfVideoTempBar {
+	position:relative;
+	top:-10px;
+	z-index:1;
+	height:100%;
+	background:#bbbbbb;
+}
+.SlimfVideoControl .sf-icon-volume-up,.SlimfVideoControl .sf-icon-expand,.sf-icon-compress {
+	width:30px;
+	float:left;
+	height:30px;
+	line-height:30px;
+	color:#5a5a5a;
+	font-size:16px;
+	text-align:center;
+}
+.SlimfVideoPlay {
+	float:left;
+	display:inline-block;
+	width:30px;
+	height:30px;
+	color:#5a5a5a;
+	text-align:center;
+	font-size:22px;
+	line-height:30px;
+}
+.SlimfVideoPlay:hover,.SlimfVideoControl .sf-icon-expand:hover,.sf-icon-compress:hover {
+	color:#0e88bf;
+	cursor:pointer;
+}
+.SlimfVideoVolumn {
+	width:30px;
+	height:129px;
+	background:#fff;
+	position:relative;
+	float:right;
+	right:36px;
+	top:-122px;
+	padding:12px;
+	display:none;
+}
+.SlimfVideoVolumnSlider {
+	overflow:initial;
+	float:left;
+	width:6px;
+	height:100px;
+	background:#bbbbbb;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	position:relative;
+	bottom:0;
+}
+.SlimfVideoVolumnSliderBar {
+	position:relative;
+	top:0;
+	width:100%;
+	height:100%;
+}
+.SlimfVideoTime {
+	float:left;
+	width: 110px;
+	height:30px;
+	line-height:30px;
+	font-size:13px;
+	padding:0px 10px;
+	text-align:center;
+	white-space:nowrap;
+	color:#5a5a5a;
 }
 /*滚动条*/
 *::-webkit-scrollbar{
