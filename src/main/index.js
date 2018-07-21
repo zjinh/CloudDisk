@@ -14,7 +14,6 @@ if (process.env.NODE_ENV !== 'development') {
 //const autoUpdater = require('electron-updater').autoUpdater;
 let LoginWindow,DiskWindow,SettingWindow,MusicPlayer,VideoPlayer;
 /*播放按钮*/
-let PlayFunc;
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
 let PlayBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'play.png'));
@@ -44,13 +43,13 @@ let MusicButtons = [
     }
 ];
 let VideoButtons = [
-    {
+    /*{
         tooltip: '上一个',
         icon: PrevBtn,
         click: () => {
             VideoPlayer.webContents.send('video-Prev');
         }
-    },
+    },*/
     {
         tooltip: '播放',
         icon: PlayBtn,
@@ -58,13 +57,13 @@ let VideoButtons = [
             VideoPlayer.webContents.send('video-Play');
         }
     },
-    {
+    /*{
         tooltip: '下一个',
         icon:NextBtn,
         click: () => {
             VideoPlayer.webContents.send('video-Next');
         }
-    }
+    }*/
 ];
 let message={
     appName:'CloudDisk',
@@ -250,13 +249,12 @@ function CreateVideoPlayer(data) {
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
     VideoPlayer= new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 750,
+        height: 500,
+        minHeight:350,
+        minWidth:500,
         title:'视频播放器',
         useContentSize: true,
-        maximizable:false,
-        minimizable:false,
-        resizable:false,
         frame:false,
         webPreferences:{
             webSecurity:false
@@ -303,6 +301,16 @@ function BindIpc() {
     });
     ipcMain.on('Video-player',(e,msg)=>{
         CreateVideoPlayer(msg)
+    });
+    ipcMain.on('video-play-state',(e,msg)=>{
+        if(msg==='pause') {
+            VideoButtons[0].icon = PauseBtn;
+            VideoButtons[0].tooltip='暂停'
+        }else{
+            VideoButtons[0].icon =PlayBtn;
+            VideoButtons[0].tooltip='播放'
+        }
+        VideoPlayer.setThumbarButtons(VideoButtons);
     });
     /*更新*/
     /*检查更新*/

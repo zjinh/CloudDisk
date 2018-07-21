@@ -929,6 +929,8 @@ z-index: 2;
 /*视频播放器*/
 .SlimfWindowContainer{
 	background: #fff;
+	height: 100%;
+	border: 1px solid #eee;
 }
 .SlimfVideoContainer {
 	background:#000;
@@ -942,7 +944,10 @@ z-index: 2;
 }
 .SlimfVideoContainer video {
 	width:100%;
-	height:calc(100% - 40px);
+	height:calc(100% - 70px);
+	-webkit-transition:all .35s;
+	-moz-transition:all .35s;
+	-o-transition:all .35s;
 	z-index: 9999999;
 }
 .SlimfVideoControl {
@@ -1005,7 +1010,7 @@ z-index: 2;
 	font-size:22px;
 	line-height:30px;
 }
-.SlimfVideoPlay:hover,.SlimfVideoControl .sf-icon-expand:hover,.sf-icon-compress:hover {
+.SlimfVideoPlay:hover,.SlimfVideoControl .sf-icon-expand:hover,.SlimfVideoControl .sf-icon-volume-up:hover,.SlimfVideoControl .sf-icon-compress:hover {
 	color:#0e88bf;
 	cursor:pointer;
 }
@@ -1016,9 +1021,29 @@ z-index: 2;
 	position:relative;
 	float:right;
 	right:36px;
-	top:-122px;
+	top:-150px;
 	padding:12px;
-	display:none;
+}
+.SlimfVideoFliter{
+	width: 80px;
+	height: 80px;
+	background: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	line-height: 80px;
+	text-align: center;
+	font-size: 35px;
+	border: 2px solid #eee;
+	color: #eee;
+	border-radius: 100%;
+}
+.SlimfVideoFliter:hover{
+	color: #0e88bf;
+	border-color: #0e88bf;
 }
 .SlimfVideoVolumnSlider {
 	overflow:initial;

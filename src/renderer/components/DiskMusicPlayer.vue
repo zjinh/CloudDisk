@@ -34,6 +34,7 @@
 </template>
 
 <script>
+    import Media from '../media/media';
     import MusicList from './DiskMusicPlayer/MusicList';
     import electron from 'electron';
     const {ipcRenderer} = require('electron');
@@ -149,7 +150,7 @@
             ChangeVolumn(){
                 let media=this.$refs.audio;
                 let volunm=this.$refs.volunm;
-                this.MediaControl(media,'volunm','y',volunm,event)
+                Media.MediaControl(media,'volunm','y',volunm,event)
             },
             MusicEnded(){
                 this.Next();
@@ -157,49 +158,13 @@
             TimeChange(){
                 let media=this.$refs.audio;
                 let slider=this.$refs.slider;
-                this.MediaControl(media,'play','x',slider,event)
+                Media.MediaControl(media,'play','x',slider,event)
                 this.PlayControl()
-            },
-            MediaControl:function (media,type,fx,slider,e) {
-                e.stopPropagation();
-                if(type!=='play') {
-                    function analfx(e){
-                        fx==='y'?Volumn(Math.abs(((e.pageY - slider.getBoundingClientRect().top) / slider.offsetHeight) - 1), fx):Volumn((e.pageX - slider.getBoundingClientRect().left) / slider.offsetWidth, fx);
-                    }
-                    function Volumn(arm,fx) {
-                        arm>1?arm=1:"";
-                        arm<0?arm=0:"";
-                        media.volume = arm;
-                        if (parseFloat(arm)*100 <101) {
-                            if(fx==='x'){
-                                slider.childNodes[0].style.width=parseFloat(arm)*100 + '%';
-                            }else{
-                                slider.childNodes[0].style.height = parseFloat(arm)*100 + '%';
-                                slider.childNodes[0].style.top = parseFloat(1-arm)*100 + '%';
-                            }
-                        }
-                    }
-                    document.onmousemove = function (e) {
-                        analfx(e);
-                    };
-                    analfx(e);
-                }else{
-                    document.onmousemove = function (e) {
-                        media.currentTime = media.duration * (e.pageX - slider.getBoundingClientRect().left) / slider.offsetWidth;
-                    };
-                    media.currentTime = media.duration * (e.pageX - slider.getBoundingClientRect().left) / slider.offsetWidth;
-                }
-                document.onmouseup = new Function('this.onmousemove=null');
             },
             MusicProcess(){
                 let media=this.$refs.audio;
-                this.TimeText=this.secondDeal(media.currentTime)+ '/' +this.secondDeal(media.duration);
+                this.TimeText=Media.secondDeal(media.currentTime)+ '/' +Media.secondDeal(media.duration);
                 this.ProcessWidth=Math.round(media.currentTime) / Math.round(media.duration) * 100 + "%";
-            },
-            secondDeal:function (time) {
-                let m = parseInt(time / 60) < 10 ? "0" + parseInt(time / 60) : parseInt(time / 60);
-                let s = parseInt(time % 60) < 10 ? "0" + parseInt(time % 60) : parseInt(time % 60);
-                return m + ":" + s;
             },
             Visual:function(){
                 window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
