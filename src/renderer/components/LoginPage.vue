@@ -226,6 +226,18 @@
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
             }
+            window.addEventListener( "dragenter", function (e) {
+                e.preventDefault();
+            }, false);
+            window.addEventListener( "dragover", function (e) {
+                e.preventDefault();
+            }, false );
+            window.addEventListener( "dragleave", function (e) {
+                e.preventDefault();
+            }, false );
+            window.addEventListener( "drop", function (e) {
+                e.preventDefault();
+            }, false );
         },
         methods:{
             login:function () {

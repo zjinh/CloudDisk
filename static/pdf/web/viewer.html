@@ -3,12 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="google" content="notranslate">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>PDF阅读器</title>
     <link rel="stylesheet" href="viewer.css">
-<link rel="resource" type="application/l10n" href="locale/locale.properties">
-<script src="../build/pdf.js"></script>
+    <link rel="resource" type="application/l10n" href="locale/locale.properties">
+    <script src="../build/pdf.js"></script>
     <script src="viewer.js"></script>
   </head>
   <body tabindex="1" class="loadingInProgress">
@@ -40,7 +38,7 @@
       <div id="mainContainer">
         <div class="findbar hidden doorHanger" id="findbar">
           <div id="findbarInputContainer">
-            <input id="findInput" class="toolbarField" title="Find" placeholder="Find in document…" tabindex="91" data-l10n-id="find_input">
+            <input id="findInput" class="toolbarField" title="查找" placeholder="Find in document…" tabindex="91" data-l10n-id="find_input">
             <div class="splitToolbarButton">
               <button id="findPrevious" class="toolbarButton findPrevious" title="Find the previous occurrence of the phrase" tabindex="92" data-l10n-id="find_previous">
                 <span data-l10n-id="find_previous_label">Previous</span>
@@ -54,9 +52,9 @@
 
           <div id="findbarOptionsContainer">
             <input type="checkbox" id="findHighlightAll" class="toolbarField" tabindex="94">
-            <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">Highlight all</label>
+            <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">全部高亮显示</label>
             <input type="checkbox" id="findMatchCase" class="toolbarField" tabindex="95">
-            <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">Match case</label>
+            <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">区分大小写</label>
             <span id="findResultsCount" class="toolbarLabel hidden"></span>
           </div>
 
@@ -80,7 +78,7 @@
             </button>
 
             <button id="secondaryDownload" class="secondaryToolbarButton download visibleMediumView" title="Download" tabindex="54" data-l10n-id="download">
-              <span data-l10n-id="download_label">Download</span>
+              <span data-l10n-id="download_label">下载</span>
             </button>
 
             <a href="#" id="secondaryViewBookmark" class="secondaryToolbarButton bookmark visibleSmallView" title="Current view (copy or open in new window)" tabindex="55" data-l10n-id="bookmark">
@@ -147,24 +145,24 @@
                   <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
                 </button>
 
-                <button id="openFile" class="toolbarButton openFile hiddenLargeView" hidden title="Open File" tabindex="32" data-l10n-id="open_file">
+                <button id="openFile" class="toolbarButton openFile" hidden title="Open File" tabindex="32" data-l10n-id="open_file">
                   <span data-l10n-id="open_file_label">Open</span>
                 </button>
 
-                <button id="print" class="toolbarButton print hiddenMediumView" hidden title="Print" tabindex="33" data-l10n-id="print">
-                  <span data-l10n-id="print_label">Print</span>
+                <button id="print" class="toolbarButton print"  title="打印" tabindex="33" data-l10n-id="print">
+                  <span data-l10n-id="print_label">打印</span>
                 </button>
 
-                <button id="download" class="toolbarButton download hiddenMediumView" hidden title="Download" tabindex="34" data-l10n-id="download">
-                  <span data-l10n-id="download_label">Download</span>
+                <button id="download" class="toolbarButton download" title="下载" tabindex="34" data-l10n-id="download">
+                  <span data-l10n-id="download_label">下载</span>
                 </button>
-                <a href="#" id="viewBookmark" class="toolbarButton bookmark hiddenSmallView"  title="Current view (copy or open in new window)" tabindex="35" data-l10n-id="bookmark">
+                <a href="#" id="viewBookmark" class="toolbarButton bookmark" title="Current view (copy or open in new window)" tabindex="35" data-l10n-id="bookmark">
                   <span data-l10n-id="bookmark_label">Current View</span>
                 </a>
                 <div class="verticalToolbarSeparator hiddenSmallView"></div>
 
-                <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="36" data-l10n-id="tools">
-                  <span data-l10n-id="tools_label">Tools</span>
+                <button id="secondaryToolbarToggle" class="toolbarButton" title="工具" tabindex="36" data-l10n-id="tools">
+                  <span data-l10n-id="tools_label">工具</span>
                 </button>
               </div>
               <div id="toolbarViewerMiddle">
@@ -319,5 +317,18 @@
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
   </body>
+  <script>
+      window.addEventListener( "dragenter", function (e) {
+          e.preventDefault();
+      }, false);
+      window.addEventListener( "dragover", function (e) {
+          e.preventDefault();
+      }, false );
+      window.addEventListener( "dragleave", function (e) {
+          e.preventDefault();
+      }, false );
+      window.addEventListener( "drop", function (e) {
+          e.preventDefault();
+      }, false );
+  </script>
 </html>
-
