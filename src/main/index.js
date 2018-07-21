@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 //const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,SettingWindow,MusicPlayer,VideoPlayer;
+let LoginWindow,DiskWindow,SettingWindow,MusicPlayer,VideoPlayer,PdfWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -106,6 +106,9 @@ const MusicPlayerURL= process.env.NODE_ENV === 'development'
 const VideoPlayerURL= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/video-player`
     : `file://${__dirname}/index.html#/video-player`;
+const PdfViewerUrl= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/pdf-viewer`
+    : `file://${__dirname}/index.html#/pdf-viewer`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -269,6 +272,34 @@ function CreateVideoPlayer(data) {
         VideoPlayer.webContents.send('VideoList',data);
     });
 }
+function CreatePdfViewer(data) {
+    if(PdfWindow){
+        PdfWindow.focus();
+        PdfWindow.webContents.send('pdf-file',data);
+        return
+    }
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    PdfWindow= new BrowserWindow({
+        width: 750,
+        height: 500,
+        minHeight:350,
+        minWidth:500,
+        title:'PDF阅读器',
+        useContentSize: true,
+        frame:false,
+        webPreferences:{
+            webSecurity:false
+        },
+    });
+    PdfWindow.loadURL(PdfViewerUrl);
+    PdfWindow.on('closed', function() {
+        PdfWindow = null;
+    });
+    PdfWindow.webContents.on('did-finish-load', ()=>{
+        PdfWindow.webContents.send('pdf-file',data);
+    });
+}
 function BindIpc() {
     /*登录窗口指令*/
     ipcMain.on('login-success', ()=> {
@@ -311,6 +342,9 @@ function BindIpc() {
             VideoButtons[0].tooltip='播放'
         }
         VideoPlayer.setThumbarButtons(VideoButtons);
+    });
+    ipcMain.on('pdf-viewer',(e,msg)=>{
+        CreatePdfViewer(msg)
     });
     /*更新*/
     /*检查更新*/

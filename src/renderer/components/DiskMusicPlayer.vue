@@ -133,6 +133,8 @@
                         item.play=false;
                     });
                     this.PlayList[NowCount+1].play='AudioPlayThis'
+                }else{
+                    this.PlayControl();
                 }
             },
             Prev(){

@@ -1074,6 +1074,15 @@ z-index: 2;
 	white-space:nowrap;
 	color:#5a5a5a;
 }
+/*Pdf阅读器*/
+.PDfContainer{
+	width: 100%;
+	height: calc(100% - 30px);
+}
+.PDfContainer iframe{
+	width: 100%;
+	height: 100%;
+}
 /*滚动条*/
 *::-webkit-scrollbar{
 	width:7px;

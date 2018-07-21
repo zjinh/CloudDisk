@@ -631,37 +631,29 @@
                         return prefix+'DocType.png';
                     }
                     else if (this.StringExist(type, 'ppt,pptx')) {
-                        return prefix+'PptType.png';
+                        this.$Message.warning('暂不支持打开幻灯片文件');
                     }
                     else if (this.StringExist(type, 'xls,xlsx')) {
-                        return prefix+'ExcelType.png';
+                        this.$Message.warning('暂不支持打开Excel表格');
                     }
                     else if (type==='pdf') {
-                        return prefix+'PdfType.png';
+                        ipc.send('pdf-viewer',this.DiskData.NowSelect);
+                        //return prefix+'PdfType.png';
                     }
-                    else if (this.StringExist(type, 'ini,txt,md')) {
-                        return prefix+'TxtType.png';
-                    }
-                    else if (this.StringExist(type, 'xml,aspx,php,phtml,.htaccesscss,js,c')) {
-                        return prefix+'CodeType.png';
-                    }
-                    else if (this.StringExist(type, 'htm,html')) {
-                        return prefix+'WebType.png';
-                    }
-                    else if (type==='log') {
-                        return prefix+'OtherType.png';
+                    else if (this.StringExist(type, 'ini,txt,md,xml,aspx,php,phtml,.htaccesscss,js,c,htm,html,log')) {
+                        this.$Message.warning('支持打开'+type+'文件，正在努力开发');
                     }
                     else if (this.StringExist(type, 'exe,msi')) {
-                        return prefix+'ExeType.png';
+                        this.$Message.warning('暂不支持打开windows安装程序');
                     }
                     else if (type=== 'torrent') {
-                        return prefix+'BtType.png';
+                        this.$Message.warning('暂不支持打开bt种子文件');
                     }
                     else if (type==='vcf') {
-                        return prefix+'VcfType.png';
+                        this.$Message.warning('暂不支持打开通讯录文件');
                     }
                     else {
-                        return prefix+'OtherType.png';
+                        this.$Message.warning('暂不支持打开'+type+'文件');
                     }
                 }
             },
@@ -775,7 +767,12 @@
             DiskMoveTo:function(){
                 this.showTree=true;
                 this.$nextTick(()=>{
-                    this.$refs.DiskTree.init();
+                    //第一次打开会报错
+                    try {
+                        this.$refs.DiskTree.init();
+                    }catch (e) {
+
+                    }
                 });
             },
             DiskCopy:function(){

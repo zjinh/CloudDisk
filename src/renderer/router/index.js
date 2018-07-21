@@ -22,13 +22,18 @@ export default new Router({
     },
     {
       path: '/music-player',
-      name: 'DiskInfo',
+      name: 'DiskMusicPlayer',
       component: require('@/components/DiskMusicPlayer').default
     },
     {
         path: '/video-player',
-        name: 'DiskInfo',
+        name: 'DiskVideoPlayer',
         component: require('@/components/DiskVideoPlayer').default
+    },
+    {
+        path: '/pdf-viewer',
+        name: 'DiskPdfView',
+        component: require('@/components/DiskPdfView').default
     },
     {
       path: '*',
