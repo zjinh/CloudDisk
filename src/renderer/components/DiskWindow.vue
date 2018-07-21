@@ -317,6 +317,9 @@
                 window.addEventListener( "drop", function (e) {
                     e.preventDefault();
                 }, false );
+                ipc.on('pdf-load-success',()=>{
+                    this.$Message.success('PDf插件加载完成，开始加载文件')
+                })
             },
             keyBoard:function(e){
                 e.stopPropagation();
@@ -652,8 +655,8 @@
                         this.$Message.warning('暂不支持打开Excel表格');
                     }
                     else if (type==='pdf') {
+                        this.$Message.info('正在加载插件');
                         ipc.send('pdf-viewer',this.DiskData.NowSelect);
-                        //return prefix+'PdfType.png';
                     }
                     else if (this.StringExist(type, 'ini,txt,md,xml,aspx,php,phtml,.htaccesscss,js,c,htm,html,log')) {
                         this.$Message.warning('支持打开'+type+'文件，正在努力开发');

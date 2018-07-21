@@ -291,10 +291,15 @@ function CreatePdfViewer(data) {
         webPreferences:{
             webSecurity:false
         },
+        show:false
     });
     PdfWindow.loadURL(PdfViewerUrl);
     PdfWindow.on('closed', function() {
         PdfWindow = null;
+    });
+    PdfWindow.on('ready-to-show',()=>{
+        PdfWindow.show();
+        DiskWindow.webContents.send('pdf-load-success');
     });
     PdfWindow.webContents.on('did-finish-load', ()=>{
         PdfWindow.webContents.send('pdf-file',data);

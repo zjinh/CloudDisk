@@ -930,7 +930,6 @@ z-index: 2;
 .WindowContainer{
 	background: #fff;
 	height: 100%;
-	border: 1px solid #eee;
 }
 .VideoContainer {
 	background:#000;
