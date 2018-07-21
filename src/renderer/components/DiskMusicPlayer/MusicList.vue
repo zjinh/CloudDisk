@@ -1,5 +1,5 @@
 <template>
-    <ul class="SlimfAudioListContainer">
+    <ul class="AudioListContainer">
         <li v-for="(item ,index) in PlayList" :class="item.play" @click="ClickPlay(item,index)">{{index<9?'0':''}}{{index+1}} {{item.disk_name}}</li>
     </ul>
 </template>

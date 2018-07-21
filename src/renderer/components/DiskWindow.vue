@@ -71,18 +71,18 @@
                     <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
-                    <div class="SlimfMouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
+                    <div class="MouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
                 </div>
             </div>
         </div>
-        <ul class="SlimfMouseMenu">
+        <ul class="MouseMenu">
             <li onclick="CloudDisk.MouseMenu.upload();">我的账户</li>
             <li onclick="CloudDisk.MouseMenu.CreateFolder()">系统设置</li>
             <li class="CloudDiskDisable" onclick="CloudDisk.MouseMenu.paste(this)">关于</li>
             <li onclick="CloudDisk.MouseMenu.refues()">切换账户</li>
             <li onclick="CloudDisk.MouseMenu.refues()">退出</li>
         </ul>
-        <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskShareMenu.show" ref="DiskShareMenu">
+        <ul class="MouseMenu" v-show="DiskMouseState.DiskShareMenu.show" ref="DiskShareMenu">
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1" >打开</li>
             <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名</li>
             <li @click="DiskTrash">删除</li>
@@ -90,14 +90,14 @@
             <li @click="CancelShare" :disabled="DiskData.SelectFiles.length>1">取消分享</li>
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
-        <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
+        <ul class="MouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
             <li @click="UploadFile" :disabled="ClassifyName!=='全部文件'">上传文件<span>Ctrl+U</span></li>
             <li @click="CreateFolder" :disabled="ClassifyName!=='全部文件'">新建文件夹<span>Ctrl+N</span></li>
             <li @click="DiskData.Clipboard=[]" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0">清空剪切板</li>
             <li @click="DiskPaste" v-if="ClassifyName==='全部文件'" :disabled="DiskData.Clipboard.length===0">粘贴<span>Ctrl+V</span></li>
             <li @click="DiskRefush">刷新<span>F5</span></li>
         </ul>
-        <ul class="SlimfMouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
+        <ul class="MouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1">打开<span>Ctrl+O</span></li>
             <li @click="DiskDownload">下载</li>
             <li @click="DiskMoveTo">移动到</li>
@@ -108,7 +108,7 @@
             <li @click="DiskShare" :disabled="DiskData.SelectFiles.length>1">分享</li>
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
-        <ul class="SlimfMouseMenu" v-show="DiskMouseState.TrashFileMenu.show" ref="TrashFileMenu">
+        <ul class="MouseMenu" v-show="DiskMouseState.TrashFileMenu.show" ref="TrashFileMenu">
             <li @click="DiskRestore">还原<span>Ctrl+R</span></li>
             <li @click="DiskDelete">删除<span>Ctrl+Del</span></li>
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>

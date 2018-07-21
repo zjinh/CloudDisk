@@ -1,30 +1,30 @@
 <template>
-    <div class="SlimfWindowContainer" @mousedown="VolumnState=false">
+    <div class="WindowContainer" @mousedown="VolumnState=false">
         <div class="CloudDiskInfoControl">
             <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}}</p>
             <button class="sf-icon-times" @click="close"></button>
             <button :class="ButtonState" @click="restore"></button>
             <button class="sf-icon-window-minimize" @click="mini" style="font-size: 12px"></button>
         </div>
-        <div class="SlimfVideoContainer" ref="SlimfVideoPlayer">
+        <div class="VideoContainer" ref="VideoPlayer">
             <video :style="{'height':VideoHeight}" crossorigin="*" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
             </video>
-            <div :class="'SlimfVideoFliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
-            <div :class="'SlimfVideoControl '+BarAnimation" @mouseover="ShowControl" @mouseout="HideControl">
-                <div :class="'SlimfVideoPlay '+PlayButtonState" @click="PlayControl"></div>
-                <div class="SlimfVideoSlider"  @mousedown="TimeChange" ref="slider">
-                    <div class="SlimfVideoSliderBar" :style="{'width':ProcessWidth}">
+            <div :class="'VideoFliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
+            <div :class="'VideoControl '+BarAnimation" @mouseover="ShowControl" @mouseout="HideControl">
+                <div :class="'VideoPlay '+PlayButtonState" @click="PlayControl"></div>
+                <div class="VideoSlider"  @mousedown="TimeChange" ref="slider">
+                    <div class="VideoSliderBar" :style="{'width':ProcessWidth}">
                         <span></span>
                     </div>
-                    <div class="SlimfVideoTempBar" :style="{'width':CacheWidth}"></div>
+                    <div class="VideoTempBar" :style="{'width':CacheWidth}"></div>
                 </div>
-                <div class="SlimfVideoTime">{{TimeText}}</div>
+                <div class="VideoTime">{{TimeText}}</div>
                 <div class="sf-icon-volume-up" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></div>
                 <div :class="FullButton" @click="FullScreen"></div>
             </div>
-            <div class="SlimfVideoVolumn" v-show="VolumnState">
-                <div class="SlimfVideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
-                    <div class="SlimfVideoVolumnSliderBar">
+            <div class="VideoVolumn" v-show="VolumnState">
+                <div class="VideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
+                    <div class="VideoVolumnSliderBar">
                         <span></span>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                     data.forEach((item,index)=>{
                         item.play=false;
                         if(item.active){
-                            item.play='SlimfAudioPlayThis';
+                            item.play='AudioPlayThis';
                             this.playCallBack(item,index);
                             this.PlayControl();
                         }
@@ -152,7 +152,7 @@
                     this.PlayList.forEach((item,index)=>{
                         item.play=false;
                     });
-                    this.PlayList[NowCount+1].play='SlimfAudioPlayThis'
+                    this.PlayList[NowCount+1].play='AudioPlayThis'
                 }
             },
             Prev(){
@@ -164,7 +164,7 @@
                     this.PlayList.forEach((item,index)=>{
                         item.play=false;
                     });
-                    this.PlayList[NowCount-1].play='SlimfAudioPlayThis'
+                    this.PlayList[NowCount-1].play='AudioPlayThis'
                 }
             },
             ChangeVolumn(){
@@ -223,7 +223,7 @@
                 if(flag){
                     this.BarAnimation='animated slideIn'
                 }
-                let el=this.$refs.SlimfVideoPlayer;
+                let el=this.$refs.VideoPlayer;
                 let isFullscreen=document.fullScreen||document.mozFullScreen||document.webkitIsFullScreen;
                 if(!isFullscreen){//进入全屏,多重短路表达式
                     (el.requestFullscreen&&el.requestFullscreen())||

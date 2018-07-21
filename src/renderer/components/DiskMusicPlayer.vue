@@ -1,28 +1,28 @@
 <template>
-    <div class="SlimfAudioContainer" @mousedown="VolumnState=false">
+    <div class="AudioContainer" @mousedown="VolumnState=false">
         <div class="CloudDiskInfoControl">
             <button class="sf-icon-times" @click="close"></button>
             <button class="sf-icon-window-minimize" @click="mini" style="font-size: 12px"></button>
         </div>
-        <div class="SlimfAudioPlayerContainer">
-            <div class="SlimfAudioPlayerTitle">{{NowPlay.disk_name}}</div>
+        <div class="AudioPlayerContainer">
+            <div class="AudioPlayerTitle">{{NowPlay.disk_name}}</div>
             <ul>
-                <li class="SlimfABtnmidue"></li>
-                <li class="sf-icon-step-backward SlimfABtnsmall" @click="Prev"></li>
-                <li :class="'SlimfABtnbig '+PlayButtonState" @click="PlayControl"></li>
-                <li class="sf-icon-step-forward SlimfABtnsmall" @click="Next"></li>
-                <li class="sf-icon-volume-up SlimfABtnmidue" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></li>
+                <li class="ABtnmidue"></li>
+                <li class="sf-icon-step-backward ABtnsmall" @click="Prev"></li>
+                <li :class="'ABtnbig '+PlayButtonState" @click="PlayControl"></li>
+                <li class="sf-icon-step-forward ABtnsmall" @click="Next"></li>
+                <li class="sf-icon-volume-up ABtnmidue" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></li>
             </ul>
-            <div class="SlimfAudioVolumn" v-show="VolumnState">
-                <div class="SlimfVideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
-                    <div class="SlimfVideoVolumnSliderBar">
+            <div class="AudioVolumn" v-show="VolumnState">
+                <div class="VideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
+                    <div class="VideoVolumnSliderBar">
                         <span></span>
                     </div>
                 </div>
             </div>
-            <p class="SlimfAudioTime">{{TimeText}}</p>
-            <div class="SlimfAudioSliderContainer" @mousedown="TimeChange" ref="slider">
-                <div class="SlimfAudioSlider" :style="{'width':ProcessWidth}">
+            <p class="AudioTime">{{TimeText}}</p>
+            <div class="AudioSliderContainer" @mousedown="TimeChange" ref="slider">
+                <div class="AudioSlider" :style="{'width':ProcessWidth}">
                     <span></span>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                 handler(newValue, oldValue) {
                     this.PlayList.forEach((item, index) => {
                         if (item.play) {
-                            item.play = 'SlimfAudioPlayThis';
+                            item.play = 'AudioPlayThis';
                             this.playCallBack(item, index);
                         }
                     });
@@ -76,7 +76,7 @@
                     data.forEach((item,index)=>{
                         item.play=false;
                         if(item.active){
-                            item.play='SlimfAudioPlayThis';
+                            item.play='AudioPlayThis';
                             this.playCallBack(item,index);
                             this.PlayControl();
                         }
@@ -132,7 +132,7 @@
                     this.PlayList.forEach((item,index)=>{
                         item.play=false;
                     });
-                    this.PlayList[NowCount+1].play='SlimfAudioPlayThis'
+                    this.PlayList[NowCount+1].play='AudioPlayThis'
                 }
             },
             Prev(){
@@ -144,7 +144,7 @@
                     this.PlayList.forEach((item,index)=>{
                         item.play=false;
                     });
-                    this.PlayList[NowCount-1].play='SlimfAudioPlayThis'
+                    this.PlayList[NowCount-1].play='AudioPlayThis'
                 }
             },
             ChangeVolumn(){
