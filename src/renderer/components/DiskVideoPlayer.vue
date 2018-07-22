@@ -6,7 +6,7 @@
             <button :class="ButtonState" @click="restore"></button>
             <button class="sf-icon-window-minimize" @click="mini" style="font-size: 12px"></button>
         </div>
-        <div class="VideoContainer" ref="VideoPlayer">
+        <div class="VideoContainer" ref="VideoPlayer" tabindex="-1" @keydown.esc="FullFlag=false">
             <video :style="{'height':VideoHeight}" crossorigin="*" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
             </video>
             <div :class="'VideoFliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
@@ -20,7 +20,7 @@
                 </div>
                 <div class="VideoTime">{{TimeText}}</div>
                 <div class="sf-icon-volume-up" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></div>
-                <div :class="FullButton" @click="FullScreen"></div>
+                <div :class="FullButton" @click="FullScreen(FullButton)"></div>
             </div>
             <div class="VideoVolumn" v-show="VolumnState">
                 <div class="VideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
@@ -50,20 +50,21 @@
             },
             FullFlag:{
                 handler(newValue, oldValue) {
-                   if(this.FullFlag){
-                       let a=setTimeout(()=>{
-                           this.BarAnimation='animated fadeOut';
-                           this.VideoHeight='100%';
-                           clearTimeout(a);
-                       },5000);
-                       this.FullButton='sf-icon-compress';
-                   }else{
-                       this.BarAnimation='animated slideIn';
-                       this.VideoHeight='calc(100% - 70px)';
-                       this.FullButton='sf-icon-expand';
-                   }
+                    if(this.FullFlag){
+                        clearTimeout(this.TimeOutID);
+                        this.TimeOutID=setTimeout(()=>{
+                            this.BarAnimation='animated fadeOut';
+                            this.VideoHeight='100%';
+                            clearTimeout(this.TimeOutID);
+                        },5000);
+                        this.FullButton='sf-icon-compress';
+                    }else{
+                        this.BarAnimation='animated slideIn';
+                        this.VideoHeight='calc(100% - 70px)';
+                        this.FullButton='sf-icon-expand';
+                    }
                 },
-            }
+            },
         },
         data(){
             return{
@@ -82,7 +83,8 @@
                 animation:'',
                 BarAnimation:'',
                 FullFlag:false,
-                FullButton:'sf-icon-expand'
+                FullButton:'sf-icon-expand',
+                TimeOutID:0,
             }
         },
         created(){
@@ -219,50 +221,28 @@
             },
             HideControl(){
                 if(this.FullFlag){
-                    let a=setTimeout(()=>{
+                    clearTimeout(this.TimeOutID);
+                    this.TimeOutID=setTimeout(()=>{
                         this.BarAnimation='animated fadeOut';
                         this.VideoHeight='100%';
-                        clearTimeout(a);
+                        clearTimeout(this.TimeOutID);
                     },5000);
                 }
             },
-            isFull(e){
-                let elm=e.target;
-                if(elm.offsetHeight!==window.innerHeight) {
-                    this.FullFlag=false;
-                }else{
-                    this.FullFlag=true;
-                }
-            },
             FullScreen(flag){
-                if(flag){
-                    this.BarAnimation='animated slideIn'
-                }
                 let el=this.$refs.VideoPlayer;
-                let isFullscreen=document.fullScreen||document.mozFullScreen||document.webkitIsFullScreen;
-                if(!isFullscreen){//进入全屏,多重短路表达式
-                    (el.requestFullscreen&&el.requestFullscreen())||
-                    (el.mozRequestFullScreen&&el.mozRequestFullScreen())||
-                    (el.webkitRequestFullscreen&&el.webkitRequestFullscreen())||(el.msRequestFullscreen&&el.msRequestFullscreen());
-                    this.FullFlag=true;
-                }else{	//退出全屏,三目运算符
+                el.focus();
+                if(this.FullFlag){
                     document.exitFullscreen?document.exitFullscreen():
                         document.mozCancelFullScreen?document.mozCancelFullScreen():
                             document.webkitExitFullscreen?document.webkitExitFullscreen():'';
                     this.FullFlag=false;
+                }else{
+                    (el.requestFullscreen&&el.requestFullscreen())||
+                    (el.mozRequestFullScreen&&el.mozRequestFullScreen())||
+                    (el.webkitRequestFullscreen&&el.webkitRequestFullscreen())||(el.msRequestFullscreen&&el.msRequestFullscreen());
+                    this.FullFlag=true;
                 }
-                el.addEventListener("fullscreenchange", (e)=> {
-                    this.isFull(e);
-                });
-                el.addEventListener("mozfullscreenchange", (e)=> {
-                    this.isFull(e);
-                });
-                el.addEventListener("webkitfullscreenchange", (e)=> {
-                    this.isFull(e);
-                });
-                el.addEventListener("msfullscreenchange", (e)=> {
-                    this.isFull(e);
-                });
             },
             restore(){
                 if (VideoPlayer.isMaximized()) {
