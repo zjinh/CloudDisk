@@ -2,7 +2,7 @@
     <div class="AudioContainer" @mousedown="VolumnState=false">
         <div class="CloudDiskInfoControl">
             <button class="sf-icon-times" @click="close"></button>
-            <button class="sf-icon-window-minimize" @click="mini" style="font-size: 12px"></button>
+            <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
         <div class="AudioPlayerContainer">
             <div class="AudioPlayerTitle">{{NowPlay.disk_name}}</div>
@@ -28,7 +28,7 @@
             </div>
             <canvas width="350" height="180" id="canvas"></canvas>
         </div>
-        <audio ref="audio" @ended="MusicEnded" @timeupdate="MusicProcess" @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl" id="audio"></audio>
+        <audio ref="audio" @ended="MusicEnded" @timeupdate="MusicProcess" @error="Next" @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl" id="audio"></audio>
         <MusicList v-bind:PlayList="PlayList" v-on:play="playCallBack" ref="List"></MusicList>
     </div>
 </template>

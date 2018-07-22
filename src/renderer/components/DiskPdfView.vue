@@ -4,7 +4,7 @@
             <p style="width: calc(100% - 120px)">PDF阅读器 {{NowPlay.disk_name}}</p>
             <button class="sf-icon-times" @click="close"></button>
             <button :class="ButtonState" @click="restore"></button>
-            <button class="sf-icon-window-minimize" @click="mini" style="font-size: 12px"></button>
+            <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
         <div class="PDfContainer">
             <iframe :src="src"></iframe>

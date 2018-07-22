@@ -493,12 +493,15 @@ z-index: 2;
 }
 .CloudDiskInfoControl button{
 	float: right;
-	width: 30px;
+	width: 40px;
 	height: 30px;
 	line-height: 30px;
-	font-size: 14px;
+	font-size: 12px;
 	-webkit-app-region: no-drag;
 	background: none;
+}
+.CloudDiskInfoControl button.sf-icon-times{
+	font-size: 15px;
 }
 .CloudDiskInfoControl button:hover{
 	background: #eee;
@@ -931,6 +934,7 @@ z-index: 2;
 	background: #fff;
 	height: 100%;
 	border: 1px solid rgba(0,0,0,0);
+	border-bottom: none;
 }
 .VideoContainer {
 	background:#000;
