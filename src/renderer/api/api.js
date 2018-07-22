@@ -196,6 +196,14 @@ let Disk={
             error:error
         })
     },
+    GetLyr:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/api/disk/lrc",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
 };
 let Check=function (url,callback,error) {
     Ajax({

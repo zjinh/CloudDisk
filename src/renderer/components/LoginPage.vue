@@ -535,5 +535,5 @@
 </script>
 
 <style scoped>
-
+    @import url("../../../static/css/login.css");
 </style>

@@ -486,7 +486,7 @@ z-index: 2;
 	font-size: 13px;
 	line-height: 30px;
 	text-indent: 5px;
-	width: calc(100% - 30px);
+	width: calc(100% - 40px);
 	text-overflow: ellipsis;
 	word-wrap: normal;
 	word-break: break-all;
@@ -928,6 +928,29 @@ z-index: 2;
 .AudioPlayThis{
 	background: #409EFF;
 	color: #fff!important;
+}
+#AudioLrcList{
+	float: left;
+	padding-left: 28px;
+	width: 245px;
+	height: 25px;
+	font-size: 12px;
+	color: #585858;
+	-o-transition: all 350ms;
+	-moz-transition: all 350ms;
+	-webkit-transition: all 350ms;
+}
+#AudioLrcList *{
+	display: none;
+}
+.this_lrc{
+	text-align: left;
+	display: block!important;
+	-o-transition: all 350ms;
+	-moz-transition: all 350ms;
+	-webkit-transition: all 350ms;
+	-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	-webkit-animation-name:slideInUp;animation-name:slideInUp
 }
 /*视频播放器*/
 .WindowContainer{
