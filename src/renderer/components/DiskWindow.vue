@@ -1345,6 +1345,5 @@
 </script>
 
 <style scoped>
-    @import url("../../../static/css/Slimf.css");
-    @import url("../../../static/css/disk.css");
+
 </style>
