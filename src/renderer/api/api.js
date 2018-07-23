@@ -2,7 +2,7 @@ import axios from 'axios'
 function Ajax(options) {
     let params = new URLSearchParams();
     let method= options.method?options.method:'POST';
-    if(method==='POST'){
+    if(method==='POST'&&!options.upload){
         for(let item in options.data){
             params.append(item, options.data[item]);
         }
@@ -14,7 +14,7 @@ function Ajax(options) {
         data: params,
         emulateJSON:true,
         url: options.url,
-        //"headers": {"Content-Type": "application/x-www-form-urlencodeed"},
+        headers:options.upload?{"Content-Type": "application/x-www-form-urlencodeed"}:{},
         //withCredentials:true,
     }).then((response) => {
         options.success&&typeof options.success==='function'?options.success(response.data):'';
@@ -67,6 +67,15 @@ let User={
         Ajax({
             url:localStorage.server+"/service/user/resend",
             data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Update:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/UpdateUserInfo",
+            data:data,
+            upload:true,
             success:callback,
             error:error
         })

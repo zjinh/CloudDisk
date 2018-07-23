@@ -85,7 +85,7 @@
                 <li class="sf-icon-music"></li>
                 <li class="sf-icon-users"></li>
                 <li>
-                    <img draggable="false" :src="User.head">
+                    <img draggable="false" :src="User.head?User.head+now:''">
                     <div class="circle"></div>
                 </li>
                 <li class="sf-icon-video"></li>
@@ -106,6 +106,11 @@
     export default {
         name: "LoginPage",
         components:{Logininput,VerifyInput},
+        computed:{
+            now(){
+                return '?'+Date.now();
+            }
+        },
         data(){
             return{
                 /*服务器值*/

@@ -309,7 +309,7 @@ function CreatePdfViewer(data) {
         PdfWindow.webContents.send('pdf-file',data);
     });
 }
-function CreateAccountWindow() {
+function CreateAccountWindow(data) {
     if(AccountWindow){
         AccountWindow.show();
         AccountWindow.focus();
@@ -318,29 +318,23 @@ function CreateAccountWindow() {
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
     AccountWindow= new BrowserWindow({
-        width: 750,
-        height: 500,
-        minHeight:350,
-        minWidth:500,
-        title:'PDF阅读器',
-        useContentSize: true,
+        width: 670,
+        height: 420,
+        title:'个人信息',
+        maximizable:false,
+        resizable:false,
         frame:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
-        },
-        show:false
+        }
     });
     AccountWindow.loadURL(AccountUrl);
     AccountWindow.on('closed', function() {
         AccountWindow = null;
     });
-    /*AccountWindow.on('ready-to-show',()=>{
-        PdfWindow.show();
-        DiskWindow.webContents.send('pdf-load-success');
-    });
     AccountWindow.webContents.on('did-finish-load', ()=>{
-        AccountWindow.webContents.send('pdf-file',data);
-    });*/
+        AccountWindow.webContents.send('user-data',data);
+    });
 }
 function BindIpc() {
     /*登录窗口指令*/
@@ -387,6 +381,12 @@ function BindIpc() {
     });
     ipcMain.on('pdf-viewer',(e,msg)=>{
         CreatePdfViewer(msg)
+    });
+    ipcMain.on('show-account',(e,msg)=>{
+        CreateAccountWindow(msg);
+    });
+    ipcMain.on('user',(e,msg)=>{
+        DiskWindow.webContents.send('user',msg);
     });
     /*更新*/
     /*检查更新*/

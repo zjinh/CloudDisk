@@ -22,7 +22,7 @@
             }
         },
         methods:{
-            blur:function () {
+            blur () {
                 if(this.data.value){
                     this.focusState='CloudIndex-Input Input-Focus'
                 }else{

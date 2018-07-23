@@ -24,14 +24,14 @@
             }
         },
         methods:{
-            blur:function () {
+            blur () {
                 if(this.data.value){
                     this.focusState='CloudIndex-Input Input-Focus'
                 }else{
                     this.focusState='CloudIndex-Input'
                 }
             },
-            refresh:function(){
+            refresh(){
                 this.data.url=this.data.url+'?'+Math.random();
             }
         }

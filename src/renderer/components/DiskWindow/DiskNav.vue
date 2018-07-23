@@ -13,7 +13,7 @@
             }
         },
         methods:{
-            SwitchNav:function(item){
+            SwitchNav(item){
                 this.$emit("SwitchNav",item)
             },
         }

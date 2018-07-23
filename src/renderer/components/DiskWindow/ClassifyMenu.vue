@@ -14,7 +14,7 @@
             }
         },
         methods:{
-            change:function (index) {
+            change(index) {
                 this.data.forEach(function (item) {
                     item.active = false
                 });

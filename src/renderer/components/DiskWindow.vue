@@ -10,7 +10,7 @@
             <div class="CloudDiskHeaderControl">
                 <span></span>
                 <button type="button" class="sf-icon-chevron-down" @click="DropMenuShow?DropMenuShow=false:DropMenuShow=true"></button>
-                <Dropdown placement="bottom-start" trigger="custom" :visible="DropMenuShow" @on-click="SystemDropDown">
+                <Dropdown placement="bottom-start" trigger="custom" :visible.sync="DropMenuShow" @on-click="SystemDropDown">
                     <DropdownMenu slot="list">
                         <DropdownItem name="account">
                             <img draggable="false" :src="Logined.userhead">
@@ -26,9 +26,9 @@
                 <button type="button" :class="ButtonState" @click="restore"></button>
                 <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
             </div>
-            <div class="CloudDiskUser">
+            <div class="CloudDiskUser" @click="showAccount">
                 <span>{{Logined.username}}</span>
-                <img draggable="false" :src="Logined.userhead">
+                <img draggable="false" :src="Logined.userhead?Logined.userhead+now:''">
             </div>
         </div>
         <div class="CloudDiskFuncMain">
@@ -271,6 +271,7 @@
             UserDiskData: {
                 handler(newValue, oldValue) {
                     this.DiskSearch.ShowSearch=false;
+                    this.DropMenuShow=false;
                     this.DiskData.SelectFiles=[];
                     this.UserDiskData.forEach((item,index)=>{
                         if (item.active){
@@ -290,13 +291,18 @@
                 deep: true
             },
         },
+        computed:{
+            now(){
+                return '?'+Date.now();
+            }
+        },
         created(){
             this.Bind();
             this.GetUserInfo();
             this.GetMainFile(null,this.loadClassify);
         },
         methods:{
-            Bind:function(){
+            Bind(){
                 DiskWindow.on('maximize',()=>{
                     this.ButtonState='sf-icon-window-restore';
                 });
@@ -325,9 +331,14 @@
                 }, false );
                 ipc.on('pdf-load-success',()=>{
                     this.$Message.success('PDf插件加载完成，开始加载文件')
+                });
+                ipc.on('user',(e,msg)=>{
+                    this.$nextTick(()=>{
+                        this.Logined=msg;
+                    })
                 })
             },
-            keyBoard:function(e){
+            keyBoard(e){
                 e.stopPropagation();
                 e.preventDefault();
                 if((e.ctrlKey)&&(e.keyCode===67)){//复制快捷键
@@ -375,7 +386,7 @@
                     this.DiskData.KeyFlag = false;
                 };
             },//键盘事件
-            GetUserInfo:function () {
+            GetUserInfo () {
                 Api.User.UserInfo((rs)=>{
                     rs[0].userhead=localStorage.server+'/'+rs[0].userhead;
                     this.Logined=rs[0];
@@ -389,7 +400,7 @@
                     });
                 })
             },//获取用户信息
-            GetMainFile:function(id,type){
+            GetMainFile(id,type){
                 if(this.DiskPage===1){
                     this.UserDiskData=[];//清空数据
                     this.LoadCompany=false;
@@ -412,14 +423,14 @@
                     this.PrintFile(rs);
                 })
             },//获取用户文件
-            InsertFileData:function(item){
+            InsertFileData(item){
                 item.active=false;//设置未选择
                 item.size=this.FileSize(item.disk_size);//计算文件大小
                 item.type=this.StringBefore(item.disk_realname, ".").toLowerCase();
                 item.icon =this.IconGet(item);//区别文件类型设置图表
                 this.UserDiskData.push(item);
             },
-            PrintFile:function(rs){
+            PrintFile(rs){
                 if (this.DiskPage === 1) {
                     this.DiskAllCount=0;
                     this.DiskLoadCount=0;
@@ -445,14 +456,14 @@
                     this.DiskLoadCount=this.DiskLoadCount+rs.length;
                 }
             },
-            updateClassify:function(value){//更新网盘分类子组件传回的数据
+            updateClassify(value){//更新网盘分类子组件传回的数据
                 this.ClassifyName=value.name;
                 this.loadClassify=value.data;
                 this.DiskPage = 1;
                 this.GetMainFile(null,this.loadClassify);
                 this.DiskData.NavData=[];
             },
-            LoadMore:function(){
+            LoadMore(){
                 let elm=event.target;
                 if (elm.scrollTop+ elm.offsetHeight >= elm.scrollHeight-32 && this.DiskLoadCount< this.DiskAllCount) {
                     if (this.LoadCompany) {
@@ -461,7 +472,7 @@
                     }
                 }
             },//下拉加载更多
-            changeType:function(type){
+            changeType(type){
                 this.UserDiskData=[];//清空数据
                 this.DiskData.NavData=[];
                 this.DiskType=type;
@@ -486,7 +497,7 @@
                 }
             },//切换网盘分享、传输等
             /*网盘搜索*/
-            SwitchSearch:function(){//搜索有问题
+            SwitchSearch(){//搜索有问题
                 if(this.DiskSearch.ShowSearch===false){
                     this.DiskSearch.ShowSearch=true;
                 }else if(this.DiskSearch.SearchKey.length&&this.DiskSearch.ShowSearch){
@@ -502,7 +513,7 @@
                     this.DiskSearch.ShowSearch=false;
                 }
             },
-            SearchDisk:function(){
+            SearchDisk(){
                 Api.Disk.Search({
                     id:this.DiskSearch.SearchKey,
                     page: this.DiskPage,
@@ -511,12 +522,12 @@
                 });
             },
             //切换文件显示模式
-            changeState:function(){
+            changeState(){
                 this.DiskData.DiskShowState==='CloudDiskMFile'?this.DiskData.DiskShowState='CloudDiskMList':this.DiskData.DiskShowState='CloudDiskMFile';
                 this.DiskStateIcon==='sf-icon-th-large'?this.DiskStateIcon='sf-icon-list-ul':this.DiskStateIcon='sf-icon-th-large';
             },
             //网盘排序方法(排序自段)
-            DiskSort:function(type,key){
+            DiskSort(type,key){
                 if(this.DiskSortState[type]==='up'){
                     this.UserDiskData=this.ArraySort(this.UserDiskData, key, '<');
                     this.DiskSortState[type]='down';
@@ -526,7 +537,7 @@
                 }
             },
             /*选择文件数据操作方法*/
-            SelectFiles:function(event,item,index){
+            SelectFiles(event,item,index){
                 this.$refs.CloudDiskMain.focus();
                 event.stopPropagation();
                 event.preventDefault();
@@ -572,17 +583,17 @@
                     }
                 }
             },
-            RemoveSelect:function(index){
+            RemoveSelect(index){
                 this.DiskData.SelectFiles.splice(index,1)
             },
-            ClearSelect:function(){
+            ClearSelect(){
                 this.UserDiskData.forEach((item)=>{
                     item.active=false;
                 });
                 this.DiskData.SelectFiles=[];
             },
             /*导航栏函数*/
-            SwitchNav:function(item){
+            SwitchNav(item){
                 for (let i = this.DiskData.NavData.length - 1; i > 0; i--) {
                     if (item ===  this.DiskData.NavData[i]) {
                         break;
@@ -591,7 +602,7 @@
                 }
                 this.GetMainFile(item.disk_id, 'normal');
             },///导航栏点击切换
-            NavHomeLoad:function(){
+            NavHomeLoad(){
                if(this.DiskType==='share'){
                     this.changeType('share');
                     this.DiskData.NavData=[];
@@ -603,7 +614,7 @@
                     this.DiskData.NavData=[];
                 }
             },//导航栏首页点击加载
-            NavBack:function(){
+            NavBack(){
                 if(this.DiskData.NavData.length>1) {
                     this.SwitchNav(this.DiskData.NavData[this.DiskData.NavData.length - 2])
                 }else{
@@ -611,7 +622,7 @@
                 }
             },//导航栏后退
             /*打开文件夹/文件*/
-            OpenFile:function(item){
+            OpenFile(item){
                 if(this.DiskData.SelectFiles.length>1){
                     return false;
                 }
@@ -682,16 +693,16 @@
                 }
             },
             /*右键菜单函数*/
-            UploadFile:function(){
+            UploadFile(){
                 if(this.loadClassify==='normal') {
                     this.$Message.info('正在开发')
                     this.$Message.info('最后阶段完成，敬请期待')
                 }
             },//上传文件
-            DiskDownload:function(){
+            DiskDownload(){
                 this.$Message.info('最后阶段完成，敬请期待')
             },//下载文件
-            CreateFolder:function(){
+            CreateFolder(){
                 if(this.ClassifyName==='全部文件') {
                     this.InputConfrim({
                         title: "新建文件夹",
@@ -713,7 +724,7 @@
                     })
                 }
             },//右键新建文件夹
-            DiskPaste:function(){
+            DiskPaste(){
                 if(this.DiskData.Clipboard.length&&this.ClassifyName==='全部文件'){
                     let data=this.MakeSelectData(this.DiskData.Clipboard);
                     if(this.DiskData.ClipboardState==='copy'){
@@ -788,7 +799,7 @@
                     }
                 }
             },//右键粘贴
-            DiskMoveTo:function(){
+            DiskMoveTo(){
                 this.showTree=true;
                 this.$nextTick(()=>{
                     //第一次打开会报错
@@ -799,7 +810,7 @@
                     }
                 });
             },
-            DiskCopy:function(){
+            DiskCopy(){
                 this.DiskData.Clipboard=[];
                 this.DiskData.ClipboardState='copy';
                 if(this.DiskData.SelectFiles.length){
@@ -814,7 +825,7 @@
                     this.$Message.info(this.DiskData.NowSelect.disk_name+' 已复制到剪贴板');
                 }
             },//复制
-            DiskCut:function(){
+            DiskCut(){
                 this.DiskData.Clipboard=[];
                 this.DiskData.ClipboardState='cut';
                 if(this.DiskData.SelectFiles.length){
@@ -829,7 +840,7 @@
                     this.$Message.info(this.DiskData.NowSelect.disk_name+' 已剪切到剪贴板');
                 }
             },//剪切
-            DiskRename:function(){
+            DiskRename(){
                 if(this.DiskData.SelectFiles.length<2){
                     this.InputConfrim({
                         title:"重命名",
@@ -852,7 +863,7 @@
                     })
                 }
             },//重命名
-            DiskTrash:function(){
+            DiskTrash(){
                 let delete_data=[];
                 let tips='';
                 if(this.DiskData.SelectFiles.length){
@@ -885,11 +896,11 @@
                     }
                 });
             },//删除(回收站)
-            DiskRefush:function(){
+            DiskRefush(){
                 this.DiskPage=1;
                 this.GetMainFile(this.NowDiskID, this.loadClassify);
             },//右键刷新
-            DiskCleanTrash:function(){
+            DiskCleanTrash(){
                 this.Confrim({
                     title:'清空回收站',
                     tips:'该操作将清空回收站且不可恢复,是否继续',
@@ -911,7 +922,7 @@
                     }
                 });
             },//清空回收站
-            DiskDelete:function(){
+            DiskDelete(){
                 let delete_data=[];
                 let tips='';
                 if(this.DiskData.SelectFiles.length){
@@ -944,7 +955,7 @@
                     }
                 });
             },//彻底删除
-            DiskRestore:function(){
+            DiskRestore(){
                 let Restore_data=[];
                 let tips='';
                 if(this.DiskData.SelectFiles.length){
@@ -977,15 +988,15 @@
                     }
                 })
             },//文件还原
-            Share:function(){
+            Share(){
                 this.$refs.DiskShareModel.ShareFile(this.DiskData.NowSelect)
             },//提交文件分享
-            updateShare:function(address){
+            updateShare(address){
                 this.FindInDisk(this.DiskData.NowSelect,(item)=>{
                     item.share=address;
                 });
             },//更新文件分享状态
-            DiskShare:function(){
+            DiskShare(){
                 if(this.DiskData.SelectFiles.length<2) {
                     if (this.DiskData.NowSelect.share) {
                         let message = '该文件分享地址为:' + localStorage.server + '/s/' + this.DiskData.NowSelect.share;
@@ -1003,7 +1014,7 @@
                     }
                 }
             },//文件分享
-            CancelShare:function(){
+            CancelShare(){
                 if(this.DiskData.SelectFiles.length<2) {
                     this.Confrim({
                         title: '取消分享',
@@ -1034,12 +1045,12 @@
                     })
                 }
             },//取消分享
-            DiskInfo:function(){
+            DiskInfo(){
                 if(this.DiskData.SelectFiles.length<2) {
                     ipc.send('DiskInfo',this.DiskData.NowSelect);
                 }
             },//文件属性
-            DiskUnZip:function(){
+            DiskUnZip(){
                 this.ShowUnZip=false;
                 if(this.DiskData.NowSelect.disk_size>209715200){
                     this.$Message.warning('为了更好的性能，目前只能解压小于200M的压缩包');
@@ -1065,7 +1076,7 @@
                 })
             },
             /*树目录操作方法*/
-            DiskMoveUp:function(){
+            DiskMoveUp(){
                 if(this.DiskData.SelectFiles.length) {
                     this.DiskData.SelectFiles.forEach((item, index) => {
                         if (this.SelectTrees.disk_id === item.disk_id) {
@@ -1097,18 +1108,18 @@
                     this.$Message.warning('操作终止！没有选中任何文件')
                 }
             },
-            SelectDiskTree:function(item){
+            SelectDiskTree(item){
                 this.SelectTrees=item;
             },//选择树目录
             /*通用方法*/
-            MakeSelectData :function (orgin_data) {
+            MakeSelectData  (orgin_data) {
                 let data = '';
                 for (let j = 0; j < orgin_data.length; j++) {
                     data = data + orgin_data[j].disk_id + ',';
                 }
                 return data.substring(0, data.length - 1);
             },//处理被选中文件的数据收集
-            RemoveSelectData:function(data){
+            RemoveSelectData(data){
                 for (let i = 0; i < this.UserDiskData.length; i++) {
                     for (let j = 0; j < data.length; j++) {
                         if (data[j].disk_id === this.UserDiskData[i].disk_id) {
@@ -1117,12 +1128,12 @@
                     }
                 }
             },
-            MainMouseFunc:function(){
+            MainMouseFunc(){
                 //this.ClearSelect();
                 this.MouseMenu('DiskMainMenu',event);
                 this.MouseSelect(event);
             },
-            MouseMenu:function(menu_main,e){
+            MouseMenu(menu_main,e){
                 e.preventDefault();
                 e.stopPropagation();
                 this.MouseSelectData={
@@ -1152,7 +1163,7 @@
                     }
                 };
             },
-            MouseSelect:function(event){
+            MouseSelect(event){
                 event.preventDefault();
                 event.stopPropagation();
                 let area=event.target;
@@ -1210,7 +1221,7 @@
                     }
                 };
             },
-            Confrim:function(options){
+            Confrim(options){
                 this.$confirm(options.tips, options.title, {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -1221,7 +1232,7 @@
                 }).catch(() => {
                 });
             },
-            FindInDisk:function(list,callback){
+            FindInDisk(list,callback){
                 let result=null;
                 this.UserDiskData.forEach((item)=>{
                     if(item.disk_id===list.disk_id){
@@ -1231,7 +1242,7 @@
                 });
                 return result;
             },
-            InputConfrim:function(options){
+            InputConfrim(options){
                 this.$prompt(options.tips, options.title, {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -1241,7 +1252,7 @@
                 }).catch(() => {
                 });
             },
-            FileSize:function (bytes) {
+            FileSize (bytes) {
                 bytes=parseFloat(bytes);
                 if (bytes === 0) return '0B';
                 let k = 1024,
@@ -1249,7 +1260,7 @@
                     i = Math.floor(Math.log(bytes) / Math.log(k));
                 return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
             },
-            IconGet:function (item) {
+            IconGet (item) {
                 let prefix=path.join(__static, '/img/disk/');
                 let type = item.type;
                 if(!item.disk_main){
@@ -1304,7 +1315,7 @@
                     return prefix+'OtherType.png';
                 }
             },
-            StringExist:function (str, substr) {
+            StringExist (str, substr) {
                 if(typeof str !== "string"){ return; }
                 if(substr==='|*|'){return true}
                 for(let i=0;i<substr.split(',').length;i++){
@@ -1312,10 +1323,10 @@
                 }
                 return false;
             },
-            StringBefore:function (str,substr) {
+            StringBefore (str,substr) {
                 return str.substring(str.lastIndexOf(substr) + 1, str.length);
             },
-            ArraySort:function(array,key,type){
+            ArraySort(array,key,type){
                 let temp,unfix;
                 for (unfix = array.length - 1; unfix > 0; unfix--) {
                     for (let i = 0; i < unfix; i++) {
@@ -1334,23 +1345,30 @@
                 return array;
             },
             /*系统操作函数*/
-            mini:function () {
+            mini () {
                 DiskWindow.minimize();
             },
-            close:function () {
+            close () {
                 DiskWindow.hide();
             },
-            restore:function () {
+            restore () {
                 if (DiskWindow.isMaximized()) {
                     DiskWindow.restore();
                 } else {
                     DiskWindow.maximize();
                 }
             },
-            SystemDropDown:function (name) {
+            showAccount(){
+                if(this.Logined.userid){
+                    ipc.send('show-account',this.Logined)
+                }
+            },
+            SystemDropDown (name) {
                 this.DropMenuShow=false;
                 switch (name){
-                    case 'account':break;
+                    case 'account':
+                        this.showAccount();
+                        break;
                     case 'setting':break;
                     case 'about':break;
                     case 'switch':

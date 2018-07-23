@@ -40,7 +40,7 @@
                     {"disk_name":"全部文件","disk_id":"null","parent_id":"","show":false,"load":false,"child":[]}
                 ]
             },
-            checkIn:function(item,rs){
+            checkIn(item,rs){
                 if (rs[0]&&(rs[0].parent_id===item.disk_id)) {
                     rs.forEach((items)=>{
                         items.load=false;
@@ -50,14 +50,14 @@
                     });
                 }
             },
-            LoadTreeData:function(list){
+            LoadTreeData(list){
                 Api.Disk.LoadTreeFile(list.disk_id,(rs)=>{
                     this.checkIn(list,rs);//检查并插入数据
                     list.load='success';
                     list.show = true;
                 })
             },
-            ToggleDiskTree:function (item,index) {
+            ToggleDiskTree (item,index) {
                 if(item.load==='success') {
                     if (item.show) {
                         item.show = false;
@@ -69,7 +69,7 @@
                     this.LoadTreeData(item);
                 }
             },
-            SelectTree:function (item) {
+            SelectTree (item) {
                 let CloudDiskTree=document.getElementsByClassName('CloudDiskTree');
                 for (let i = 0; i < CloudDiskTree.length; i++) {
                     CloudDiskTree[i].className = 'CloudDiskTree';

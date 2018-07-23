@@ -23,10 +23,10 @@
             }
         },
         methods: {
-            select: function (item,index) {
+            select(item,index) {
                 this.$emit("SelectFiles",event,item,index)
             },
-            OpenFile:function (item) {
+            OpenFile(item) {
                 this.$emit("OpenFile",item)
             }
         }

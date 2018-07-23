@@ -114,7 +114,7 @@
             this.bind();
         },
         methods:{
-            bind:function(){
+            bind(){
                 ipcRenderer.on('Next',()=>{
                     this.Next();
                 });
@@ -210,7 +210,7 @@
                 this.TimeText=Media.secondDeal(media.currentTime)+ '/' +Media.secondDeal(media.duration);
                 this.ProcessWidth=Math.round(media.currentTime) / Math.round(media.duration) * 100 + "%";
             },
-            Visual:function(){
+            Visual(){
                 window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
                 let audio =this.$refs.audio;
                 let ctx = new AudioContext();
@@ -272,7 +272,7 @@
                     }
                 })
             },
-            start: function(txt, callback) {
+            start(txt, callback) {
                 if (typeof(txt) !== 'string' || txt.length < 1 || typeof(callback) !== 'function') return; /* 停止前面执行的歌曲 */
                 this.stop();
                 this.callback = callback;
@@ -307,7 +307,7 @@
                 }
             },
             /* 跳到指定时间的歌词 */
-            jump: function(duration) {
+            jump(duration) {
                 if (typeof(this.handle) !== 'number' || typeof(duration) !== 'number' ||  this.list.length < 1) return false;
                 if (duration < 0) duration = 0;
                 if (this.__duration === duration) return;
@@ -350,7 +350,7 @@
                 }
             },
             /* 停止执行歌曲 */
-            stop: function() {
+            stop() {
                 if (typeof(this.handle) === 'number') clearInterval(this.handle);
                 this.handle = this.callback = null;
                 this.__duration = -1;
