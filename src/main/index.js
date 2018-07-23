@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 //const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,SettingWindow,MusicPlayer,VideoPlayer,PdfWindow;
+let LoginWindow,DiskWindow,SettingWindow,MusicPlayer,VideoPlayer,PdfWindow,AccountWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -109,6 +109,9 @@ const VideoPlayerURL= process.env.NODE_ENV === 'development'
 const PdfViewerUrl= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/pdf-viewer`
     : `file://${__dirname}/index.html#/pdf-viewer`;
+const AccountUrl= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/disk-account`
+    : `file://${__dirname}/index.html#/disk-account`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -148,7 +151,7 @@ function CreateLoginWindow () {
         maximizable:false,
         resizable:false,
         webPreferences:{
-            webSecurity:false
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
     LoginWindow.loadURL(LoginURL);
@@ -177,7 +180,7 @@ function CreateDiskWindow() {
         title:'CloudDisk',
         frame:false,
         webPreferences:{
-            webSecurity:false
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
     DiskWindow.loadURL(DiskURL);
@@ -202,7 +205,7 @@ function CreateDiskInfo(data) {
         resizable:false,
         frame:false,
         webPreferences:{
-            webSecurity:false
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
     });
     id.loadURL(InfoURL);
@@ -231,7 +234,7 @@ function CreateMusicPlayer(data) {
         resizable:false,
         frame:false,
         webPreferences:{
-            webSecurity:false
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
     });
     MusicPlayer.setThumbarButtons(MusicButtons);
@@ -260,7 +263,7 @@ function CreateVideoPlayer(data) {
         useContentSize: true,
         frame:false,
         webPreferences:{
-            webSecurity:false
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
     });
     VideoPlayer.setThumbarButtons(VideoButtons);
@@ -274,6 +277,7 @@ function CreateVideoPlayer(data) {
 }
 function CreatePdfViewer(data) {
     if(PdfWindow){
+        PdfWindow.show();
         PdfWindow.focus();
         PdfWindow.webContents.send('pdf-file',data);
         return
@@ -289,7 +293,7 @@ function CreatePdfViewer(data) {
         useContentSize: true,
         frame:false,
         webPreferences:{
-            webSecurity:false
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
         show:false
     });
@@ -304,6 +308,39 @@ function CreatePdfViewer(data) {
     PdfWindow.webContents.on('did-finish-load', ()=>{
         PdfWindow.webContents.send('pdf-file',data);
     });
+}
+function CreateAccountWindow() {
+    if(AccountWindow){
+        AccountWindow.show();
+        AccountWindow.focus();
+        return
+    }
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    AccountWindow= new BrowserWindow({
+        width: 750,
+        height: 500,
+        minHeight:350,
+        minWidth:500,
+        title:'PDF阅读器',
+        useContentSize: true,
+        frame:false,
+        webPreferences:{
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        },
+        show:false
+    });
+    AccountWindow.loadURL(AccountUrl);
+    AccountWindow.on('closed', function() {
+        AccountWindow = null;
+    });
+    /*AccountWindow.on('ready-to-show',()=>{
+        PdfWindow.show();
+        DiskWindow.webContents.send('pdf-load-success');
+    });
+    AccountWindow.webContents.on('did-finish-load', ()=>{
+        AccountWindow.webContents.send('pdf-file',data);
+    });*/
 }
 function BindIpc() {
     /*登录窗口指令*/

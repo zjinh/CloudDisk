@@ -9,7 +9,19 @@
             </ul>
             <div class="CloudDiskHeaderControl">
                 <span></span>
-                <button type="button" class="sf-icon-chevron-down"></button>
+                <button type="button" class="sf-icon-chevron-down" @click="DropMenuShow?DropMenuShow=false:DropMenuShow=true"></button>
+                <Dropdown placement="bottom-start" trigger="custom" :visible="DropMenuShow" @on-click="SystemDropDown">
+                    <DropdownMenu slot="list">
+                        <DropdownItem name="account">
+                            <img draggable="false" :src="Logined.userhead">
+                            <p>我的账号</p>
+                        </DropdownItem>
+                        <DropdownItem name="setting">系统设置</DropdownItem>
+                        <DropdownItem name="about">关于</DropdownItem>
+                        <DropdownItem name="switch">切换账户</DropdownItem>
+                        <DropdownItem name="exit">退出</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
                 <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
                 <button type="button" :class="ButtonState" @click="restore"></button>
                 <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
@@ -75,13 +87,6 @@
                 </div>
             </div>
         </div>
-        <ul class="MouseMenu">
-            <li onclick="CloudDisk.MouseMenu.upload();">我的账户</li>
-            <li onclick="CloudDisk.MouseMenu.CreateFolder()">系统设置</li>
-            <li class="CloudDiskDisable" onclick="CloudDisk.MouseMenu.paste(this)">关于</li>
-            <li onclick="CloudDisk.MouseMenu.refues()">切换账户</li>
-            <li onclick="CloudDisk.MouseMenu.refues()">退出</li>
-        </ul>
         <ul class="MouseMenu" v-show="DiskMouseState.DiskShareMenu.show" ref="DiskShareMenu">
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1" >打开</li>
             <li @click="DiskRename" :disabled="DiskData.SelectFiles.length>1">重命名</li>
@@ -259,6 +264,7 @@
                         left:0
                     }
                 },
+                DropMenuShow:false,
             }
         },
         watch:{
@@ -1327,6 +1333,7 @@
                 }
                 return array;
             },
+            /*系统操作函数*/
             mini:function () {
                 DiskWindow.minimize();
             },
@@ -1339,6 +1346,33 @@
                 } else {
                     DiskWindow.maximize();
                 }
+            },
+            SystemDropDown:function (name) {
+                this.DropMenuShow=false;
+                switch (name){
+                    case 'account':break;
+                    case 'setting':break;
+                    case 'about':break;
+                    case 'switch':
+                        this.Confrim({
+                            title:'切换账号',
+                            tips:'确认退出当前账号吗',
+                            callback:()=> {
+                                ipc.send('disk-error');
+                            }
+                        });
+                        break;
+                    case 'exit':
+                        this.Confrim({
+                            title:'退出',
+                            tips:'确认退出CloudDisk吗',
+                            type:'info',
+                            callback:()=> {
+                                DiskWindow.close();
+                            }
+                        });
+                        break;
+                    }
             }
         }
     }

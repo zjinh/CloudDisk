@@ -17,6 +17,7 @@ html,body{
 	padding: 0 2px;
 	-webkit-app-region: drag;
 	margin-top: 2px;
+	overflow: unset;
 }
 .CloudDiskHeaderDrag>.ivu-dropdown{
 	float: right;
@@ -53,7 +54,8 @@ color: #fff;
 float: right!important;
 position: relative;
 height: 45px!important;
-z-index: 1;
+z-index: 5;
+	overflow: unset;
 }
 .CloudDiskHeaderControl span{
 float: left;
@@ -303,6 +305,26 @@ color: #6d6d6d;
 	font-size: 14px;
 background: none;
 z-index: 2;
+}
+/*下拉菜单*/
+.ivu-dropdown-item{
+	float: left;
+	width: 100%;
+	padding: 8px 16px;
+}
+.ivu-dropdown-item img{
+	float: left;
+	width: 35px;
+	height: 35px;
+	border-radius: 100%;
+}
+.ivu-dropdown-item p{
+	float: left;
+	margin-left: 10px;
+	font-size: 14px;
+	width: unset!important;
+	background: none;
+	line-height: 35px;
 }
 /*按钮禁用样式*/
 .CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"],.CloudDiskNav button[disabled="disabled"],.MouseMenu li[disabled="disabled"]{
@@ -984,6 +1006,7 @@ z-index: 2;
 	width:100%;
 	height:40px;
 	background:#fff;
+	overflow: unset;
 	-webkit-transition:all .35s;
 	-moz-transition:all .35s;
 	-o-transition:all .35s;
@@ -1047,9 +1070,14 @@ z-index: 2;
 	background:#fff;
 	position:relative;
 	float:right;
-	right:36px;
-	top:-150px;
+	right:32px;
+	bottom: 163px;
 	padding:12px;
+	-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	-webkit-animation-name:fadeIn;animation-name:fadeIn;
+}
+.VideoVolumn-active{
+	color:#0e88bf!important;
 }
 .VideoFliter{
 	width: 80px;

@@ -19,13 +19,13 @@
                     <div class="VideoTempBar" :style="{'width':CacheWidth}"></div>
                 </div>
                 <div class="VideoTime">{{TimeText}}</div>
-                <div class="sf-icon-volume-up" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></div>
+                <div :class="'sf-icon-volume-up '+(VolumnState?'VideoVolumn-active':'')" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></div>
                 <div :class="FullButton" @click="FullScreen(FullButton)"></div>
-            </div>
-            <div class="VideoVolumn" v-show="VolumnState">
-                <div class="VideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
-                    <div class="VideoVolumnSliderBar">
-                        <span></span>
+                <div class="VideoVolumn" v-show="VolumnState">
+                    <div class="VideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
+                        <div class="VideoVolumnSliderBar">
+                            <span></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -214,12 +214,14 @@
                 }
             },
             ShowControl(){
+                this.$refs.VideoPlayer.focus();
                 if(this.FullFlag){
                     this.BarAnimation='animated slideIn';
                     this.VideoHeight='calc(100% - 70px)';
                 }
             },
             HideControl(){
+                this.$refs.VideoPlayer.focus();
                 if(this.FullFlag){
                     clearTimeout(this.TimeOutID);
                     this.TimeOutID=setTimeout(()=>{
@@ -229,7 +231,7 @@
                     },5000);
                 }
             },
-            FullScreen(flag){
+            FullScreen(){
                 let el=this.$refs.VideoPlayer;
                 el.focus();
                 if(this.FullFlag){
@@ -237,6 +239,7 @@
                         document.mozCancelFullScreen?document.mozCancelFullScreen():
                             document.webkitExitFullscreen?document.webkitExitFullscreen():'';
                     this.FullFlag=false;
+                    clearTimeout(this.TimeOutID)
                 }else{
                     (el.requestFullscreen&&el.requestFullscreen())||
                     (el.mozRequestFullScreen&&el.mozRequestFullScreen())||

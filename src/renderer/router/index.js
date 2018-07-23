@@ -36,6 +36,11 @@ export default new Router({
         component: require('@/components/DiskPdfView').default
     },
     {
+        path: '/disk-account',
+        name: 'DiskAccount',
+        component: require('@/components/DiskAccount').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
