@@ -114,6 +114,14 @@
                         this.$Message.error('信息更新失败');
                     }
                     this.clear();
+                },()=>{
+                    this.$Message.error({
+                        content: '账号状态异常，请重新登录！',
+                        onClose:()=> {
+                            /////弹出登录页
+                            ipc.send('disk-error');
+                        }
+                    });
                 });
                 return false;
             },

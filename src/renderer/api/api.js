@@ -15,7 +15,6 @@ function Ajax(options) {
         emulateJSON:true,
         url: options.url,
         headers:options.upload?{"Content-Type": "application/x-www-form-urlencodeed"}:{},
-        //withCredentials:true,
     }).then((response) => {
         options.success&&typeof options.success==='function'?options.success(response.data):'';
     },function (error) {

@@ -189,6 +189,13 @@ function CreateDiskWindow() {
     DiskWindow.loadURL(DiskURL);
     DiskWindow.on('closed', function() {
         DiskWindow = null;
+        MusicPlayer?MusicPlayer.close():'';
+        VideoPlayer?VideoPlayer.close():'';
+        PdfWindow?PdfWindow.close():'';
+        AccountWindow?AccountWindow.close():'';
+        AboutWindow?AboutWindow.close():'';
+        SettingWindow?SettingWindow.close():'';
+        appTray.destroy();
         if(!LoginWindow) {
             app.quit();
         }

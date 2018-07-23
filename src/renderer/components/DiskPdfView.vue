@@ -1,7 +1,7 @@
 <template>
     <div class="WindowContainer">
         <div class="CloudDiskInfoControl">
-            <p style="width: calc(100% - 120px)">PDF阅读器 {{NowPlay.disk_name}}</p>
+            <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}} PDF阅读器</p>
             <button class="sf-icon-times" @click="close"></button>
             <button :class="ButtonState" @click="restore"></button>
             <button class="sf-icon-window-minimize" @click="mini"></button>
@@ -35,7 +35,7 @@
                 this.$nextTick(()=>{
                     this.NowPlay.disk_name=data.disk_name;
                     this.src=path.join(__static, '/pdf/web/viewer.html?file=')+localStorage.server+'/'+data.disk_main;
-                    PdfViewer.setTitle('PDF阅读器-'+data.disk_name);
+                    PdfViewer.setTitle(data.disk_name+'-PDF阅读器');
                 });
             });
             this.bind();
