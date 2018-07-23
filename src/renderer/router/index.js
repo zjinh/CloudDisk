@@ -41,6 +41,11 @@ export default new Router({
         component: require('@/components/DiskAccount').default
     },
     {
+      path: '/disk-about',
+      name: 'DiskAbout',
+      component: require('@/components/DiskAbout').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

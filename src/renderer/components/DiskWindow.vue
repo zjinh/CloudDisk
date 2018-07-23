@@ -1363,6 +1363,9 @@
                     ipc.send('show-account',this.Logined)
                 }
             },
+            showAbout(){
+                ipc.send('show-about')
+            },
             SystemDropDown (name) {
                 this.DropMenuShow=false;
                 switch (name){
@@ -1370,7 +1373,9 @@
                         this.showAccount();
                         break;
                     case 'setting':break;
-                    case 'about':break;
+                    case 'about':
+                        this.showAbout();
+                        break;
                     case 'switch':
                         this.Confrim({
                             title:'切换账号',

@@ -1274,12 +1274,14 @@ z-index: 2;
 .CloudUserLine label{
 	float: left;
 	width: 42px;
+	font-size: 14px;
 	height: 100%;
 }
 .CloudUserLine textarea{
 	width: calc(100% - 50px);
 	height: 55px;
 	margin-top: 8px;
+	resize: none;
 }
 .CloudUserRight button{
 	float: right;
@@ -1300,3 +1302,4 @@ z-index: 2;
 	left: -11px;
 	display: none;
 }
+/*关于信息窗口*/

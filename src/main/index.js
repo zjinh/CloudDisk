@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 //const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,SettingWindow,MusicPlayer,VideoPlayer,PdfWindow,AccountWindow;
+let LoginWindow,DiskWindow,MusicPlayer,VideoPlayer,PdfWindow,AccountWindow,AboutWindow,SettingWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -112,6 +112,9 @@ const PdfViewerUrl= process.env.NODE_ENV === 'development'
 const AccountUrl= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/disk-account`
     : `file://${__dirname}/index.html#/disk-account`;
+const AboutUrl= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/disk-about`
+    : `file://${__dirname}/index.html#/disk-about`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -336,6 +339,34 @@ function CreateAccountWindow(data) {
         AccountWindow.webContents.send('user-data',data);
     });
 }
+function CreateAboutWindow() {
+    if(AccountWindow){
+        AccountWindow.show();
+        AccountWindow.focus();
+        return
+    }
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    AccountWindow= new BrowserWindow({
+        width: 670,
+        height: 420,
+        title:'关于CloudDisk',
+        maximizable:false,
+        resizable:false,
+        frame:false,
+        parent:DiskWindow,
+        webPreferences:{
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        }
+    });
+    AccountWindow.loadURL(AboutUrl);
+    AccountWindow.on('closed', function() {
+        AccountWindow = null;
+    });
+   /* AccountWindow.webContents.on('did-finish-load', ()=>{
+        AccountWindow.webContents.send('user-data',data);
+    });*/
+}
 function BindIpc() {
     /*登录窗口指令*/
     ipcMain.on('login-success', ()=> {
@@ -387,6 +418,9 @@ function BindIpc() {
     });
     ipcMain.on('user',(e,msg)=>{
         DiskWindow.webContents.send('user',msg);
+    });
+    ipcMain.on('show-about',(e,msg)=>{
+        CreateAboutWindow();
     });
     /*更新*/
     /*检查更新*/
