@@ -46,6 +46,11 @@ export default new Router({
       component: require('@/components/DiskAbout').default
     },
     {
+        path: '/picture-shower',
+        name: 'DiskPictureShower',
+        component: require('@/components/DiskPictureShower').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

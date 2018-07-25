@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PdfWindow,AccountWindow,AboutWindow,SettingWindow;
+let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,SettingWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -113,6 +113,9 @@ const AccountUrl= process.env.NODE_ENV === 'development'
 const AboutUrl= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/disk-about`
     : `file://${__dirname}/index.html#/disk-about`;
+const PictureShowerUrl= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/picture-shower`
+    : `file://${__dirname}/index.html#/picture-shower`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -191,6 +194,7 @@ function CreateDiskWindow() {
         DiskInfo?DiskInfo.close():'';
         MusicPlayer?MusicPlayer.close():'';
         VideoPlayer?VideoPlayer.close():'';
+        PictureViewer?PictureViewer.close():"";
         PdfWindow?PdfWindow.close():'';
         AccountWindow?AccountWindow.close():'';
         AboutWindow?AboutWindow.close():'';
@@ -235,6 +239,7 @@ function CreateDiskInfo(data) {
 }
 function CreateMusicPlayer(data) {
     if(MusicPlayer){
+        MusicPlayer.show();
         MusicPlayer.focus();
         MusicPlayer.webContents.send('MusicList',data);
         return
@@ -265,6 +270,7 @@ function CreateMusicPlayer(data) {
 }
 function CreateVideoPlayer(data) {
     if(VideoPlayer){
+        VideoPlayer.show();
         VideoPlayer.focus();
         VideoPlayer.webContents.send('VideoList',data);
         return
@@ -290,6 +296,36 @@ function CreateVideoPlayer(data) {
     });
     VideoPlayer.webContents.on('did-finish-load', ()=>{
         VideoPlayer.webContents.send('VideoList',data);
+    });
+}
+function CreatePictureViewer(data) {
+    if(PictureViewer){
+        PictureViewer.show();
+        PictureViewer.focus();
+        PictureViewer.webContents.send('PhotoList',data);
+        return
+    }
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    PictureViewer= new BrowserWindow({
+        width: 750,
+        height: 500,
+        minHeight:350,
+        minWidth:500,
+        title:'图片查看',
+        useContentSize: true,
+        frame:false,
+        webPreferences:{
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        },
+    });
+    PictureViewer.setThumbarButtons(VideoButtons);
+    PictureViewer.loadURL(PictureShowerUrl);
+    PictureViewer.on('closed', function() {
+        PictureViewer = null;
+    });
+    PictureViewer.webContents.on('did-finish-load', ()=>{
+        PictureViewer.webContents.send('PhotoList',data);
     });
 }
 function CreatePdfViewer(data) {
@@ -413,6 +449,9 @@ function BindIpc() {
     });
     ipcMain.on('Video-player',(e,msg)=>{
         CreateVideoPlayer(msg)
+    });
+    ipcMain.on('picture-viewer',(e,msg)=>{
+        CreatePictureViewer(msg)
     });
     ipcMain.on('video-play-state',(e,msg)=>{
         if(msg==='pause') {

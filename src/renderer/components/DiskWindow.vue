@@ -643,7 +643,13 @@
                         });
                     }
                     else if (this.StringExist(type, 'apng,png,jpg,jpeg,bmp,gif')) {
-                        this.$Message.info('查看图片')
+                        let data=[];
+                        this.UserDiskData.forEach((item)=>{
+                            if(this.StringExist(item.type, 'apng,png,jpg,jpeg,bmp,gif')){
+                                data.push(item)
+                            }
+                        });
+                        ipc.send('picture-viewer',data);
                     }
                     else if (this.StringExist(type, 'mp4,rmvb,mkv')) {
                         let data=[];
