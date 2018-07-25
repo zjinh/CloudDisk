@@ -200,6 +200,7 @@ function CreateDiskWindow() {
             app.quit();
         }
     });
+    CreateAboutWindow();
 }
 function CreateDiskInfo(data) {
     Menu.setApplicationMenu(null);
@@ -355,13 +356,14 @@ function CreateAboutWindow() {
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
     AccountWindow= new BrowserWindow({
-        width: 670,
-        height: 420,
+        width: 470,
+        height: 300,
         title:'关于CloudDisk',
         maximizable:false,
+        minimizable:false,
         resizable:false,
         frame:false,
-        parent:DiskWindow,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
@@ -370,9 +372,9 @@ function CreateAboutWindow() {
     AccountWindow.on('closed', function() {
         AccountWindow = null;
     });
-   /* AccountWindow.webContents.on('did-finish-load', ()=>{
-        AccountWindow.webContents.send('user-data',data);
-    });*/
+    AccountWindow.webContents.on('did-finish-load', ()=>{
+        AccountWindow.webContents.send('version',require(__dirname+"/package.json").version);
+    });
 }
 function BindIpc() {
     /*登录窗口指令*/
@@ -427,7 +429,8 @@ function BindIpc() {
         DiskWindow.webContents.send('user',msg);
     });
     ipcMain.on('show-about',(e,msg)=>{
-        CreateAboutWindow();
+        AccountWindow.show();
+        AccountWindow.focus();
     });
     /*更新*/
     /*检查更新*/

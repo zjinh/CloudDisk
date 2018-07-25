@@ -18,6 +18,7 @@
                         </DropdownItem>
                         <DropdownItem name="setting">系统设置</DropdownItem>
                         <DropdownItem name="about">关于</DropdownItem>
+                        <DropdownItem name="feedback">反馈</DropdownItem>
                         <DropdownItem name="switch">切换账户</DropdownItem>
                         <DropdownItem name="exit">退出</DropdownItem>
                     </DropdownMenu>
@@ -1375,6 +1376,8 @@
                     case 'setting':break;
                     case 'about':
                         this.showAbout();
+                        break;
+                    case 'feedback':
                         break;
                     case 'switch':
                         this.Confrim({

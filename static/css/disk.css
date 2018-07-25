@@ -1303,3 +1303,50 @@ z-index: 2;
 	display: none;
 }
 /*关于信息窗口*/
+.CloudDiskAbout{
+	width: 100%;
+	height: 100%;
+}
+.CloudDiskAbout-head{
+	width: 100%;
+	height: 50px;
+	background: url("../img/login/right-bg.png");
+	background-size: cover;
+	background-position: -160px 58px;
+	background-repeat: repeat-y;
+	border-bottom: 2px solid #eee;
+	-webkit-app-region: drag;
+	background-color: #3b54a8;
+}
+.CloudDiskAbout-head *{
+	float: left;
+}
+.CloudDiskAbout-head img{
+	margin: 8px;
+	width: 32px;
+	height: 32px;
+}
+.CloudDiskAbout-head p{
+	font-size: 14px;
+	line-height: 48px;
+	color: #fff;
+}
+.CloudDiskAbout-head button{
+	float: right;
+	width: 40px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 15px;
+	-webkit-app-region: no-drag;
+	background: none;
+	color: #fff;
+}
+.CloudDiskAbout-head button:hover{
+	background: #E83C3C;
+}
+.CloudDiskAbout-main{
+	width: 100%;
+	height: calc(100% - 50px);
+	background: #fff;
+	padding: 10px;
+}
