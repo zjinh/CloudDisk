@@ -1348,5 +1348,37 @@ z-index: 2;
 	width: 100%;
 	height: calc(100% - 50px);
 	background: #fff;
-	padding: 10px;
+	padding:10px 20px;
+}
+.CloudDiskAbout-main p{
+	font-weight: bold;
+	padding: 5px 0;
+	font-size: 14px;
+}
+.CloudDiskAbout-main .title{
+	font-size: 16px;
+	border-bottom: 1px solid #eee;
+}
+.CloudDiskAbout-main .release{
+	float: left;
+	font-size: 12px;
+	color: #888888;
+}
+.CloudDiskAbout-main .tips{
+
+}
+.CloudDiskAbout-main p span{
+	padding-left: 10px;
+	color: #E83C3C;
+}
+.CloudDiskAbout-main .process{
+	padding-bottom: 10px;
+	height: 35px;
+}
+.CloudDiskAbout-main .bottom{
+	width: 100%;
+}
+.CloudDiskAbout-main button{
+	float: right;
+	overflow: hidden!important;
 }

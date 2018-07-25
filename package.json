@@ -1,6 +1,6 @@
 {
   "name": "CloudDisk",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "author": "ZJINH",
   "description": "Cloud-网盘",
   "license": "ZJINH",
@@ -18,10 +18,16 @@
   },
   "build": {
     "productName": "CloudDisk",
-    "appId": "zjinh.app.cloud.disk",
+    "appId": "com.zjinh.app.disk",
     "directories": {
       "output": "build"
     },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://cloud.com:100/update"
+      }
+    ],
     "files": [
       "dist/electron/**/*"
     ],
@@ -65,6 +71,7 @@
   "dependencies": {
     "asar": "^0.14.3",
     "axios": "^0.16.1",
+    "electron-updater": "^3.0.3",
     "element-ui": "^2.4.3",
     "iview": "^2.14.3",
     "vue": "^2.4.4",

@@ -1,7 +1,6 @@
-import { app, BrowserWindow,ipcMain,Menu,Tray,autoUpdater,nativeImage } from 'electron'
+import { app, BrowserWindow,ipcMain,Menu,Tray,nativeImage } from 'electron'
 const path = require('path');
-
-//import { autoUpdater } from 'electron-updater'
+import { autoUpdater } from 'electron-updater'
 
 /**
  * Set `__static` path to static files in production
@@ -11,8 +10,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-//const autoUpdater = require('electron-updater').autoUpdater;
-let LoginWindow,DiskWindow,MusicPlayer,VideoPlayer,PdfWindow,AccountWindow,AboutWindow,SettingWindow;
+let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PdfWindow,AccountWindow,AboutWindow,SettingWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -133,9 +131,10 @@ function CheckUpdate(event) {
         event.sender.send('check-for-update',message.error);//返回一条信息
     });
     // 更新下载进度事件
-    autoUpdater.on('download-progress', function(progressObj) {
+    autoUpdater.on('download-progress', (progressObj)=>{
         //这个事件无法使用
-        mainWindow.webContents.send('download-progress',progressObj)
+        console.log(event)
+        event.sender.send('download-progress',progressObj)
     });
     autoUpdater.on('update-downloaded',  function () {
         event.sender.send('check-for-update',message.downloaded);//返回一条信息
@@ -189,6 +188,7 @@ function CreateDiskWindow() {
     DiskWindow.loadURL(DiskURL);
     DiskWindow.on('closed', function() {
         DiskWindow = null;
+        DiskInfo?DiskInfo.close():'';
         MusicPlayer?MusicPlayer.close():'';
         VideoPlayer?VideoPlayer.close():'';
         PdfWindow?PdfWindow.close():'';
@@ -200,13 +200,19 @@ function CreateDiskWindow() {
             app.quit();
         }
     });
-    CreateAboutWindow();
 }
 function CreateDiskInfo(data) {
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
     let id= 'DiskInfo'+data.disk_id;
-    id= new BrowserWindow({
+    if(DiskInfo){
+        DiskInfo.show();
+        DiskInfo.focus();
+        DiskInfo.webContents.send('DiskInfo',data);
+        return
+    }
+    DiskInfo= new BrowserWindow({
+        id:id,
         width: 300,
         height: 450,
         title:'文件属性',
@@ -219,12 +225,12 @@ function CreateDiskInfo(data) {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
     });
-    id.loadURL(InfoURL);
-    id.on('closed', function() {
-        id = null;
+    DiskInfo.loadURL(InfoURL);
+    DiskInfo.on('closed', function() {
+        DiskInfo = null;
     });
-    id.webContents.on('did-finish-load', ()=>{
-        id.webContents.send('DiskInfo',data);
+    DiskInfo.webContents.on('did-finish-load', ()=>{
+        DiskInfo.webContents.send('DiskInfo',data);
     });
 }
 function CreateMusicPlayer(data) {
@@ -348,14 +354,14 @@ function CreateAccountWindow(data) {
     });
 }
 function CreateAboutWindow() {
-    if(AccountWindow){
-        AccountWindow.show();
-        AccountWindow.focus();
+    if(AboutWindow){
+        AboutWindow.show();
+        AboutWindow.focus();
         return
     }
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
-    AccountWindow= new BrowserWindow({
+    AboutWindow= new BrowserWindow({
         width: 470,
         height: 300,
         title:'关于CloudDisk',
@@ -363,17 +369,16 @@ function CreateAboutWindow() {
         minimizable:false,
         resizable:false,
         frame:false,
-        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    AccountWindow.loadURL(AboutUrl);
-    AccountWindow.on('closed', function() {
+    AboutWindow.loadURL(AboutUrl);
+    AboutWindow.on('closed', function() {
         AccountWindow = null;
     });
-    AccountWindow.webContents.on('did-finish-load', ()=>{
-        AccountWindow.webContents.send('version',require(__dirname+"/package.json").version);
+    AboutWindow.webContents.on('did-finish-load', ()=>{
+        AboutWindow.webContents.send('version',require("../../package.json").version);
     });
 }
 function BindIpc() {
@@ -429,8 +434,7 @@ function BindIpc() {
         DiskWindow.webContents.send('user',msg);
     });
     ipcMain.on('show-about',(e,msg)=>{
-        AccountWindow.show();
-        AccountWindow.focus();
+        CreateAboutWindow();
     });
     /*更新*/
     /*检查更新*/

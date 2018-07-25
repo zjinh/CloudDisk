@@ -49,7 +49,7 @@ a:hover,a:link,a:visited {
     text-decoration:none;
 }
 button:hover {
-    opacity: .8;
+    opacity: .95;
     cursor:pointer;
     overflow: hidden;
 }
