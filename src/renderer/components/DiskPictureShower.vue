@@ -119,7 +119,6 @@
             },
             ShowPicture(item,index){
                 this.NowShow=item;
-                this.ZoomSize=1;
                 this.NowShow.count=index;
                 this.NowShow.URL=localStorage.server+'/'+item.disk_main;
                 PictureShower.setTitle(item.disk_name+'-图片查看')
