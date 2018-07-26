@@ -319,7 +319,6 @@ function CreatePictureViewer(data) {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
     });
-    PictureViewer.setThumbarButtons(VideoButtons);
     PictureViewer.loadURL(PictureShowerUrl);
     PictureViewer.on('closed', function() {
         PictureViewer = null;
