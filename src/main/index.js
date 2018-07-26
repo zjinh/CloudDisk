@@ -313,6 +313,7 @@ function CreatePictureViewer(data) {
         minHeight:350,
         minWidth:500,
         title:'图片查看',
+        backgroundColor:'#4f4f4f',
         useContentSize: true,
         frame:false,
         webPreferences:{
