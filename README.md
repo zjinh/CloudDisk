@@ -2,6 +2,20 @@
 
 > Cloud-网盘
 
+#### 项目效果
+#### 登录页面
+   ![登录页面](screen/login.png)
+#### 网盘页面
+  ![登录页面](screen/disk.png)
+#### 网盘页面
+  ![登录页面](screen/disk1.png)
+#### 内置音乐播放器
+  ![内置音乐播放器](screen/music.png)
+#### 内置视频播放器
+  ![内置视频播放器](screen/video.png)
+#### pdf阅读器
+  ![pdf阅读器](screen/pdf.png)
+---
 #### Build & Setup
 
 # 安装node模块
@@ -15,20 +29,6 @@ npm run build
 
 ```
 
----
-#### 项目效果
-#### 登录页面
-  ![登录页面](screen/login.png)
-#### 网盘页面
-  ![登录页面](screen/disk.png)
-#### 网盘页面
-  ![登录页面](screen/disk1.png)
-#### 内置音乐播放器
-  ![内置音乐播放器](screen/music.png)
-#### 内置视频播放器
-  ![内置视频播放器](screen/video.png)
-#### pdf阅读器
-  ![pdf阅读器](screen/pdf.png)
 ---
 #### 2018-07-06 
     1、新增排序功能
