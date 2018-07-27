@@ -59,7 +59,7 @@
                         },5000);
                         this.FullButton='sf-icon-compress';
                     }else{
-                        this.BarAnimation='animated slideIn';
+                        this.BarAnimation='animated slideInUp';
                         this.VideoHeight='calc(100% - 70px)';
                         this.FullButton='sf-icon-expand';
                     }
@@ -216,7 +216,7 @@
             ShowControl(){
                 this.$refs.VideoPlayer.focus();
                 if(this.FullFlag){
-                    this.BarAnimation='animated slideIn';
+                    this.BarAnimation='animated slideInUp';
                     this.VideoHeight='calc(100% - 70px)';
                 }
             },

@@ -1,5 +1,5 @@
 <template>
-    <div class="WindowContainer">
+    <div class="WindowContainer PdfWindow">
         <div class="CloudDiskInfoControl">
             <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}} PDF阅读器</p>
             <button class="sf-icon-times" @click="close"></button>

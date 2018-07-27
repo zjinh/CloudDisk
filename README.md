@@ -192,4 +192,8 @@ npm run build:mac
     6、图片缩放、拖拽算法修改
     7、图片查看功能完成
     8、优化图片查看器加载
-    
+#### 2018-07-27
+    1、pdf阅读器代码精简
+    2、拆分slimf,css，分为icon.css,共用部分合并入disk.css
+    3、压缩iviewer.css
+    4、删除pdf阅读器一些图片

@@ -11,6 +11,6 @@
 </script>
 
 <style>
-  @import url("../../static/css/Slimf.css");
+  @import url("../../static/css/icon.css");
   @import url("../../static/css/disk.css");
 </style>

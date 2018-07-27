@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>PDF阅读器</title>
     <link rel="stylesheet" href="viewer.css">
+    <link rel="stylesheet" href="../../css/icon.css">
     <link rel="resource" type="application/l10n" href="locale/locale.properties">
     <script src="../build/pdf.js"></script>
     <script src="viewer.js"></script>
@@ -14,15 +15,9 @@
       <div id="sidebarContainer">
         <div id="toolbarSidebar">
           <div class="splitToolbarButton toggled">
-            <button id="viewThumbnail" class="toolbarButton toggled" title="Show Thumbnails" tabindex="2" data-l10n-id="thumbs">
-               <span data-l10n-id="thumbs_label">Thumbnails</span>
-            </button>
-            <button id="viewOutline" class="toolbarButton" title="Show Document Outline (double-click to expand/collapse all items)" tabindex="3" data-l10n-id="document_outline">
-               <span data-l10n-id="document_outline_label">Document Outline</span>
-            </button>
-            <button id="viewAttachments" class="toolbarButton" title="Show Attachments" tabindex="4" data-l10n-id="attachments">
-               <span data-l10n-id="attachments_label">Attachments</span>
-            </button>
+            <button id="viewThumbnail" class="toolbarButton toggled sf-icon-th-large" title="显示缩略图" tabindex="2" data-l10n-id="thumbs"></button>
+            <button id="viewOutline" class="toolbarButton sf-icon-list" title="显示文本大纲" tabindex="3" data-l10n-id="document_outline"></button>
+            <button id="viewAttachments" class="toolbarButton sf-icon-link" title="显示附件" tabindex="4" data-l10n-id="attachments"></button>
           </div>
         </div>
         <div id="sidebarContent">
@@ -38,14 +33,11 @@
       <div id="mainContainer">
         <div class="findbar hidden doorHanger" id="findbar">
           <div id="findbarInputContainer">
-            <input id="findInput" class="toolbarField" title="查找" placeholder="Find in document…" tabindex="91" data-l10n-id="find_input">
+            <input id="findInput" class="toolbarField" title="查找" placeholder="在文档查找" tabindex="91" data-l10n-id="find_input">
             <div class="splitToolbarButton">
-              <button id="findPrevious" class="toolbarButton findPrevious" title="Find the previous occurrence of the phrase" tabindex="92" data-l10n-id="find_previous">
-                <span data-l10n-id="find_previous_label">Previous</span>
-              </button>
+              <button id="findPrevious" class="toolbarButton findPrevious  sf-icon-arrow-alt-left" title="查找词语上一次出现的位置" tabindex="92" data-l10n-id="find_previous"></button>
               <div class="splitToolbarButtonSeparator"></div>
-              <button id="findNext" class="toolbarButton findNext" title="Find the next occurrence of the phrase" tabindex="93" data-l10n-id="find_next">
-                <span data-l10n-id="find_next_label">Next</span>
+              <button id="findNext" class="toolbarButton findNext  sf-icon-arrow-alt-right" title="查找词语后一次出现的位置" tabindex="93" data-l10n-id="find_next">
               </button>
             </div>
           </div>
@@ -65,54 +57,54 @@
 
         <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
           <div id="secondaryToolbarButtonContainer">
-            <button id="secondaryPresentationMode" class="secondaryToolbarButton presentationMode visibleLargeView" title="Switch to Presentation Mode" tabindex="51" data-l10n-id="presentation_mode">
-              <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
+            <button id="secondaryPresentationMode" class="secondaryToolbarButton presentationMode" title="Switch to Presentation Mode" tabindex="51" data-l10n-id="presentation_mode">
+              <span>Presentation Mode</span>
             </button>
 
             <button id="secondaryOpenFile" hidden class="secondaryToolbarButton openFile visibleLargeView" title="Open File" tabindex="52" data-l10n-id="open_file">
-              <span data-l10n-id="open_file_label">Open</span>
+              <span>Open</span>
             </button>
 
-            <button id="secondaryPrint" class="secondaryToolbarButton print visibleMediumView" title="Print" tabindex="53" data-l10n-id="print">
-              <span data-l10n-id="print_label">打印</span>
+            <button id="secondaryPrint" class="secondaryToolbarButton print sf-icon-print" title="打印" tabindex="53" data-l10n-id="print">
+              <span>打印</span>
             </button>
 
             <button id="secondaryDownload" class="secondaryToolbarButton download visibleMediumView" title="Download" tabindex="54" data-l10n-id="download">
-              <span data-l10n-id="download_label">下载</span>
+              <span>下载</span>
             </button>
 
             <a href="#" id="secondaryViewBookmark" class="secondaryToolbarButton bookmark visibleSmallView" title="Current view (copy or open in new window)" tabindex="55" data-l10n-id="bookmark">
-              <span data-l10n-id="bookmark_label">Current View</span>
+              <span>Current View</span>
             </a>
-            <button id="firstPage" class="secondaryToolbarButton firstPage" title="Go to First Page" tabindex="56" data-l10n-id="first_page">
-              <span data-l10n-id="first_page_label">转到第一页</span>
+            <button id="firstPage" class="secondaryToolbarButton sf-icon-arrow-alt-to-top" title="转到第一页" tabindex="56" data-l10n-id="first_page">
+              <span>转到第一页</span>
             </button>
-            <button id="lastPage" class="secondaryToolbarButton lastPage" title="Go to Last Page" tabindex="57" data-l10n-id="last_page">
-              <span data-l10n-id="last_page_label">转到最后一页</span>
-            </button>
-
-            <div class="horizontalToolbarSeparator"></div>
-
-            <button id="pageRotateCw" class="secondaryToolbarButton rotateCw" title="Rotate Clockwise" tabindex="58" data-l10n-id="page_rotate_cw">
-              <span data-l10n-id="page_rotate_cw_label">顺时针旋转</span>
-            </button>
-            <button id="pageRotateCcw" class="secondaryToolbarButton rotateCcw" title="Rotate Counterclockwise" tabindex="59" data-l10n-id="page_rotate_ccw">
-              <span data-l10n-id="page_rotate_ccw_label">逆时针旋转</span>
+            <button id="lastPage" class="secondaryToolbarButton  sf-icon-arrow-alt-to-bottom" title="转到最后一页" tabindex="57" data-l10n-id="last_page">
+              <span>转到最后一页</span>
             </button>
 
             <div class="horizontalToolbarSeparator"></div>
 
-            <button id="cursorSelectTool" class="secondaryToolbarButton selectTool toggled" title="Enable Text Selection Tool" tabindex="60" data-l10n-id="cursor_text_select_tool">
-              <span data-l10n-id="cursor_text_select_tool_label">Text Selection Tool</span>
+            <button id="pageRotateCw" class="secondaryToolbarButton sf-icon-redo" title="顺时针旋转" tabindex="58" data-l10n-id="page_rotate_cw">
+              <span>顺时针旋转</span>
             </button>
-            <button id="cursorHandTool" class="secondaryToolbarButton handTool" title="Enable Hand Tool" tabindex="61" data-l10n-id="cursor_hand_tool">
-              <span data-l10n-id="cursor_hand_tool_label">Hand Tool</span>
+            <button id="pageRotateCcw" class="secondaryToolbarButton sf-icon-undo" title="逆时针旋转" tabindex="59" data-l10n-id="page_rotate_ccw">
+              <span>逆时针旋转</span>
             </button>
 
             <div class="horizontalToolbarSeparator"></div>
 
-            <button id="documentProperties" class="secondaryToolbarButton documentProperties" title="Document Properties…" tabindex="62" data-l10n-id="document_properties">
-              <span data-l10n-id="document_properties_label">Document Properties…</span>
+            <button id="cursorSelectTool" class="secondaryToolbarButton sf-icon-mouse-pointer toggled" title="文本选择工具" tabindex="60" data-l10n-id="cursor_text_select_tool">
+              <span>文本选择工具</span>
+            </button>
+            <button id="cursorHandTool" class="secondaryToolbarButton  sf-icon-hand-paper" title="手形工具" tabindex="61" data-l10n-id="cursor_hand_tool">
+              <span>手形工具</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator"></div>
+
+            <button id="documentProperties" class="secondaryToolbarButton sf-icon-info-circle" title="文档属性" tabindex="62" data-l10n-id="document_properties">
+              <span>文档属性</span>
             </button>
           </div>
         </div>  <!-- secondaryToolbar -->
@@ -121,23 +113,16 @@
           <div id="toolbarContainer">
             <div id="toolbarViewer">
               <div id="toolbarViewerLeft">
-                <button id="sidebarToggle" class="toolbarButton" title="Toggle Sidebar" tabindex="11" data-l10n-id="toggle_sidebar">
-                  <span data-l10n-id="toggle_sidebar_label">Toggle Sidebar</span>
+                <button id="sidebarToggle" class="toolbarButton" title="切换侧栏（文档所含的大纲/附件）" tabindex="11" data-l10n-id="toggle_sidebar">
                 </button>
                 <div class="toolbarButtonSpacer"></div>
-                <button id="viewFind" class="toolbarButton" title="Find in Document" tabindex="12" data-l10n-id="findbar">
-                  <span data-l10n-id="findbar_label">Find</span>
-                </button>
+                <button id="viewFind" class="toolbarButton sf-icon-search" title="在文档中查找" tabindex="12" data-l10n-id="findbar"></button>
                 <div class="splitToolbarButton hiddenSmallView">
-                  <button class="toolbarButton pageUp" title="Previous Page" id="previous" tabindex="13" data-l10n-id="previous">
-                    <span data-l10n-id="previous_label">Previous</span>
-                  </button>
+                  <button class="toolbarButton pageUp  sf-icon-arrow-alt-up" title="上一页" id="previous" tabindex="13" data-l10n-id="previous"></button>
                   <div class="splitToolbarButtonSeparator"></div>
-                  <button class="toolbarButton pageDown" title="Next Page" id="next" tabindex="14" data-l10n-id="next">
-                    <span data-l10n-id="next_label">Next</span>
-                  </button>
+                  <button class="toolbarButton pageDown  sf-icon-arrow-alt-down" title="下一页" id="next" tabindex="14" data-l10n-id="next"></button>
                 </div>
-                <input type="number" id="pageNumber" class="toolbarField pageNumber" title="Page" value="1" size="4" min="1" tabindex="15" data-l10n-id="page">
+                <input type="number" id="pageNumber" class="toolbarField pageNumber" title="页码" value="1" size="4" min="1" tabindex="15" data-l10n-id="page">
                 <span id="numPages" class="toolbarLabel"></span>
               </div>
               <div id="toolbarViewerRight">
@@ -145,37 +130,25 @@
                   <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
                 </button>
 
-                <button id="openFile" class="toolbarButton openFile" hidden title="Open File" tabindex="32" data-l10n-id="open_file">
+                <button id="openFile" class="toolbarButton" hidden title="Open File" tabindex="32" data-l10n-id="open_file">
                   <span data-l10n-id="open_file_label">Open</span>
                 </button>
 
-                <button id="print" class="toolbarButton print"  title="打印" tabindex="33" data-l10n-id="print">
-                  <span data-l10n-id="print_label">打印</span>
-                </button>
+                <button id="print" class="toolbarButton sf-icon-print"  title="打印" tabindex="33" data-l10n-id="print"></button>
 
-                <button id="download" class="toolbarButton download" title="下载" tabindex="34" data-l10n-id="download">
-                  <span data-l10n-id="download_label">下载</span>
-                </button>
-                <a href="#" id="viewBookmark" class="toolbarButton bookmark" title="Current view (copy or open in new window)" tabindex="35" data-l10n-id="bookmark">
-                  <span data-l10n-id="bookmark_label">Current View</span>
-                </a>
+                <button id="download" class="toolbarButton sf-icon-download" title="下载" tabindex="34" data-l10n-id="download"></button>
+                <a href="#" id="viewBookmark" class="toolbarButton bookmark sf-icon-tag" title="当前位置" tabindex="35" data-l10n-id="bookmark"></a>
                 <div class="verticalToolbarSeparator hiddenSmallView"></div>
-
-                <button id="secondaryToolbarToggle" class="toolbarButton" title="工具" tabindex="36" data-l10n-id="tools">
-                  <span data-l10n-id="tools_label">工具</span>
-                </button>
+                <button id="secondaryToolbarToggle" class="toolbarButton sf-icon-angle-double-right" title="工具" tabindex="36" data-l10n-id="tools"></button>
               </div>
               <div id="toolbarViewerMiddle">
                 <div class="splitToolbarButton">
-                  <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out" tabindex="21" data-l10n-id="zoom_out">
-                    <span data-l10n-id="zoom_out_label">Zoom Out</span>
-                  </button>
+                  <button id="zoomOut" class="toolbarButton zoomOut sf-icon-search-minus" title="缩小" tabindex="21" data-l10n-id="zoom_out"></button>
                   <div class="splitToolbarButtonSeparator"></div>
-                  <button id="zoomIn" class="toolbarButton zoomIn" title="Zoom In" tabindex="22" data-l10n-id="zoom_in">
-                    <span data-l10n-id="zoom_in_label">Zoom In</span>
-                   </button>
+                  <button id="zoomIn" class="toolbarButton zoomIn sf-icon-search-plus" title="放大" tabindex="22" data-l10n-id="zoom_in"></button>
                 </div>
                 <span id="scaleSelectContainer" class="dropdownToolbarButton">
+                  <span class="sf-icon-sort"></span>
                   <select id="scaleSelect" title="Zoom" tabindex="23" data-l10n-id="zoom">
                     <option id="pageAutoOption" title="" value="auto" selected="selected" data-l10n-id="page_scale_auto">Automatic Zoom</option>
                     <option id="pageActualOption" title="" value="page-actual" data-l10n-id="page_scale_actual">Actual Size</option>
@@ -313,7 +286,6 @@
           </div>
         </div>
       </div>  <!-- overlayContainer -->
-
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
   </body>

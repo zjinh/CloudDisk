@@ -702,7 +702,7 @@
             /*右键菜单函数*/
             UploadFile(){
                 if(this.loadClassify==='normal') {
-                    this.$Message.info('正在开发')
+                    this.$Message.info('正在开发');
                     this.$Message.info('最后阶段完成，敬请期待')
                 }
             },//上传文件
