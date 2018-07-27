@@ -1,25 +1,34 @@
-# clouddisk
+# CloudDisk
 
 > Cloud-网盘
 
-#### Build Setup
+#### Build & Setup
 
-``` bash
-# install dependencies
+# 安装node模块
 npm install
 
-# serve with hot reload at localhost:9080
+# 运行项目
 npm run dev
 
-# build electron application for production
-npm run build:win
-
-npm run build:linux
-
-npm run build:mac
+# 打包项目
+npm run build
 
 ```
 
+---
+#### 项目效果
+#### 登录页面
+  ![登录页面](screen/login.png)
+#### 网盘页面
+  ![登录页面](screen/disk.png)
+#### 网盘页面
+  ![登录页面](screen/disk1.png)
+#### 内置音乐播放器
+  ![内置音乐播放器](screen/music.png)
+#### 内置视频播放器
+  ![内置视频播放器](screen/video.png)
+#### pdf阅读器
+  ![pdf阅读器](screen/pdf.png)
 ---
 #### 2018-07-06 
     1、新增排序功能
