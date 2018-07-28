@@ -670,7 +670,7 @@
                         ipc.send('Music-player',data);
                     }
                     else if (this.StringExist(type, 'doc,docx')) {
-                        return prefix+'DocType.png';
+                        this.$Message.warning('暂不支持打开word文档文件');
                     }
                     else if (this.StringExist(type, 'ppt,pptx')) {
                         this.$Message.warning('暂不支持打开幻灯片文件');
@@ -682,8 +682,8 @@
                         this.$Message.info('正在加载插件');
                         ipc.send('pdf-viewer',this.DiskData.NowSelect);
                     }
-                    else if (this.StringExist(type, 'ini,txt,md,xml,aspx,php,phtml,.htaccesscss,js,c,htm,html,log')) {
-                        this.$Message.warning('支持打开'+type+'文件，正在努力开发');
+                    else if (this.StringExist(type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
+                        ipc.send('show-file',this.DiskData.NowSelect);
                     }
                     else if (this.StringExist(type, 'exe,msi')) {
                         this.$Message.warning('暂不支持打开windows安装程序');

@@ -198,7 +198,7 @@ let Disk={
     },
     OpenFile:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/CancelShareFile",
+            url:localStorage.server+"/service/disk/OpenFile",
             data:data,
             success:callback,
             error:error

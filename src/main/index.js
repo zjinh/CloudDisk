@@ -201,6 +201,7 @@ function CreateDiskWindow() {
         PdfWindow?PdfWindow.close():'';
         AccountWindow?AccountWindow.close():'';
         AboutWindow?AboutWindow.close():'';
+        FileWindow?FileWindow.close():'';
         SettingWindow?SettingWindow.close():'';
         appTray.destroy();
         if(!LoginWindow) {
@@ -421,7 +422,7 @@ function CreateAboutWindow() {
     });
 }
 function CreateFileWindow(data) {
-    if(PdfWindow){
+    if(FileWindow){
         FileWindow.show();
         FileWindow.focus();
         FileWindow.webContents.send('file',data);
