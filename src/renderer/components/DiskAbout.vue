@@ -27,7 +27,6 @@
 
 <script>
     import electron from 'electron';
-    const {ipcRenderer} = require('electron');
     let DiskAbout=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
@@ -61,12 +60,12 @@
         methods:{
             bind(){
                 ipc.send('get-version');
-                ipcRenderer.on('version', (event, version)=>{//接收当前版本号
+                ipc.on('version', (event, version)=>{//接收当前版本号
                     this.$nextTick(()=>{
                         this.version=version;
                     });
                 });
-                ipcRenderer.on('check-for-update',(event,message) =>{
+                ipc.on('check-for-update',(event,message) =>{
                     this.message=message;
                     if(message==='检查更新出错, 请联系开发人员'||message==='现在使用的就是最新版本，不用更新'){
                         this.loading=false;
@@ -80,10 +79,10 @@
                         }
                     }
                 });
-                ipcRenderer.on('update-down-success',(event,message) =>{
+                ipc.on('update-down-success',(event,message) =>{
                     this.NewVersion='新版本：V'+message.version;
                 });
-                ipcRenderer.on('download-progress',(event,message)=>{
+                ipc.on('download-progress',(event,message)=>{
                     this.$nextTick(()=>{
                         this.percent=parseInt(message.percent);
                         if(this.percent===100){

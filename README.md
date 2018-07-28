@@ -204,3 +204,6 @@ npm run build
     2、拆分slimf,css，分为icon.css,共用部分合并入disk.css
     3、压缩iviewer.css
     4、删除pdf阅读器一些图片
+#### 2018-07-28
+    1、添加文件查看窗口
+    2、删除一些重复定义的ipc参数

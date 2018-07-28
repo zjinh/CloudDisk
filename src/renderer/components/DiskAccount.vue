@@ -46,7 +46,6 @@
 <script>
     import Api from '../api/api';
     import electron from 'electron';
-    const {ipcRenderer} = require('electron');
     let AccountWindow=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
@@ -74,7 +73,7 @@
               }
         },
         created(){
-            ipcRenderer.on('user-data', (event, data)=>{//接收打开文件的数据
+            ipc.on('user-data', (event, data)=>{//接收打开文件的数据
                 this.$nextTick(()=>{
                     data.birth=this.age(data.birthday);
                     this.User=data;

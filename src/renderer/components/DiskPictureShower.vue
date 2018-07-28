@@ -25,7 +25,6 @@
 
 <script>
     import electron from 'electron';
-    const {ipcRenderer} = require('electron');
     let PictureShower=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
@@ -67,7 +66,7 @@
             }
         },
         created(){
-            ipcRenderer.on('PhotoList', (event, data)=>{//接收打开文件的数据
+            ipc.on('PhotoList', (event, data)=>{//接收打开文件的数据
                 this.$nextTick(()=>{
                     data.forEach((item,index)=>{
                         item.now=false;

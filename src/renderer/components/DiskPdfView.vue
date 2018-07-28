@@ -17,15 +17,13 @@
     const {ipcRenderer} = require('electron');
     const path = require('path');
     let PdfViewer=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskPdfView",
         data(){
             return{
                 ButtonState:"sf-icon-window-maximize",//右上角窗口按钮状态
                 NowPlay:{
-                    disk_name:'',
-                    count:0,
+                    disk_name:''
                 },
                 src:null
             }

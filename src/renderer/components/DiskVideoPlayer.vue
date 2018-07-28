@@ -1,12 +1,12 @@
 <template>
-    <div class="WindowContainer" @mousedown="VolumnState=false">
+    <div class="WindowContainer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullFlag=false">
         <div class="CloudDiskInfoControl">
             <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}}</p>
             <button class="sf-icon-times" @click="close"></button>
             <button :class="ButtonState" @click="restore"></button>
             <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
-        <div class="VideoContainer" ref="VideoPlayer" tabindex="-1" @keydown.esc="FullFlag=false">
+        <div class="VideoContainer" ref="VideoPlayer">
             <video :style="{'height':VideoHeight}" crossorigin="*" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
             </video>
             <div :class="'VideoFliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>

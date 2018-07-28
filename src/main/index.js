@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,SettingWindow;
+let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,FileWindow,SettingWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -116,6 +116,9 @@ const AboutUrl= process.env.NODE_ENV === 'development'
 const PictureShowerUrl= process.env.NODE_ENV === 'development'
     ? `http://localhost:9080/#/picture-shower`
     : `file://${__dirname}/index.html#/picture-shower`;
+const FileShowerUrl= process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/#/file-shower`
+    : `file://${__dirname}/index.html#/file-shower`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -417,6 +420,35 @@ function CreateAboutWindow() {
         AboutWindow.webContents.send('version',require("../../package.json").version);
     });
 }
+function CreateFileWindow(data) {
+    if(PdfWindow){
+        FileWindow.show();
+        FileWindow.focus();
+        FileWindow.webContents.send('file',data);
+        return
+    }
+    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(null);
+    FileWindow= new BrowserWindow({
+        width: 750,
+        height: 500,
+        minHeight:350,
+        minWidth:500,
+        title:'文件查看',
+        useContentSize: true,
+        frame:false,
+        webPreferences:{
+            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        }
+    });
+    FileWindow.loadURL(FileShowerUrl);
+    FileWindow.on('closed', function() {
+        FileWindow = null;
+    });
+    FileWindow.webContents.on('did-finish-load', ()=>{
+        FileWindow.webContents.send('file',data);
+    });
+}
 function BindIpc() {
     /*登录窗口指令*/
     ipcMain.on('login-success', ()=> {
@@ -474,6 +506,9 @@ function BindIpc() {
     });
     ipcMain.on('show-about',(e,msg)=>{
         CreateAboutWindow();
+    });
+    ipcMain.on('show-file',(e,msg)=>{
+        CreateFileWindow(msg)
     });
     /*更新*/
     /*检查更新*/

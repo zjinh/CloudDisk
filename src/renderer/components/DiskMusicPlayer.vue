@@ -38,7 +38,6 @@
     import Media from '../media/media';
     import MusicList from './DiskMusicPlayer/MusicList';
     import electron from 'electron';
-    const {ipcRenderer} = require('electron');
     let MusicPlayer=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
@@ -98,7 +97,7 @@
             }
         },
         created(){
-            ipcRenderer.on('MusicList', (event, data)=>{//接收打开文件的数据
+            ipc.on('MusicList', (event, data)=>{//接收打开文件的数据
                 this.$nextTick(()=>{
                     data.forEach((item,index)=>{
                         item.play=false;
@@ -115,13 +114,13 @@
         },
         methods:{
             bind(){
-                ipcRenderer.on('Next',()=>{
+                ipc.on('Next',()=>{
                     this.Next();
                 });
-                ipcRenderer.on('Prev',()=>{
+                ipc.on('Prev',()=>{
                     this.Prev();
                 });
-                ipcRenderer.on('Play',()=>{
+                ipc.on('Play',()=>{
                     this.PlayControl();
                 });
                 if(localStorage.username&&localStorage.password){
