@@ -1,5 +1,5 @@
 <template>
-    <div class="WindowContainer">
+    <div class="WindowContainer FileContent">
         <div class="CloudDiskInfoControl">
             <p style="width: calc(100% - 120px)">{{NowLoad.disk_name}} 文件查看</p>
             <button class="sf-icon-times" @click="close"></button>
@@ -15,6 +15,7 @@
 <script>
     import Api from '../api/api';
     import electron from 'electron';
+    const path = require('path');
     let FileShowArea=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
@@ -33,7 +34,7 @@
             ipc.on('file', (event, data)=>{//接收打开文件的数据
                 this.$nextTick(()=>{
                     this.NowLoad=data;
-                    this.LoadUrl='../../../static/syntaxhighlighter/index.html?id='+data.disk_id+'&type='+data.type;
+                    this.LoadUrl=path.join(__static, '/syntaxhighlighter/index.html?id=')+data.disk_id+'&type='+data.type;
                 });
             });
             this.bind();
