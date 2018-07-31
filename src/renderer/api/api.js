@@ -212,6 +212,23 @@ let Disk={
             error:error
         })
     },
+    Download:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/Download",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
+    Upload:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/disk/upload",
+            data:data,
+            upload:true,
+            success:callback,
+            error:error
+        })
+    },
 };
 let Check=function (url,callback,error) {
     Ajax({

@@ -56,8 +56,8 @@
                 <ClassifyMenu v-bind:data="ClassifyData" v-on:updateClassify="updateClassify" v-show="DiskType==='disk'"></ClassifyMenu>
                 <ClassifyMenu v-bind:data="ShareData" v-on:updateClassify="updateClassify" v-show="DiskType==='share'"></ClassifyMenu>
                 <ClassifyMenu v-bind:data="TransData" v-on:updateClassify="updateClassify" v-show="DiskType==='trans'"></ClassifyMenu>
-                <div class="CloudDiskSelectTips">{{DiskData.SelectTips}}</div>
-                <div class="CloudDiskCapacity">
+                <div class="CloudDiskSelectTips" v-show="DiskType!=='trans'">{{DiskData.SelectTips}}</div>
+                <div class="CloudDiskCapacity" v-show="DiskType!=='trans'">
                     <div class="CloudDiskSliderContainer">
                         <div class="CloudDiskSlider" :style="{'width':DiskSize.Percent,background:DiskSize.Background}"></div>
                     </div>
@@ -80,11 +80,25 @@
                         大小
                     </div>
                 </div>
-                <div  class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MainMouseFunc" ref="CloudDiskMain">
+                <div class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MainMouseFunc" ref="CloudDiskMain">
                     <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
                     <div class="MouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
+                    <ul class="CloudDisTrans" v-show="DiskType==='trans'">
+                        <li class="CloudDisTransList" v-for="(item,index) in TransformData" v-show="item.show">
+                            <img :src="item.icon" draggable="false">
+                            <div class="CloudDisTransRight">
+                                <div class="trans-container">
+                                    <p class="trans-name">{{item.trans_type==='upload'?'正在上传':'正在下载'}} {{item.name}}</p>
+                                    <span class="trans-size">{{item.chunk}}/{{item.size}}</span>
+                                    <Progress :percent="item.percent"></Progress>
+                                </div>
+                                <button class="ivu-btn" @click="ControlUpload(item,index)">{{item.buttonVal}}</button>
+
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -147,6 +161,7 @@
                 <button class="el-button el-button--default el-button--small el-button--primary" @click="Share">确 定</button>
             </span>
         </el-dialog>
+        <input type="file" id="FileArea" @change="PreparUpload" ref="FileArea" multiple="multiple">
     </div>
 </template>
 
@@ -188,9 +203,9 @@
                     {"name":"失效分享","icon":"","data":"disshare","active":""},
                 ],//分享分类参数
                 TransData:[
-                    {"name":"正在下载","icon":"sf-icon-download","data":"share","active":"CloudDiskClassifyActive"},
-                    {"name":"正在上传","icon":"sf-icon-upload","data":"disshare","active":""},
-                    {"name":"传输完成","icon":"sf-icon-check-circle","data":"disshare","active":""},
+                    {"name":"正在下载","icon":"sf-icon-download","data":"download","active":"CloudDiskClassifyActive"},
+                    {"name":"正在上传","icon":"sf-icon-upload","data":"upload","active":""},
+                    {"name":"传输完成","icon":"sf-icon-check-circle","data":"finish","active":""},
                 ],//传输分类参数
                 /*网盘大小*/
                 DiskSize:{
@@ -266,6 +281,8 @@
                     }
                 },
                 DropMenuShow:false,
+                /*文件下载参数*/
+                TransformData:[],
             }
         },
         watch:{
@@ -291,6 +308,28 @@
                 },
                 deep: true
             },
+            loadClassify: {
+                handler(newValue, oldValue) {
+                    if(this.DiskType==='trans'){
+                        this.$nextTick(()=>{
+                            this.TransformData.forEach((item)=>{
+                                if(item.state==='finish'&&this.loadClassify!=='finish'){
+                                    item.show=false;
+                                }
+                                if(item.trans_type===this.loadClassify&&item.state!=='finish'){
+                                    item.show=true;
+                                }else{
+                                    item.show=false;
+                                }
+                                if(item.state===this.loadClassify){
+                                    item.show=true;
+                                }
+                            })
+                        });
+                    }
+                },
+                deep: true
+            }
         },
         computed:{
             now(){
@@ -402,6 +441,9 @@
                 })
             },//获取用户信息
             GetMainFile(id,type){
+               if(this.DiskType==='trans'){
+                   return
+               }
                 if(this.DiskPage===1){
                     this.UserDiskData=[];//清空数据
                     this.LoadCompany=false;
@@ -494,7 +536,12 @@
                     this.ShareData[0].active='CloudDiskClassifyActive';
                     this.GetMainFile(null,type);
                 }else{
-
+                    this.TransData.forEach(function (item) {
+                        item.active='';
+                    });
+                    this.ClassifyName=this.TransData[0].name;
+                    this.loadClassify=this.TransData[0].data;
+                    this.TransData[0].active='CloudDiskClassifyActive';
                 }
             },//切换网盘分享、传输等
             /*网盘搜索*/
@@ -702,12 +749,196 @@
             /*右键菜单函数*/
             UploadFile(){
                 if(this.loadClassify==='normal') {
-                    this.$Message.info('正在开发');
-                    this.$Message.info('最后阶段完成，敬请期待')
+                    this.$refs.FileArea.value='';
+                    this.$refs.FileArea.click();
                 }
             },//上传文件
+            PreparUpload(){
+                let fileArea=event.target;
+                let file;
+                let OneFile={
+                    name:'',
+                    chunk:0,
+                    size:0,
+                    paused:false,
+                    trans_type:'upload',
+                    state:'default',
+                    orginSize:'',
+                    disk_main:'1234',
+                    show:false,
+                    type:null,
+                    icon:null,
+                    percent:0,
+                    buttonVal:'暂停'
+                };
+                this.$nextTick(()=>{
+                    for (let i = 0; i<fileArea.files.length; i++) {
+                        file = fileArea.files[i];
+                        let percent = parseFloat(localStorage[file.name + '_p']);  // 初始通过本地记录，判断该文件是否曾经上传过
+                        OneFile={
+                            name:file.name,
+                            chunk:0,
+                            size:this.FileSize(file.size),
+                            paused:false,
+                            trans_type:'upload',
+                            state:'default',
+                            orginSize:file.size,
+                            disk_main:file.path,
+                            show:false,
+                            type:this.StringBefore(file.name, ".").toLowerCase(),
+                            icon:this.IconGet(OneFile),
+                            percent:percent,
+                            buttonVal:(percent && percent !== '100.0')?'继续':'暂停',
+                        };
+                        this.TransformData.push(OneFile);
+                        this.StartUpload(OneFile)
+                    }
+                });
+                console.log(this.TransformData)
+            },
+            FindTheFile(fileName){
+                let files = this.$refs.FileArea.files,
+                    theFile;
+                for (let i = 0, j = files.length; i < j; ++i) {
+                    if (files[i].name === fileName) {
+                        theFile = files[i];
+                        break;
+                    }
+                }
+                return theFile ? theFile : [];
+            },
+            ControlUpload(item){
+                if(item.state==='finish'){
+                    item.show=false;
+                    return
+                }
+                if (!item.paused) {
+                    this.$nextTick(()=>{
+                        item.buttonVal='继续';
+                        item.paused=true;
+                    });
+                }else if (item.paused) {
+                    this.$nextTick(()=>{
+                        item.buttonVal='暂停';
+                        item.state = 'uploading';
+                        item.paused=false;
+                    });
+                }
+                this.StartUpload(item)
+            },
+            StartUpload(item,index){
+                let fileName = item.name,
+                    eachSize = item.orginSize/100,
+                    totalSize = item.orginSize,
+                    chunks = Math.ceil(totalSize / eachSize),
+                    chunk;
+                let _this=this;
+                // 第一次点击上传
+                startUpload('first');
+                // 上传操作 times: 第几次
+                function startUpload(times) {
+                    // 上传之前查询是否以及上传过分片
+                    chunk = localStorage[fileName + '_chunk'] || 0;
+                    chunk = parseInt(chunk, 10);
+                    // 判断是否为末分片
+                    let isLastChunk = (chunk === (chunks - 1) ? 1 : 0);
+
+                    // 如果第一次上传就为末分片，即文件已经上传完成，则重新覆盖上传
+                    if (times === 'first' && isLastChunk === 1) {
+                        localStorage.setItem(fileName + '_chunk', 0);
+                        chunk = 0;
+                        isLastChunk = 0;
+                    }
+                    // 设置分片的开始结尾
+                    let blobFrom = chunk * eachSize, // 分段开始
+                        blobTo = (chunk + 1) * eachSize > totalSize ? totalSize : (chunk + 1) * eachSize, // 分段结尾
+                        percent = parseFloat((100 * blobTo / totalSize).toFixed(1)), // 已上传的百分比
+                        fd = new FormData(document.getElementById('FileArea'));
+                   _this.$nextTick(()=>{
+                       item.chunk=_this.FileSize(blobTo);
+                    });
+                    fd.append('theFile', _this.FindTheFile(fileName).slice(blobFrom, blobTo)); // 分好段的文件
+                    fd.append('fileName', fileName); // 文件名
+                    fd.append('parent_id', _this.NowDiskID); // 当前目录id
+                    fd.append('totalSize', totalSize); // 文件总大小
+                    fd.append('isLastChunk', isLastChunk); // 是否为末段
+                    fd.append('isFirstUpload', times === 'first' ? 1 : 0); // 是否是第一段（第一次上传）
+                    // 上传
+                    Api.Disk.Upload(fd,(rs)=>{
+                        // 上传成功
+                        if (rs.status === 200) {
+                            // 记录已经上传的百分比
+                            localStorage.setItem(fileName + '_p', percent);
+                            _this.$nextTick(()=>{
+                                item.percent=parseFloat(percent);
+                            });
+                            // 已经上传完毕
+                            if (chunk === (chunks - 1)||rs.totalSize>=item.orginSize) {
+                                _this.$nextTick(()=>{
+                                    item.state='finish';
+                                    item.show=false;
+                                    item.buttonVal='删除';
+                                });
+                                localStorage.removeItem(fileName + '_chunk');
+                                localStorage.removeItem(fileName + '_p');
+                                _this.InsertFileData(rs.data);
+                            } else {
+                                // 记录已经上传的分片
+                                localStorage.setItem(fileName + '_chunk', ++chunk);
+                                // 这样设置可以暂停，但点击后动态的设置就暂停不了..
+                                if(item.buttonVal==='暂停'){
+                                    item.paused = false;
+                                }else {
+                                    item.paused = true;
+                                }
+                                if (!item.paused) {
+                                    startUpload();
+                                }
+                            }
+                        }
+                        else{
+                            item.buttonVal='失败';
+                            localStorage.removeItem(fileName + '_chunk');
+                            localStorage.removeItem(fileName + '_p');
+                        }
+                    });
+                }
+            },
+
+
+
+
             DiskDownload(){
-                this.$Message.info('最后阶段完成，敬请期待')
+                let _this=this;
+                Api.Disk.Download({
+                    url:this.DiskData.NowSelect.disk_main,
+                    filename:this.DiskData.NowSelect.disk_name,
+                },(rs)=>{
+                    console.log(rs)
+                })
+                /*function InsertInData(item) {
+                    item.trans_type = 'download';
+                    item.trans_state = 'loading';
+                    item.trans_percent = 0;
+                    _this.$nextTick(() => {
+                        _this.TransformData[item.disk_id] = item;
+                    })
+                }
+                if(this.DiskData.SelectFiles.length) {
+                   this.DiskData.SelectFiles.forEach((item) => {
+                       if (item.disk_main) {
+                           InsertInData(item);
+                       }
+                   });
+                }else{
+                   let item=this.DiskData.NowSelect;
+                   if (item.disk_main) {
+                       InsertInData(item);
+                   }
+                }
+                for(let index in this.TransformData){
+                   let item=this.TransformData[index];
+                }*/
             },//下载文件
             CreateFolder(){
                 if(this.ClassifyName==='全部文件') {

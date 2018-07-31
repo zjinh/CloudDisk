@@ -895,6 +895,49 @@ z-index: 2;
 	color:#000;
 	cursor:pointer;
 }
+/*传输列表*/
+.CloudDisTrans{
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+.CloudDisTransList{
+	width: 100%;
+	height: 55px;
+	margin-top: 2px;
+	position: relative;
+}
+.CloudDisTransList img{
+	float: left;
+	margin: 10px;
+	width: 30px;
+}
+.CloudDisTransRight .trans-container{
+	float: left;
+	width: calc(100% - 100px);
+	height: 100%;
+}
+.CloudDisTransRight .trans-name,.CloudDisTransRight .trans-size{
+	font-size: 12px;
+	line-height: 22px;
+}
+.CloudDisTransRight .ivu-progress{
+	float: right;
+	width: 310px;
+}
+.CloudDisTransRight {
+	float: left;
+	width: calc(100% - 50px);
+	height: 100%;
+	padding: 4px;
+}
+.CloudDisTransRight button{
+	float: right;
+	margin: 7px 5px;
+}
+.CloudDisTransList:hover{
+	background: rgba(0,0,0,.1);
+}
 /*拖选框*/
 .MouseSelect{
 	position: absolute;
