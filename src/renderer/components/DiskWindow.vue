@@ -80,7 +80,10 @@
                         大小
                     </div>
                 </div>
-                <div class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MainMouseFunc" ref="CloudDiskMain">
+                <div class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain">
+                    <div class="CloudDiskUploadTips" v-show="ShowUploadTips&&DiskType==='disk'&&loadClassify==='normal'">
+                        松开鼠标开始上传文件
+                    </div>
                     <DiskFile v-on:SelectFiles="SelectFiles" v-on:OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" v-bind:data="UserDiskData" v-bind:DiskData="DiskData"></DiskFile>
                     <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
                     <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
@@ -281,7 +284,9 @@
                     }
                 },
                 DropMenuShow:false,
-                /*文件下载参数*/
+                /*上传提示*/
+                ShowUploadTips:false,
+                /*文件传输列表参数*/
                 TransformData:[],
             }
         },
@@ -354,9 +359,6 @@
                         this.DiskMouseState[item].show = false
                     }
                 };
-                if(localStorage.username&&localStorage.password){
-                    this.RemberPass=true;
-                }
                 window.addEventListener( "dragenter", function (e) {
                     e.preventDefault();
                 }, false);
@@ -376,7 +378,7 @@
                     this.$nextTick(()=>{
                         this.Logined=msg;
                     })
-                })
+                });
             },
             keyBoard(e){
                 e.stopPropagation();
@@ -438,7 +440,7 @@
                             ipc.send('disk-error');
                         }
                     });
-                })
+                });
             },//获取用户信息
             GetMainFile(id,type){
                if(this.DiskType==='trans'){
@@ -747,19 +749,34 @@
                 }
             },
             /*右键菜单函数*/
+            UploadDrop(e){
+                if(this.loadClassify==='normal') {
+                    this.PreparUpload(e.dataTransfer);
+                    this.ShowUploadTips = false;
+                }
+            },//拖拽上传
             UploadFile(){
                 if(this.loadClassify==='normal') {
                     this.$refs.FileArea.value='';
                     this.$refs.FileArea.click();
                 }
             },//上传文件
-            PreparUpload(){
-                let fileArea=event.target;
+            PreparUpload(data){
+                let method='select';
+                if(data.target){
+                    data=data.target;
+                    this.SelectUploadFiles=data.files
+                }else{
+                    method='drag';
+                    this.DragFiles=data.files
+                }
+                let fileArea=data.files;
                 let file;
                 let OneFile={
                     name:'',
                     chunk:0,
                     size:0,
+                    method:method,
                     paused:false,
                     trans_type:'upload',
                     state:'default',
@@ -772,33 +789,42 @@
                     buttonVal:'暂停'
                 };
                 this.$nextTick(()=>{
-                    for (let i = 0; i<fileArea.files.length; i++) {
-                        file = fileArea.files[i];
+                    for (let i = 0; i<fileArea.length; i++) {
+                        file = fileArea[i];
                         let percent = parseFloat(localStorage[file.name + '_p']);  // 初始通过本地记录，判断该文件是否曾经上传过
-                        OneFile={
-                            name:file.name,
-                            chunk:0,
-                            size:this.FileSize(file.size),
-                            paused:false,
-                            trans_type:'upload',
-                            state:'default',
-                            orginSize:file.size,
-                            disk_main:file.path,
-                            show:false,
-                            type:this.StringBefore(file.name, ".").toLowerCase(),
-                            icon:this.IconGet(OneFile),
-                            percent:percent,
-                            buttonVal:(percent && percent !== '100.0')?'继续':'暂停',
-                        };
-                        this.TransformData.push(OneFile);
-                        this.StartUpload(OneFile)
+                        if (file.name.split('.').length>1) {
+                            OneFile = {
+                                name: file.name,
+                                chunk: 0,
+                                method: method,
+                                size: this.FileSize(file.size),
+                                paused: false,
+                                trans_type: 'upload',
+                                state: 'default',
+                                orginSize: file.size,
+                                disk_main: file.path,
+                                show: false,
+                                type: this.StringBefore(file.name, ".").toLowerCase(),
+                                icon: this.IconGet(OneFile),
+                                percent: percent,
+                                buttonVal: (percent && percent !== '100.0') ? '继续' : '暂停',
+                            };
+                            this.TransformData.push(OneFile);
+                            this.StartUpload(OneFile)
+                        }
                     }
                 });
-                console.log(this.TransformData)
-            },
-            FindTheFile(fileName){
-                let files = this.$refs.FileArea.files,
+                this.$Notice.info({
+                    title: '开始上传',
+                    desc: fileArea.length+'个文件已加入上传列队'
+                });
+            },//处理上传
+            FindTheFile(fileName,method){
+                let files = this.SelectUploadFiles,
                     theFile;
+                if(method==='drag'){
+                    files=this.DragFiles;
+                }
                 for (let i = 0, j = files.length; i < j; ++i) {
                     if (files[i].name === fileName) {
                         theFile = files[i];
@@ -806,7 +832,7 @@
                     }
                 }
                 return theFile ? theFile : [];
-            },
+            },//查找上传的文件
             ControlUpload(item){
                 if(item.state==='finish'){
                     item.show=false;
@@ -825,7 +851,7 @@
                     });
                 }
                 this.StartUpload(item)
-            },
+            },//上传控制
             StartUpload(item,index){
                 let fileName = item.name,
                     eachSize = item.orginSize/100,
@@ -838,11 +864,10 @@
                 // 上传操作 times: 第几次
                 function startUpload(times) {
                     // 上传之前查询是否以及上传过分片
-                    chunk = localStorage[fileName + '_chunk'] || 0;
+                    chunk = localStorage.getItem(fileName + '_chunk') || 0;
                     chunk = parseInt(chunk, 10);
                     // 判断是否为末分片
                     let isLastChunk = (chunk === (chunks - 1) ? 1 : 0);
-
                     // 如果第一次上传就为末分片，即文件已经上传完成，则重新覆盖上传
                     if (times === 'first' && isLastChunk === 1) {
                         localStorage.setItem(fileName + '_chunk', 0);
@@ -857,7 +882,7 @@
                    _this.$nextTick(()=>{
                        item.chunk=_this.FileSize(blobTo);
                     });
-                    fd.append('theFile', _this.FindTheFile(fileName).slice(blobFrom, blobTo)); // 分好段的文件
+                    fd.append('theFile', _this.FindTheFile(fileName,item.method).slice(blobFrom, blobTo)); // 分好段的文件
                     fd.append('fileName', fileName); // 文件名
                     fd.append('parent_id', _this.NowDiskID); // 当前目录id
                     fd.append('totalSize', totalSize); // 文件总大小
@@ -881,7 +906,9 @@
                                 });
                                 localStorage.removeItem(fileName + '_chunk');
                                 localStorage.removeItem(fileName + '_p');
-                                _this.InsertFileData(rs.data);
+                                if(_this.NowDiskID===rs.data.parent_id) {
+                                    _this.InsertFileData(rs.data);
+                                }
                             } else {
                                 // 记录已经上传的分片
                                 localStorage.setItem(fileName + '_chunk', ++chunk);
@@ -903,11 +930,7 @@
                         }
                     });
                 }
-            },
-
-
-
-
+            },//开始上传
             DiskDownload(){
                 let _this=this;
                 Api.Disk.Download({
