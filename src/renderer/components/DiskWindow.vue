@@ -288,6 +288,8 @@
                 ShowUploadTips:false,
                 /*文件传输列表参数*/
                 TransformData:[],
+                SelectUploadFiles:[],
+                DragFiles:[]
             }
         },
         watch:{
@@ -317,7 +319,10 @@
                 handler(newValue, oldValue) {
                     if(this.DiskType==='trans'){
                         this.$nextTick(()=>{
-                            this.TransformData.forEach((item)=>{
+                            this.TransformData.forEach((item,index)=>{
+                                if(item.state==='fail'&&item.trans_type==='upload'){
+                                    this.TransformData.splice(index,1)
+                                }
                                 if(item.state==='finish'&&this.loadClassify!=='finish'){
                                     item.show=false;
                                 }
@@ -765,13 +770,18 @@
                 let method='select';
                 if(data.target){
                     data=data.target;
-                    this.SelectUploadFiles=data.files
+                    for(let k=0;k<data.files.length;k++){
+                        this.SelectUploadFiles.push(data.files[k]);
+                    }
                 }else{
                     method='drag';
-                    this.DragFiles=data.files
+                    for(let k=0;k<data.files.length;k++){
+                        this.DragFiles.push(data.files[k]);
+                    }
                 }
                 let fileArea=data.files;
                 let file;
+                let count=0;
                 let OneFile={
                     name:'',
                     chunk:0,
@@ -809,15 +819,17 @@
                                 percent: percent,
                                 buttonVal: (percent && percent !== '100.0') ? '继续' : '暂停',
                             };
+                            count++;
                             this.TransformData.push(OneFile);
-                            this.StartUpload(OneFile)
+                            this.StartUpload(OneFile);
                         }
                     }
+                    this.$Notice.info({
+                        title: '开始上传',
+                        desc: count+'个文件已加入上传列队'
+                    });
                 });
-                this.$Notice.info({
-                    title: '开始上传',
-                    desc: fileArea.length+'个文件已加入上传列队'
-                });
+
             },//处理上传
             FindTheFile(fileName,method){
                 let files = this.SelectUploadFiles,
@@ -878,7 +890,7 @@
                     let blobFrom = chunk * eachSize, // 分段开始
                         blobTo = (chunk + 1) * eachSize > totalSize ? totalSize : (chunk + 1) * eachSize, // 分段结尾
                         percent = parseFloat((100 * blobTo / totalSize).toFixed(1)), // 已上传的百分比
-                        fd = new FormData(document.getElementById('FileArea'));
+                        fd = new FormData();
                    _this.$nextTick(()=>{
                        item.chunk=_this.FileSize(blobTo);
                     });
@@ -924,7 +936,11 @@
                             }
                         }
                         else{
-                            item.buttonVal='失败';
+                            _this.$nextTick(()=>{
+                                item.state='fail';
+                                item.buttonVal='失败';
+                                _this.TransformData.splice(index,1);
+                            });
                             localStorage.removeItem(fileName + '_chunk');
                             localStorage.removeItem(fileName + '_p');
                         }

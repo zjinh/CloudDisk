@@ -1,5 +1,5 @@
 <template>
-    <div class="AudioContainer" @mousedown="VolumnState=false">
+    <div class="AudioContainer" @mousedown="VolumnState=false" tabindex="-1" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
         <div class="CloudDiskInfoControl">
             <button class="sf-icon-times" @click="close"></button>
             <button class="sf-icon-window-minimize" @click="mini"></button>
@@ -161,6 +161,15 @@
                 MusicPlayer.setTitle(this.NowPlay.disk_name);
                 if(this.VisualState) {
                     this.Visual();
+                }
+                document.getElementsByClassName('AudioContainer')[0].focus();
+            },
+            ChangeTime(state){
+                let media=this.$refs.audio;
+                if(state==='-'){
+                    media.currentTime=media.currentTime-5;
+                }else{
+                    media.currentTime=media.currentTime+5
                 }
             },
             Next(){

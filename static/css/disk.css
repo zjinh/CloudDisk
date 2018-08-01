@@ -1145,6 +1145,10 @@ z-index: 2;
 	height: 100%;
 	border: 1px solid rgba(0,0,0,0);
 }
+.VideoPlayer{
+	border-left: none!important;
+	border-right: none!important;
+}
 .VideoContainer {
 	background:#000;
 	-moz-user-select:none;

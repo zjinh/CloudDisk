@@ -1,5 +1,5 @@
 <template>
-    <div class="ImageShowContainer" @mousewheel="MouseZoom">
+    <div class="ImageShowContainer" @mousewheel="MouseZoom" tabindex="-1"  @keydown.left="Prev" @keydown.right="Next">
         <div class="CloudDiskInfoControl">
             <p style="width: calc(100% - 120px)">{{NowShow.disk_name}}-{{ZoomPercent}}</p>
             <button class="sf-icon-times" @click="close"></button>
@@ -96,6 +96,7 @@
                 this.angle=0;
                 let img_show= this.$refs.ImgShow;
                 img_show.removeAttribute("style");
+                document.getElementsByClassName('ImageShowContainer')[0].focus();
                 let time_p1=setInterval(()=>{
                     let imgW=img_show.offsetWidth;
                     if(img_show.complete){

@@ -1,12 +1,12 @@
 <template>
-    <div class="WindowContainer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullFlag=false">
+    <div class="WindowContainer VideoPlayer" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
         <div class="CloudDiskInfoControl">
             <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}}</p>
             <button class="sf-icon-times" @click="close"></button>
             <button :class="ButtonState" @click="restore"></button>
             <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
-        <div class="VideoContainer" ref="VideoPlayer">
+        <div class="VideoContainer">
             <video :style="{'height':VideoHeight}" crossorigin="*" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
             </video>
             <div :class="'VideoFliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
@@ -158,6 +158,15 @@
                     ipc.send('video-play-state','play')
                 }
                 VideoPlayer.setTitle(this.NowPlay.disk_name);
+                this.$refs.VideoPlayer.focus();
+            },
+            ChangeTime(state){
+                let media=this.$refs.video;
+                if(state==='-'){
+                    media.currentTime=media.currentTime-5;
+                }else{
+                    media.currentTime=media.currentTime+5
+                }
             },
             Next(){
                 if(!this.PlayList.length){
@@ -231,20 +240,33 @@
                     },5000);
                 }
             },
-            FullScreen(){
+            FullScreen(flag){
                 let el=this.$refs.VideoPlayer;
                 el.focus();
+                if(flag){
+                    document.exitFullscreen?document.exitFullscreen():
+                        document.mozCancelFullScreen?document.mozCancelFullScreen():
+                            document.webkitExitFullscreen?document.webkitExitFullscreen():'';
+                    this.$nextTick(()=>{
+                        this.FullFlag=false;
+                    });
+                    clearTimeout(this.TimeOutID)
+                }
                 if(this.FullFlag){
                     document.exitFullscreen?document.exitFullscreen():
                         document.mozCancelFullScreen?document.mozCancelFullScreen():
                             document.webkitExitFullscreen?document.webkitExitFullscreen():'';
-                    this.FullFlag=false;
+                    this.$nextTick(()=>{
+                        this.FullFlag=false;
+                    });
                     clearTimeout(this.TimeOutID)
                 }else{
                     (el.requestFullscreen&&el.requestFullscreen())||
                     (el.mozRequestFullScreen&&el.mozRequestFullScreen())||
                     (el.webkitRequestFullscreen&&el.webkitRequestFullscreen())||(el.msRequestFullscreen&&el.msRequestFullscreen());
-                    this.FullFlag=true;
+                    this.$nextTick(()=>{
+                        this.FullFlag=true;
+                    });
                 }
             },
             restore(){
