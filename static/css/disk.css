@@ -318,6 +318,10 @@ cursor: pointer;
 .CloudDiskClassify li:hover,.CloudDiskClassifyActive{
 background: rgba(43, 133, 228, 0.12);
 }
+.CloudDiskClassify li div{
+	float: right;
+	padding: 0 6px;
+}
 .CloudDiskClassifyActive{
 	color: #2682fc!important;
 	background: rgba(43, 133, 228, 0.12);
@@ -906,6 +910,7 @@ z-index: 2;
 	height: 55px;
 	margin-top: 2px;
 	position: relative;
+	border-bottom: 1px solid #eee;
 }
 .CloudDisTransList img{
 	float: left;
@@ -933,7 +938,25 @@ z-index: 2;
 }
 .CloudDisTransRight button{
 	float: right;
-	margin: 7px 5px;
+	margin: 10px;
+	width: 26px;
+	height: 26px;
+	background: white;
+	border-radius: 100%;
+	color: rgba(64, 158, 255, 0.87);
+	border: 1px solid rgba(64, 158, 255, 0.66);
+}
+.CloudDisTransRight button:hover{
+	color: #2d8cf0;
+	border: 1px solid  #2d8cf0;
+}
+.CloudDisTransRight button.sf-icon-times{
+	color: #E83C3C!important;
+	border:1px solid #E83C3C!important;
+}
+.CloudDisTransRight button.sf-icon-trash{
+	color: #19be6b!important;
+	border:1px solid #19be6b!important;
 }
 .CloudDisTransList:hover{
 	background: rgba(0,0,0,.1);
