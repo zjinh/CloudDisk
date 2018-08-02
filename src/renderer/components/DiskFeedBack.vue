@@ -9,7 +9,7 @@
             <p>我们需要以下信息</p>
             <Input v-model="FeedBackTitle" placeholder="简单的描述下问题" clearable style="width:100%" />
             <Input v-model="FeedBackContent" type="textarea" :rows="4" placeholder="尽量详细的描述遇到的问题" />
-            <span>当前版本号:v{{version}}</span>
+            <span class="version">当前版本号:v{{version}}</span>
             <button class="el-button el-button--default el-button--small el-button--primary " @click="FeedBack">提交</button>
         </div>
     </div>
@@ -71,7 +71,7 @@
                 })
             },
             close(){
-                DiskFeedBack.hide();
+                DiskFeedBack.close();
             },
 
         }

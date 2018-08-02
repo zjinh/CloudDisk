@@ -82,6 +82,24 @@ let trayMenuTemplate = [//托盘菜单
         }
     },
     {
+        label: '系统设置',//菜单显示文本项
+        click: function () {
+           CreateSettingWindow();
+        }
+    },
+    {
+        label: '反馈',//菜单显示文本项
+        click: function () {
+            CreateFeedBackWindow();
+        }
+    },
+    {
+        label: '关于',//菜单显示文本项
+        click: function () {
+            CreateAboutWindow();
+        }
+    },
+    {
         label: '退出',
         click: function () {
             DiskWindow.close();
@@ -459,7 +477,7 @@ function CreateFeedBackWindow() {
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
     FeedBackWindow= new BrowserWindow({
-        width: 470,
+        width: 450,
         height: 320,
         minHeight:320,
         minWidth:500,
@@ -489,10 +507,12 @@ function CreateSettingWindow(data) {
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
     SettingWindow= new BrowserWindow({
-        width: 750,
-        height: 500,
+        width: 600,
+        height: 400,
         minHeight:350,
         minWidth:500,
+        maximizable:false,
+        resizable:false,
         title:'系统设置',
         frame:false,
         webPreferences:{

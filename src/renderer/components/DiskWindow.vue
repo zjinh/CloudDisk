@@ -43,10 +43,7 @@
                     </div>
                 </div>
                 <div class="CloudDiskHeadRight">
-                    <input class="CDsearchInput" placeholder="搜索"
-                           v-model="DiskSearch.SearchKey"
-                           @keyup.enter.native="SearchDisk"
-                           :style="DiskSearch.ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
+                    <input class="CDsearchInput" type="text" placeholder="搜索" v-model="DiskSearch.SearchKey" @keyup.enter.native="SwitchSearch" :style="DiskSearch.ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
                     <button class="sf-icon-search" @click="SwitchSearch" v-show="DiskType!=='trans'" :disabled="DiskType==='share'"></button>
                     <button :class="'sf-icon-sort-amount-'+DiskSortState.amount" @click="DiskSort('amount','disk_name')" v-show="DiskType!=='trans'"></button>
                     <button :class="DiskStateIcon" @click="changeState" v-show="DiskType!=='trans'"></button>
@@ -414,20 +411,23 @@
             },
             keyBoard(e){
                 e.stopPropagation();
-                e.preventDefault();
                 if((e.ctrlKey)&&(e.keyCode===67)){//复制快捷键
+                    e.preventDefault();
                     if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
                         this.DiskCopy();
                     }
                 }else if((e.ctrlKey)&&(e.keyCode===88)){//剪切快捷键
+                    e.preventDefault();
                     if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
                         this.DiskCut();
                     }
                 }else if((e.ctrlKey)&&(e.keyCode===86)){//粘贴快捷键
+                    e.preventDefault();
                     if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
                         this.DiskPaste();
                     }
                 }else if((e.ctrlKey)&&(e.keyCode===85)){//上传快捷键
+                    e.preventDefault();
                     if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
                         this.UploadFile();
                     }
@@ -436,6 +436,7 @@
                         this.DiskRestore();
                     }
                 }else if((!e.ctrlKey)&&(e.keyCode===46)){//删除快捷键
+                    e.preventDefault();
                     if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
                         this.DiskTrash();
                     }
@@ -444,16 +445,19 @@
                         this.DiskDelete();
                     }
                 }else if((e.ctrlKey)&&(e.keyCode===79)){//打开快捷键
+                    e.preventDefault();
                     if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
                         this.OpenFile('');
                     }
                 }else if((e.ctrlKey)&&(e.keyCode===77)||(e.keyCode===113)){//重名名快捷键
+                    e.preventDefault();
                     if(this.loadClassify!=='trash'&&this.DiskType==='disk'){
                         this.DiskRename();
                     }
                 }else if (e.ctrlKey) {
                     this.DiskData.KeyFlag = 'Ctrl';
                 } else if (e.shiftKey) {
+                    e.preventDefault();
                     this.DiskData.KeyFlag = 'Shift';
                 }
                 document.onkeyup = ()=> {

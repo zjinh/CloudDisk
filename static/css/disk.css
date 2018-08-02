@@ -1162,15 +1162,11 @@ z-index: 2;
 	-webkit-animation-name:slideInUp;animation-name:slideInUp
 }
 /*视频播放器*/
-.WindowContainer{
+.WindowContainer {
     width: 100%;
-	background: #fff;
-	height: 100%;
-	border: 1px solid rgba(0,0,0,0);
-}
-.VideoPlayer{
-	border-left: none!important;
-	border-right: none!important;
+    background: #fff;
+    height: 100%;
+    margin-top: 2px;
 }
 .VideoContainer {
 	background:#000;
@@ -1592,9 +1588,10 @@ z-index: 2;
 	margin:10px 0px;
 }
 .CloudDiskFeedBack-main textarea{
-	height: 125px;
+	height: 125px!important;
+	resize: none;
 }
-.CloudDiskFeedBack-main span{
+.CloudDiskFeedBack-main .version{
 	float: left;
 	font-size: 14px;
 	color: #6e6e6e;
@@ -1735,6 +1732,134 @@ z-index: 2;
 .FileContent .CloudDiskInfoControl{
 	border-bottom: 2px solid #6ce26c;
 	color: #fff;
+}
+/*设置窗口*/
+.CloudDiskSettingWindow{
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+.CloudDiskSetting-head{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    background: #2d8cf0;
+    -webkit-app-region: drag;
+}
+.CloudDiskSetting-head i{
+    float: left;
+    font-size: 35px;
+    color: #fff;
+    line-height: 50px;
+    margin: 0px 15px;
+    margin-right: 10px;
+}
+.CloudDiskSetting-head p{
+    float: left;
+    line-height: 50px;
+    font-size: 16px;
+    color: #fff;
+}
+.CloudDiskSetting-head button{
+    float: right;
+    width: 40px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
+    -webkit-app-region: no-drag;
+    background: none;
+    color: #fff;
+}
+.CloudDiskSetting-head .sf-icon-window-minimize{
+    font-size: 12px;
+}
+.CloudDiskSetting-head button:hover{
+    background: rgba(255,255,255,0.2);
+}
+.CloudDiskSetting-head .sf-icon-times:hover{
+    background: #E83C3C;
+}
+.CloudDiskSetting-main{
+    width: 100%;
+    height:calc(100% - 50px);
+    padding: 10px;
+}
+.CloudSettingMenu{
+	width: 100px;
+	height: 100%;
+	float: left;
+	overflow: unset!important;
+}
+.CloudSettingMenu li{
+	width: 100%;
+	height: 35px;
+	background: #fff;
+	color: #6e6e6e;
+	border-radius: 5px 0px 0px 5px;
+	border: 1px solid #fff;
+}
+.CloudSettingMenu li *{
+	float: left;
+	line-height: 35px;
+}
+.CloudSettingMenu li.active{
+	width: calc(100% + 1px);
+	border: 1px solid #eee;
+	border-right: none;
+	color: #6e6e6e!important;
+	cursor: default!important;
+}
+.CloudSettingMenu li:hover{
+	color: #2d8cf0;
+	cursor: pointer;
+}
+.CloudSettingMenu li span{
+	width: 35px;
+	height: 35px;
+	text-align: center;
+}
+.CloudSettingMenu li p{
+	width: calc(100% - 60px);
+}
+.CloudDiskSettingContent{
+	width: calc(100% - 100px);
+	height: 100%;
+	border: 1px solid #eee;
+	padding-left: 20px;
+}
+.CloudDiskSettingContainer{
+	width: 100%;
+	height: 100%;
+}
+.SettingBigTitle{
+	width: 100%;
+	font-size: 16px;
+	line-height: 35px;
+	margin-bottom: 10px;
+	color: #2d8cf0;
+}
+.SettingSecTitle{
+	width: 100%;
+	font-size: 14px;
+	border-left: 2px solid #2d8cf0;
+	text-indent: 5px;
+	margin-bottom: 5px;
+}
+.SettingInfo{
+	width: 100%;
+	padding-left: 5px;
+	line-height: 30px;
+}
+.SettingForm{
+	margin-top: 10px;
+	width: 200px;
+}
+.SettingForm input{
+	margin: 5px 0;
+}
+.SettingForm button{
+	float: right;
+	margin-top: 10px;
 }
 /*动画*/
 .animated{-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both}
