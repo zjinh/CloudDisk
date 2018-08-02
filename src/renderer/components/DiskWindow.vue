@@ -1645,17 +1645,26 @@
             showAbout(){
                 ipc.send('show-about')
             },
+            ShowFeedBack(){
+                ipc.send('show-feedback')
+            },
+            ShowSetting(){
+                ipc.send('show-setting')
+            },
             SystemDropDown (name) {
                 this.DropMenuShow=false;
                 switch (name){
                     case 'account':
                         this.showAccount();
                         break;
-                    case 'setting':break;
+                    case 'setting':
+                        this.ShowSetting();
+                        break;
                     case 'about':
                         this.showAbout();
                         break;
                     case 'feedback':
+                        this.ShowFeedBack();
                         break;
                     case 'switch':
                         this.Confrim({

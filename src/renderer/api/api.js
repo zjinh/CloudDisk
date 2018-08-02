@@ -79,6 +79,14 @@ let User={
             error:error
         })
     },
+    FeedBack:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/SendCouple",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
 };
 let Disk={
     LoadTreeFile:function (id,callback,error) {

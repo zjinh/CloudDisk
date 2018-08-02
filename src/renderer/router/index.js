@@ -56,6 +56,16 @@ export default new Router({
       component: require('@/components/DiskFileContent').default
     },
     {
+      path: '/disk-feedback',
+      name: 'DiskFeedBack',
+      component: require('@/components/DiskFeedBack').default
+    },
+    {
+      path: '/disk-setting',
+      name: 'DiskSetting',
+      component: require('@/components/DiskSetting').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

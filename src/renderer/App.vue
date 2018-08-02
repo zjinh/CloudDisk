@@ -6,7 +6,12 @@
 
 <script>
   export default {
-    name: 'Cloud-Disk'
+    name: 'Cloud-Disk',
+      created(){
+          this.$Message.config({
+              duration: 2.5
+          });
+      }
   }
 </script>
 

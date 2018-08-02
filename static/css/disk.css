@@ -1578,6 +1578,33 @@ z-index: 2;
 	float: right;
 	overflow: hidden!important;
 }
+/*反馈窗口*/
+.CloudDiskFeedBack-main{
+	height: calc(100% - 50px);
+	padding: 10px 15px;
+	background: #fff;
+}
+.CloudDiskFeedBack-main p{
+	font-size: 14px;
+	color: #4f4f4f;
+}
+.CloudDiskFeedBack-main input{
+	margin:10px 0px;
+}
+.CloudDiskFeedBack-main textarea{
+	height: 125px;
+}
+.CloudDiskFeedBack-main span{
+	float: left;
+	font-size: 14px;
+	color: #6e6e6e;
+	margin-top: 20px;
+	font-weight: bold;
+}
+.CloudDiskFeedBack-main button{
+	float: right;
+	margin-top: 15px;
+}
 /*图片查看*/
 .ImageShowContainer {
 	float:left;
