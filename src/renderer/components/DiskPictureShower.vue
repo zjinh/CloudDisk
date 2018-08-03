@@ -9,7 +9,7 @@
         <p class="ImageShowTips"> <span class="ImageShowZoom" :style="{'opacity':ZoomWin}">{{ZoomPercent}}</span>{{NowShow.count+1}}/{{PhotoList.length}}</p>
         <img :class="'ImgShow '+(!Control?'ImgAnim':'')" :src="NowShow.URL" ref="ImgShow" @load="onload" @mousedown="Drag">
         <Spin v-show="loaded">
-            <Icon type="load-c" size=26 class="loading"></Icon>
+            <Icon type="ios-loading" size=26 class="loading"></Icon>
         </Spin>
         <ul class="ImgControl">
             <li class="sf-icon-search-plus" @click="Zoom(1)"></li>

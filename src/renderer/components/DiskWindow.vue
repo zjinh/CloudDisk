@@ -468,6 +468,7 @@
                 Api.User.UserInfo((rs)=>{
                     rs[0].userhead=localStorage.server+'/'+rs[0].userhead;
                     this.Logined=rs[0];
+                    localStorage.LoginTime=rs[0].login_time;
                 },()=>{
                     this.$Message.error({
                         content: '账号状态异常，请重新登录！',

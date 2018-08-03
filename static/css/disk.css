@@ -1584,7 +1584,7 @@ z-index: 2;
 	font-size: 14px;
 	color: #4f4f4f;
 }
-.CloudDiskFeedBack-main input{
+.CloudDiskFeedBack-main .ivu-input-wrapper{
 	margin:10px 0px;
 }
 .CloudDiskFeedBack-main textarea{
@@ -1595,12 +1595,11 @@ z-index: 2;
 	float: left;
 	font-size: 14px;
 	color: #6e6e6e;
-	margin-top: 20px;
+	margin-top: 5px;
 	font-weight: bold;
 }
 .CloudDiskFeedBack-main button{
 	float: right;
-	margin-top: 15px;
 }
 /*图片查看*/
 .ImageShowContainer {
@@ -1748,7 +1747,7 @@ z-index: 2;
 }
 .CloudDiskSetting-head i{
     float: left;
-    font-size: 35px;
+    font-size: 30px;
     color: #fff;
     line-height: 50px;
     margin: 0px 15px;
@@ -1843,18 +1842,35 @@ z-index: 2;
 	font-size: 14px;
 	border-left: 2px solid #2d8cf0;
 	text-indent: 5px;
-	margin-bottom: 5px;
+	margin: 5px 0;
+}
+.SettingTips{
+	color: #E83C3C;
+	width: 100%;
+	font-size: 12px;
+	margin-top: 5px;
+}
+.ivu-input-number,.ivu-input-number-input,.ivu-input-number-input-wrap{
+	overflow: hidden!important;
 }
 .SettingInfo{
 	width: 100%;
 	padding-left: 5px;
 	line-height: 30px;
 }
+.SettingInfo span{
+	background: #2d8cf0;
+	color: #fff;
+	border-radius: 5px;
+	padding: 3px 5px;
+	font-size: 12px;
+	margin-left: 10px;
+}
 .SettingForm{
 	margin-top: 10px;
 	width: 200px;
 }
-.SettingForm input{
+.SettingForm .ivu-input-wrapper,.SettingForm .ivu-input-number{
 	margin: 5px 0;
 }
 .SettingForm button{

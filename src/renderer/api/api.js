@@ -87,6 +87,14 @@ let User={
             error:error
         })
     },
+    ChangePass:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/ChangePass",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
 };
 let Disk={
     LoadTreeFile:function (id,callback,error) {

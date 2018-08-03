@@ -280,11 +280,8 @@
                         }else{
                             localStorage.username=localStorage.password='';
                         }
-                        localStorage.Login={
-                            username:rs.user,
-                            usehead:rs.head
-                        };
                         LoginWindow.setSize(800,300);
+                        this.CheckUserConf();
                         ipc.send('login-success');
                         setTimeout(()=>{
                             this.LoadingText='欢迎回来 '+rs.user
@@ -500,6 +497,17 @@
                     }
                     this.$Message[rs.state](rs.msg);
                 })
+            },
+            CheckUserConf:function(){
+                if(!localStorage.TransDownFolder){
+                    localStorage.TransDownFolder=process.env.USERPROFILE
+                }
+                if(!localStorage.MaxUpTrans){
+                    localStorage.MaxUpTrans=5
+                }
+                if(!localStorage.MaxDownTrans){
+                    localStorage.MaxDownTrans=5
+                }
             },
             changeType:function (type) {
                 for(let item in this.ShowState){
