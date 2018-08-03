@@ -23,7 +23,6 @@ body,html {
 	-ms-user-select:none;
 	-khtml-user-select:none;
 	user-select:none;
-	background:#2682fc;
 	height:100%;
 	font-size:14px;
 	-webkit-text-size-adjust:100%;
@@ -627,6 +626,7 @@ z-index: 2;
 	-webkit-app-region: drag;
 	position: relative;
 	z-index: 2;
+	margin-top: 2px;
 }
 .CloudDiskInfoControl p{
 	float: left;
@@ -1166,7 +1166,6 @@ z-index: 2;
     width: 100%;
     background: #fff;
     height: 100%;
-    margin-top: 2px;
 }
 .VideoContainer {
 	background:#000;
@@ -1855,6 +1854,7 @@ z-index: 2;
 }
 .SettingInfo{
 	width: 100%;
+	font-size: 14px;
 	padding-left: 5px;
 	line-height: 30px;
 }
@@ -1864,6 +1864,12 @@ z-index: 2;
 	border-radius: 5px;
 	padding: 3px 5px;
 	font-size: 12px;
+	margin-left: 10px;
+}
+.SettingInfo button{
+	background: none;
+	color: #2d8cf0;
+	font-size: 14px;
 	margin-left: 10px;
 }
 .SettingForm{

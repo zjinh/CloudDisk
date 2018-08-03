@@ -160,7 +160,7 @@
                 <button class="el-button el-button--default el-button--small el-button--primary" @click="Share">确 定</button>
             </span>
         </el-dialog>
-        <input type="file" id="FileArea" @change="PreparUpload" ref="FileArea" multiple="multiple">
+        <input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple">
     </div>
 </template>
 
@@ -469,6 +469,8 @@
                     rs[0].userhead=localStorage.server+'/'+rs[0].userhead;
                     this.Logined=rs[0];
                     localStorage.LoginTime=rs[0].login_time;
+                    localStorage.Phone=rs[0].phone;
+                    localStorage.email=rs[0].email
                 },()=>{
                     this.$Message.error({
                         content: '账号状态异常，请重新登录！',
@@ -1610,7 +1612,7 @@
             StringBefore (str,substr) {
                 return str.substring(str.lastIndexOf(substr) + 1, str.length);
             },
-            ArraySort(array,key,type){
+            ArraySort(array, key,type){
                 let temp,unfix;
                 for (unfix = array.length - 1; unfix > 0; unfix--) {
                     for (let i = 0; i < unfix; i++) {

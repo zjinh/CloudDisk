@@ -1,6 +1,6 @@
 <template>
     <div class="WindowContainer VideoPlayer" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
-        <div class="CloudDiskInfoControl">
+        <div class="CloudDiskInfoControl"  v-show="!FullFlag">
             <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}}</p>
             <button class="sf-icon-times" @click="close"></button>
             <button :class="ButtonState" @click="restore"></button>

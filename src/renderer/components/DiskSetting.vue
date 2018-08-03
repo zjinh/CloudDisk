@@ -23,11 +23,10 @@
                 </div>
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Safety.active">
                     <p class="SettingBigTitle">绑定设置</p>
-                    <p class="SettingInfo">当前账号：{{user}}</p>
                     <p class="SettingSecTitle">修改安全邮箱</p>
-                    <p class="SettingInfo">当前绑定邮箱：{{user}}</p>
+                    <p class="SettingInfo">当前绑定邮箱：{{Email}}<button @click="ChangeEmail">[修改]</button></p>
                     <p class="SettingSecTitle">更换手机</p>
-                    <p class="SettingInfo">当前绑定手机号：{{user}}</p>
+                    <p class="SettingInfo">当前绑定手机号：{{Phone}}<button>[修改]</button></p>
                     <p class="SettingSecTitle">微信登录绑定</p>
                     <p class="SettingInfo">暂未开放</p>
                     <p class="SettingSecTitle">QQ登录绑定</p>
@@ -118,6 +117,8 @@
                 user:'',
                 LoginTime:0,
                 loading:'',
+                Phone:'',
+                Email:'',
                 TransDownFolder:'',
                 MaxUpTrans:1,
                 MaxDownTrans:1,
@@ -129,8 +130,16 @@
             this.TransDownFolder=localStorage.TransDownFolder;
             this.MaxUpTrans=parseInt(localStorage.MaxUpTrans);
             this.MaxDownTrans=parseInt(localStorage.MaxDownTrans);
+            this.Phone=localStorage.Phone;
+            this.Email=localStorage.email;
         },
         methods:{
+            change(item,index){
+                for(let i in this.SettingMenuData){
+                    this.SettingMenuData[i].active='';
+                }
+                this.SettingMenuData[index].active='active';
+            },
             ChangePassword(){
                 if(this.loading){
                     this.$Message.warning('正在进行其他操作，请等待');
@@ -177,11 +186,8 @@
                 })
 
             },
-            change(item,index){
-                for(let i in this.SettingMenuData){
-                    this.SettingMenuData[i].active='';
-                }
-                this.SettingMenuData[index].active='active';
+            ChangeEmail(){
+
             },
             close(){
                 DiskSetting.close();
