@@ -26,11 +26,7 @@
                     <p class="SettingSecTitle">修改安全邮箱</p>
                     <p class="SettingInfo">当前绑定邮箱：{{Email}}<button @click="OpenChangeEmailDialog">[修改]</button></p>
                     <p class="SettingSecTitle">更换手机</p>
-                    <p class="SettingInfo">当前绑定手机号：{{Phone}}<button>[修改]</button></p>
-                    <p class="SettingSecTitle">微信登录绑定</p>
-                    <p class="SettingInfo">暂未开放</p>
-                    <p class="SettingSecTitle">QQ登录绑定</p>
-                    <p class="SettingInfo">暂未开放</p>
+                    <p class="SettingInfo">当前绑定手机号：{{Phone}}<button @click="ChangePhone">[修改]</button></p>
                 </div>
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Trans.active">
                     <p class="SettingBigTitle">传输设置</p>
@@ -43,7 +39,7 @@
                         <InputNumber :max="5"  :min="1" v-model="MaxUpTrans"></InputNumber>
                     </div>
                     <p class="SettingSecTitle">同时下载数</p>
-                    <div class="SettingForm">
+                    <div class="SettingForm" style="margin-bottom: 0">
                         <InputNumber :max="5" :min="1" v-model="MaxDownTrans"></InputNumber>
                     </div>
                     <p class="SettingTips">*请不要在正在下载文件的情况下修改下载目录</p>
@@ -51,6 +47,23 @@
                 </div>
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Notice.active">
                     <p class="SettingBigTitle">提醒设置</p>
+                    <p class="SettingSecTitle">弹窗提醒</p>
+                    <div class="SettingForm">
+                        <Checkbox v-model="NoticeBubble">传输完成后气泡提示</Checkbox>
+                    </div>
+                    <p class="SettingSecTitle">声音提醒</p>
+                    <div class="SettingForm" style="width: 100%">
+                        <Checkbox v-model="NoticeFlag">传输完成后声音提醒</Checkbox>
+                        <div class="SettingForm" style="width: 100%">
+                            <RadioGroup v-model="NoticeVoice" @on-change="VoiceChange">
+                                <Radio label="音效一" :disabled="!NoticeFlag"></Radio>
+                                <Radio label="音效二" :disabled="!NoticeFlag"></Radio>
+                                <Radio label="音效三" :disabled="!NoticeFlag"></Radio>
+                                <Radio label="音效四" :disabled="!NoticeFlag"></Radio>
+                            </RadioGroup>
+                        </div>
+                        <audio :src="VoiceSrc" ref="audio"></audio>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,6 +85,7 @@
     import Api from '../api/api';
     import SettingMenu from './DiskSetting/SettingMenu';
     import electron from 'electron';
+    const path = require('path');
     let DiskSetting=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
@@ -93,6 +107,24 @@
             TransDownFolder: {
                 handler(newValue, oldValue) {
                     localStorage.TransDownFolder=this.TransDownFolder
+                },
+                deep: true
+            },
+            VoiceSrc:{
+                handler(newValue, oldValue) {
+                    localStorage.NoticeVoice=this.VoiceSrc
+                },
+                deep: true
+            },
+            NoticeFlag:{
+                handler(newValue, oldValue) {
+                    localStorage.NoticeFlag=this.NoticeFlag;
+                },
+                deep: true
+            },
+            NoticeBubble:{
+                handler(newValue, oldValue) {
+                    localStorage.NoticeBubble=this.NoticeBubble;
                 },
                 deep: true
             },
@@ -135,11 +167,16 @@
                 MaxUpTrans:1,
                 MaxDownTrans:1,
                 ShowChangeEmailWindow1:false,
+                EmailSendFlag:false,
                 ChangeEmailData:{
                     ctype:1,
                     pass:'',
                     email:''
-                }
+                },
+                NoticeBubble:true,//气泡提示
+                NoticeFlag:true,//提醒声音
+                NoticeVoice:'音效一',//哪个提醒声音
+                VoiceSrc:'',//提醒测试音效
             }
         },
         created(){
@@ -150,6 +187,23 @@
             this.MaxDownTrans=parseInt(localStorage.MaxDownTrans);
             this.Phone=localStorage.Phone;
             this.Email=localStorage.email;
+            this.NoticeBubble=eval(localStorage.NoticeBubble);
+            this.NoticeFlag=eval(localStorage.NoticeFlag);
+            this.VoiceSrc=localStorage.NoticeVoice;
+            switch (localStorage.NoticeVoice.substr(-5)) {
+                case "1.wav":
+                    this.NoticeVoice='音效一';
+                    break;
+                case "2.wav":
+                    this.NoticeVoice='音效二';
+                    break;
+                case "3.wav":
+                    this.NoticeVoice='音效三';
+                    break;
+                case "4.wav":
+                    this.NoticeVoice='音效四';
+                    break;
+            }
         },
         methods:{
             change(item,index){
@@ -233,8 +287,10 @@
                     this.ShowChangeEmailWindow1=false;
                     return
                 }
-                this.loading='sf-spin';
-                if(this.ChangeEmailData.ctype===1) {
+                if(this.ChangeEmailData.ctype===1&&this.EmailSendFlag){
+                    this.MailSended();
+                }else if(this.ChangeEmailData.ctype===1) {
+                    this.loading='sf-spin';
                     this.SendVerifyEmail();
                 }
             },
@@ -248,12 +304,31 @@
                     if(rs[0].state==='success'){
                         this.ChangeEmailData.ctype=2;
                         this.ShowChangeEmailWindow1=false;
+                        this.ChangeEmailData.pass='';
+                        this.ChangeEmailData.email='';
                         this.SubmitChangeEmail();
                         this.$Message.success('认证邮件已发送，授权码10分钟有效');
+                        this.EmailSendFlag=false;
                     }else {
-                        this.$Message.error('密码错误');
+                        if(rs[0].state==='warning'){
+                            this.EmailSendFlag=true;
+                            this.MailSended();
+                        }
+                        this.$Message.error(rs[0].msg);
                     }
                 })
+            },
+            MailSended(){
+                this.ShowChangeEmailWindow1=false;
+                this.$confirm('10分钟内无法再进行更改邮箱操作，如果您已收到授权码，请点击继续', '操作终止', {
+                    confirmButtonText: '继续',
+                    cancelButtonText: '取消',
+                    dangerouslyUseHTMLString:true,
+                    type: 'warning',
+                }).then(() => {
+                    this.SubmitChangeEmail();
+                }).catch(() => {
+                });
             },
             SubmitChangeEmail(){
                 this.InputConfrim({
@@ -275,12 +350,43 @@
                                 localStorage.email=rs[0].email;
                                 this.getUser();
                             }else {
-                                this.$Message.error('授权码错误或失效');
+                                this.$Message.error(rs[0].msg);
                             }
                             this.ChangeEmailData.ctype=1;
                         })
                     }
                 })
+            },
+            ChangePhone(){
+
+            },
+            VoiceChange(a){
+                switch (a) {
+                    case "音效一":
+                        this.VoiceSrc=path.join(__static,'/voice/1.wav');
+                        this.PlayVoice();
+                        break;
+                    case "音效二":
+                        this.VoiceSrc=path.join(__static,'/voice/2.wav');
+                        this.PlayVoice();
+                        break;
+                    case "音效三":
+                        this.VoiceSrc=path.join(__static,'/voice/3.wav');
+                        this.PlayVoice();
+                        break;
+                    case "音效四":
+                        this.VoiceSrc=path.join(__static,'/voice/4.wav');
+                        this.PlayVoice();
+                        break;
+                }
+            },
+            PlayVoice(){
+                this.$refs.audio.currentTime=0;
+                this.$refs.audio.pause();
+                this.$refs.audio.load();
+                setTimeout(()=>{
+                    this.$refs.audio.play();
+                },200)
             },
             getUser(){
                 Api.User.UserInfo((rs)=>{
@@ -290,6 +396,9 @@
                     });
                 },()=>{
                 })
+            },
+            StringBefore (str,substr) {
+                return str.substring(str.lastIndexOf(substr) + 1, str.length);
             },
             InputConfrim(options){
                 this.$prompt(options.tips, options.title, {

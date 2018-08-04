@@ -161,6 +161,7 @@
             </span>
         </el-dialog>
         <input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple">
+        <audio :src="NoticeSrc" ref="NoticeAudio"></audio>
     </div>
 </template>
 
@@ -289,6 +290,7 @@
                 UploadCount:0,
                 DownloadCount:0,
                 FinishCount:0,
+                NoticeSrc:'',
             }
         },
         watch:{
@@ -374,6 +376,7 @@
             this.Bind();
             this.GetUserInfo();
             this.GetMainFile(null,this.loadClassify);
+            this.NoticeSrc=localStorage.NoticeVoice;
         },
         methods:{
             Bind(){
@@ -954,6 +957,13 @@
                                 localStorage.removeItem(fileName + '_p');
                                 if(_this.NowDiskID===rs.data.parent_id) {
                                     _this.InsertFileData(rs.data);
+                                }
+                                if(eval(localStorage.NoticeFlag)){
+                                    _this.NoticeSrc=localStorage.NoticeVoice;
+                                    let a=setTimeout(()=>{
+                                        clearTimeout(a);
+                                        _this.$refs.NoticeAudio.play();
+                                    },200)
                                 }
                             } else {
                                 // 记录已经上传的分片

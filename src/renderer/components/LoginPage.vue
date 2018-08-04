@@ -511,6 +511,15 @@
                 if(!localStorage.MaxDownTrans){
                     localStorage.MaxDownTrans=5
                 }
+                if(localStorage.NoticeFlag!==false||localStorage.NoticeFlag!==true){
+                    localStorage.NoticeFlag=true;
+                }
+                if(!localStorage.NoticeVoice){
+                    localStorage.NoticeVoice=path.join(__static,'/voice/1.wav');
+                }
+                if(localStorage.NoticeBubble!==false||localStorage.NoticeBubble!==true){
+                    localStorage.NoticeBubble=true;
+                }
             },
             changeType:function (type) {
                 for(let item in this.ShowState){

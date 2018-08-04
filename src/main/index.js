@@ -235,7 +235,7 @@ function CreateDiskWindow() {
     });
     DiskWindow.webContents.on('did-finish-load',()=>{
         DiskWindow.show();
-        LoginWindow.close();
+        LoginWindow?LoginWindow.close():"";
     })
 }
 function CreateDiskInfo(data) {
