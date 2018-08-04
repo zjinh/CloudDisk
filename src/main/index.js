@@ -210,6 +210,7 @@ function CreateDiskWindow() {
         height: 610,
         title:'CloudDisk',
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
@@ -232,6 +233,10 @@ function CreateDiskWindow() {
             app.quit();
         }
     });
+    DiskWindow.webContents.on('did-finish-load',()=>{
+        DiskWindow.show();
+        LoginWindow.close();
+    })
 }
 function CreateDiskInfo(data) {
     Menu.setApplicationMenu(null);
@@ -527,11 +532,7 @@ function CreateSettingWindow(data) {
 function BindIpc() {
     /*登录窗口指令*/
     ipcMain.on('login-success', ()=> {
-        let a=setTimeout(function () {
-            clearTimeout(a);
-            CreateDiskWindow();
-            LoginWindow.close();
-        },2000)
+        CreateDiskWindow();
     });
     /*网盘窗口指令*/
     ipcMain.on('disk-error', ()=> {

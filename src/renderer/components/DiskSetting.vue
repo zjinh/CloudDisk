@@ -24,7 +24,7 @@
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Safety.active">
                     <p class="SettingBigTitle">绑定设置</p>
                     <p class="SettingSecTitle">修改安全邮箱</p>
-                    <p class="SettingInfo">当前绑定邮箱：{{Email}}<button @click="ChangeEmail">[修改]</button></p>
+                    <p class="SettingInfo">当前绑定邮箱：{{Email}}<button @click="OpenChangeEmailDialog">[修改]</button></p>
                     <p class="SettingSecTitle">更换手机</p>
                     <p class="SettingInfo">当前绑定手机号：{{Phone}}<button>[修改]</button></p>
                     <p class="SettingSecTitle">微信登录绑定</p>
@@ -54,6 +54,17 @@
                 </div>
             </div>
         </div>
+        <el-dialog title="更换邮箱" :visible.sync="ShowChangeEmailWindow1" width="300px" top="70px">
+            <div style="height: 120px;">
+                <p class="SettingSecTitle">我们需要以下信息</p>
+                <Input type="password" v-model="ChangeEmailData.pass" placeholder="当前账号密码" clearable style="width: 100%" />
+                <Input type="text" v-model="ChangeEmailData.email" placeholder="您的新邮箱地址" clearable style="width: 100%" />
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <button class="el-button el-button--default el-button--small" @click="ShowChangeEmailWindow1 = false">取 消</button>
+                <button class="el-button el-button--default el-button--small el-button--primary" @click="ChangeEmail">确 定</button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -62,6 +73,7 @@
     import SettingMenu from './DiskSetting/SettingMenu';
     import electron from 'electron';
     let DiskSetting=electron.remote.getCurrentWindow();
+    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskSetting",
         components:{SettingMenu},
@@ -122,6 +134,12 @@
                 TransDownFolder:'',
                 MaxUpTrans:1,
                 MaxDownTrans:1,
+                ShowChangeEmailWindow1:false,
+                ChangeEmailData:{
+                    ctype:1,
+                    pass:'',
+                    email:''
+                }
             }
         },
         created(){
@@ -186,8 +204,102 @@
                 })
 
             },
+            OpenChangeEmailDialog(){
+                if(this.ChangeEmailData.ctype===1) {
+                    this.ShowChangeEmailWindow1=true;
+                }else{
+                    this.SubmitChangeEmail();
+                }
+            },
             ChangeEmail(){
-
+                if(this.loading){
+                    this.$Message.warning('正在进行其他操作，请等待');
+                    return;
+                }
+                if(!this.ChangeEmailData.pass.length){
+                    this.$Message.warning('请输入您的密码');
+                    return
+                }
+                if(!this.ChangeEmailData.email.length){
+                    this.$Message.warning('请输入新的邮箱地址');
+                    return
+                }
+                if(this.ChangeEmailData.email&&!/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(this.ChangeEmailData.email)) {
+                    this.$Message.error('请输入正确的邮箱');
+                    return;
+                }
+                if(this.ChangeEmailData.email===this.Email){
+                    this.$Message.warning('新旧邮箱地址一致，操作取消');
+                    this.ShowChangeEmailWindow1=false;
+                    return
+                }
+                this.loading='sf-spin';
+                if(this.ChangeEmailData.ctype===1) {
+                    this.SendVerifyEmail();
+                }
+            },
+            SendVerifyEmail(){
+                Api.User.ChangeSafeEmail(this.ChangeEmailData,(rs)=>{
+                    this.loading=false;
+                    if(!rs[0]){
+                        this.$Message.error('服务器错误');
+                        return
+                    }
+                    if(rs[0].state==='success'){
+                        this.ChangeEmailData.ctype=2;
+                        this.ShowChangeEmailWindow1=false;
+                        this.SubmitChangeEmail();
+                        this.$Message.success('认证邮件已发送，授权码10分钟有效');
+                    }else {
+                        this.$Message.error('密码错误');
+                    }
+                })
+            },
+            SubmitChangeEmail(){
+                this.InputConfrim({
+                    title:"验证邮箱",
+                    tips:"请输入邮箱内的验证码",
+                    callback:(code)=>{
+                        Api.User.ChangeSafeEmail({
+                            code:code,
+                            ctype:2
+                        },(rs)=>{
+                            this.loading=false;
+                            if(!rs[0]){
+                                this.$Message.error('服务器错误');
+                                return
+                            }
+                            if(rs[0].state==='success'){
+                                this.$Message.success('安全邮箱已修改');
+                                this.Email=rs[0].email;
+                                localStorage.email=rs[0].email;
+                                this.getUser();
+                            }else {
+                                this.$Message.error('授权码错误或失效');
+                            }
+                            this.ChangeEmailData.ctype=1;
+                        })
+                    }
+                })
+            },
+            getUser(){
+                Api.User.UserInfo((rs)=>{
+                    this.$nextTick(()=>{
+                        rs=rs[0];
+                        ipc.send('user',rs);
+                    });
+                },()=>{
+                })
+            },
+            InputConfrim(options){
+                this.$prompt(options.tips, options.title, {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputValue:options.value||'',
+                }).then(({ value }) => {
+                    options.callback(value)
+                }).catch(() => {
+                });
             },
             close(){
                 DiskSetting.close();

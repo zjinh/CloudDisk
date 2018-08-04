@@ -95,6 +95,14 @@ let User={
             error:error
         })
     },
+    ChangeSafeEmail:function (data,callback,error) {
+        Ajax({
+            url:localStorage.server+"/service/user/ChangeSafeEmail",
+            data:data,
+            success:callback,
+            error:error
+        })
+    },
 };
 let Disk={
     LoadTreeFile:function (id,callback,error) {
