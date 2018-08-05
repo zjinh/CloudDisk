@@ -839,7 +839,7 @@
                 this.$nextTick(()=>{
                     for (let i = 0; i<fileArea.length; i++) {
                         file = fileArea[i];
-                        let percent = parseFloat(localStorage[file.name + '_p']);  // 初始通过本地记录，判断该文件是否曾经上传过
+                        let percent = parseFloat(localStorage['upload_'+file.name + '_p']);  // 初始通过本地记录，判断该文件是否曾经上传过
                         if (file.name.split('.').length>1) {
                             OneFile = {
                                 name: file.name,
@@ -904,7 +904,7 @@
             },//上传控制
             StartUpload(item,index){
                 let fileName = item.name,
-                    eachSize = item.orginSize/100,
+                    eachSize = item.orginSize/150,
                     totalSize = item.orginSize,
                     chunks = Math.ceil(totalSize / eachSize),
                     chunk;
@@ -914,13 +914,13 @@
                 // 上传操作 times: 第几次
                 function startUpload(times) {
                     // 上传之前查询是否以及上传过分片
-                    chunk = localStorage.getItem(fileName + '_chunk') || 0;
+                    chunk = localStorage.getItem('upload_'+fileName + '_chunk') || 0;
                     chunk = parseInt(chunk, 10);
                     // 判断是否为末分片
                     let isLastChunk = (chunk === (chunks - 1) ? 1 : 0);
                     // 如果第一次上传就为末分片，即文件已经上传完成，则重新覆盖上传
                     if (times === 'first' && isLastChunk === 1) {
-                        localStorage.setItem(fileName + '_chunk', 0);
+                        localStorage.setItem('upload_'+fileName + '_chunk', 0);
                         chunk = 0;
                         isLastChunk = 0;
                     }
@@ -943,7 +943,7 @@
                         // 上传成功
                         if (rs.status === 200) {
                             // 记录已经上传的百分比
-                            localStorage.setItem(fileName + '_p', percent);
+                            localStorage.setItem('upload_'+fileName + '_p', percent);
                             _this.$nextTick(()=>{
                                 item.percent=parseFloat(percent);
                             });
@@ -954,8 +954,8 @@
                                     item.show=false;
                                     item.buttonVal='sf-icon-trash';
                                 });
-                                localStorage.removeItem(fileName + '_chunk');
-                                localStorage.removeItem(fileName + '_p');
+                                localStorage.removeItem('upload_'+fileName + '_chunk');
+                                localStorage.removeItem('upload_'+fileName + '_p');
                                 if(_this.NowDiskID===rs.data.parent_id) {
                                     _this.InsertFileData(rs.data);
                                 }
@@ -968,7 +968,7 @@
                                 }
                             } else {
                                 // 记录已经上传的分片
-                                localStorage.setItem(fileName + '_chunk', ++chunk);
+                                localStorage.setItem('upload_'+fileName + '_chunk', ++chunk);
                                 // 这样设置可以暂停，但点击后动态的设置就暂停不了..
                                 if(item.buttonVal==='sf-icon-pause'){
                                     item.paused = false;
@@ -985,8 +985,8 @@
                                 item.buttonVal='sf-icon-times';
                                 _this.TransformData.splice(index,1);
                             });
-                            localStorage.removeItem(fileName + '_chunk');
-                            localStorage.removeItem(fileName + '_p');
+                            localStorage.removeItem('upload_'+fileName + '_chunk');
+                            localStorage.removeItem('upload_'+fileName + '_p');
                         }
                     });
                 }
