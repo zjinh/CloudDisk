@@ -103,6 +103,7 @@
     import electron from 'electron';
     let ipc=electron.ipcRenderer;
     let LoginWindow=electron.remote.getCurrentWindow();
+    const path = require('path');
     export default {
         name: "LoginPage",
         components:{Logininput,VerifyInput},
