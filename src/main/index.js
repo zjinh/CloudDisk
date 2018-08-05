@@ -181,6 +181,7 @@ function CreateLoginWindow () {
         frame:false,
         maximizable:false,
         resizable:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
@@ -189,6 +190,9 @@ function CreateLoginWindow () {
     LoginWindow.on('closed', function() {
         LoginWindow = null;
     });
+    LoginWindow.webContents.on('did-finish-load',()=>{
+        LoginWindow.show();
+    })
 }
 function CreateDiskWindow() {
     Menu.setApplicationMenu(null);
@@ -257,6 +261,7 @@ function CreateDiskInfo(data) {
         minimizable:false,
         resizable:false,
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
@@ -266,6 +271,7 @@ function CreateDiskInfo(data) {
         DiskInfo = null;
     });
     DiskInfo.webContents.on('did-finish-load', ()=>{
+        DiskInfo.show();
         DiskInfo.webContents.send('DiskInfo',data);
     });
 }
@@ -280,12 +286,13 @@ function CreateMusicPlayer(data) {
     Menu.setApplicationMenu(null);
     MusicPlayer= new BrowserWindow({
         width: 350,
-        height: 500,
+        height: 535,
         title:'音乐播放器',
         maximizable:false,
         minimizable:false,
         resizable:false,
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
@@ -296,6 +303,7 @@ function CreateMusicPlayer(data) {
         MusicPlayer = null;
     });
     MusicPlayer.webContents.on('did-finish-load', ()=>{
+        MusicPlayer.show();
         MusicPlayer.webContents.send('MusicList',data);
     });
 }
@@ -315,6 +323,7 @@ function CreateVideoPlayer(data) {
         minWidth:500,
         title:'视频播放器',
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
@@ -325,6 +334,7 @@ function CreateVideoPlayer(data) {
         VideoPlayer = null;
     });
     VideoPlayer.webContents.on('did-finish-load', ()=>{
+        VideoPlayer.show();
         VideoPlayer.webContents.send('VideoList',data);
     });
 }
@@ -405,6 +415,7 @@ function CreateAccountWindow(data) {
         maximizable:false,
         resizable:false,
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
@@ -414,6 +425,7 @@ function CreateAccountWindow(data) {
         AccountWindow = null;
     });
     AccountWindow.webContents.on('did-finish-load', ()=>{
+        AccountWindow.show();
         AccountWindow.webContents.send('user-data',data);
     });
 }
@@ -433,6 +445,7 @@ function CreateAboutWindow() {
         minimizable:false,
         resizable:false,
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
@@ -442,6 +455,7 @@ function CreateAboutWindow() {
         AccountWindow = null;
     });
     AboutWindow.webContents.on('did-finish-load', ()=>{
+        AboutWindow.show();
         AboutWindow.webContents.send('version',require("../../package.json").version);
     });
 }
@@ -491,6 +505,7 @@ function CreateFeedBackWindow() {
         minimizable:false,
         resizable:false,
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
@@ -500,6 +515,7 @@ function CreateFeedBackWindow() {
         FeedBackWindow = null;
     });
     FeedBackWindow.webContents.on('did-finish-load', ()=>{
+        FeedBackWindow.show();
         FeedBackWindow.webContents.send('version',require("../../package.json").version);
     });
 }
@@ -520,6 +536,7 @@ function CreateSettingWindow(data) {
         resizable:false,
         title:'系统设置',
         frame:false,
+        show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
@@ -527,6 +544,9 @@ function CreateSettingWindow(data) {
     SettingWindow.loadURL(SettingWindowUrl);
     SettingWindow.on('closed', function() {
         SettingWindow = null;
+    });
+    SettingWindow.webContents.on('did-finish-load', ()=>{
+        SettingWindow.show();
     });
 }
 function BindIpc() {

@@ -7,7 +7,7 @@
             <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
         <div class="VideoContainer">
-            <video :style="{'height':VideoHeight}" crossorigin="*" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
+            <video :style="{'height':VideoHeight}" crossorigin="*" @error="VideoError" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
             </video>
             <div :class="'VideoFliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
             <div :class="'VideoControl '+BarAnimation" @mouseover="ShowControl" @mouseout="HideControl">
@@ -268,6 +268,9 @@
                         this.FullFlag=true;
                     });
                 }
+            },
+            VideoError(e){
+                console.log(e)
             },
             restore(){
                 if (VideoPlayer.isMaximized()) {

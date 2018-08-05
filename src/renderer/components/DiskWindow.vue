@@ -515,6 +515,7 @@
                 item.size=this.FileSize(item.disk_size);//计算文件大小
                 item.type=this.StringBefore(item.disk_realname, ".").toLowerCase();
                 item.icon =this.IconGet(item);//区别文件类型设置图表
+                item.disk_size=parseInt(item.disk_size);
                 this.UserDiskData.push(item);
             },
             PrintFile(rs){

@@ -1,6 +1,6 @@
 <template>
     <div class="AudioContainer" @mousedown="VolumnState=false" tabindex="-1" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
-        <div class="CloudDiskInfoControl">
+        <div class="CloudDiskInfoControl" style="margin-top: 0">
             <button class="sf-icon-times" @click="close"></button>
             <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
@@ -26,7 +26,7 @@
                     <span></span>
                 </div>
             </div>
-            <canvas width="350" height="180" id="canvas"></canvas>
+            <canvas width="350" height="240" id="canvas"></canvas>
         </div>
         <audio ref="audio" @ended="MusicEnded" @timeupdate="MusicProcess" @error="Next" @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl" id="audio"></audio>
         <MusicList v-bind:PlayList="PlayList" v-on:play="playCallBack" ref="List"></MusicList>

@@ -1,6 +1,6 @@
 <template>
     <div class="CloudUserMain">
-        <div class="CloudDiskInfoControl">
+        <div class="CloudDiskInfoControl" style="margin: 0">
             <button class="sf-icon-times" @click="close"></button>
             <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
