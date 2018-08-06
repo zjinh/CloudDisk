@@ -210,7 +210,7 @@ function CreateDiskWindow() {
     DiskWindow = new BrowserWindow({
         width: 950,
         minWidth:800,
-        minHeight:500,
+        minHeight:560,
         height: 610,
         title:'CloudDisk',
         frame:false,

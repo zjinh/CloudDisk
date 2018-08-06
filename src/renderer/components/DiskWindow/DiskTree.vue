@@ -4,8 +4,8 @@
             <div :class="item.disk_name==='全部文件'?'CloudDFoContainer':'CloudDFoContainer childFolder'">
                 <li class="CloudDiskTree" @dblclick.stop="ToggleDiskTree(item,index)" @mousedown="SelectTree(item)">
                     <Icon v-if="!item.show&&item.load!=='loading'" type="ios-folder"></Icon>
-                    <Icon v-if="item.load==='loading'" type="load-c sf-spin"></Icon>
-                    <Icon v-if="item.show&&item.load!=='loading'" type="folder" style="font-size: 23px;"></Icon>
+                    <Icon v-if="item.load==='loading'" type="ios-loading sf-spin"></Icon>
+                    <Icon v-if="item.show&&item.load!=='loading'" type="ios-folder-open"></Icon>
                     <div>{{item.disk_name}}</div>
                 </li>
                 <DiskTree v-bind:DiskTreeData="item.child" v-show="item.show" v-on:SelectDiskTree="SelectTree"></DiskTree>

@@ -133,7 +133,7 @@ option {
 .CloudDiskHeaderDrag{
 	width: 100%;
 	height: 58px;
-	background: #2682fc;
+
 	padding: 0 2px;
 	-webkit-app-region: drag;
 	margin-top: 2px;
@@ -202,6 +202,11 @@ background: rgba(255,255,255,0.2);
 width: 100%;
 height: 100%;
 }
+.CloudDiskMain{
+	/*background: url("../img/bg/6.jpg");*/
+	background-size: cover;
+	background-position: 0px -67px;
+}
 .CloudDiskMain1{
 overflow-y: auto;
 position: relative;
@@ -258,7 +263,6 @@ width: 100%!important
 .CloudDiskFuncMain{
 width: 100%;
 height: calc(100% - 60px);
-background: #fff;
 }
 .CloudDiskHead{
 width: 100%;
@@ -305,6 +309,8 @@ height: 100%;
 width: 100%;
 height: calc(100% - 60px);
 overflow: auto;
+	position: relative;
+	z-index: 2;
 }
 .CloudDiskClassify li{
 width: 100%;
@@ -328,6 +334,8 @@ background: rgba(43, 133, 228, 0.12);
 .CloudDiskCapacity{
 width: 100%;
 height: 35px;
+	position: relative;
+	z-index: 2;
 }
 .CloudDiskSliderContainer{
 width: 95%;
@@ -351,10 +359,14 @@ border-radius: 10px;
 -o-transition: all .35s
 }
 .CloudDiskCapacity p{
-font-size: 12px;
-text-indent: 6px;
-color: #5d5d5d;
-margin-top: 3px;
+	font-size: 12px;
+	text-indent: 6px;
+	color: #505050;
+	margin-top: 3px;
+	text-align: right;
+	padding: 0 5px;
+	text-shadow: 0px 0px 0px
+
 }
 .CloudDiskEmptyTips{
 width: 100%;
@@ -472,6 +484,14 @@ z-index: 2;
 	width:200px;
 	height: calc(100% - 40px);
 	border-right: 1px solid #dcdcdc;
+	background: #fff;
+}
+.CloudDiskLeft img{
+	position: absolute;
+	width: 140px;
+	bottom: 0px;
+	left: 0;
+	z-index: 0;
 }
 .CloudDiskMainFunc{
 	width: 100%;
@@ -523,6 +543,7 @@ z-index: 2;
 .CloudDiskRight{
 	width: calc(100% - 200px);
 	border:none;
+	background: #fff;
 }
 /*文件图标视图*/
 .CloudDiskMFile{
@@ -607,8 +628,11 @@ z-index: 2;
 	height: 25px;
 	line-height: 25px;
 	font-size: 12px;
-	text-indent: 10px;
-	color: #616161;
+	padding: 0 5px;
+	text-align: right;
+	color: #505050;
+	position: relative;
+	z-index: 2;
 }
 /*文件属性窗口*/
 .CloudDiskInfoContainer{
