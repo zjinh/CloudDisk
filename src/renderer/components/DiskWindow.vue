@@ -1,6 +1,6 @@
 <template>
     <div class="CloudDiskMain" v-on:keydown="keyBoard"  tabindex="1" ref="CloudDiskMain">
-        <div class="CloudDiskHeaderDrag" :style="{background: 'url('+ HeadSrc +')'}">
+        <div class="CloudDiskHeaderDrag" :style="{background: HeadSrc}">
             <ul class="CloudDiskFuncMenu">
                 <img draggable="false" src="../../../static/img/bar/disk.png"><span>CloudDisk</span>
                 <li @click="changeType('disk')"><p> 网盘</p><div class="CloudDiskFuncLine" v-if="DiskType==='disk'"></div></li>
@@ -293,7 +293,7 @@
                 FinishCount:0,
                 NoticeSrc:'',
                 /*自动切换背景*/
-                HeadSrc:'../../../static/img/bg/Spring-0.png',
+                HeadSrc:'url(' + require('../../../static/img/bg/Autumn-1.png') + ')',
                 BottomSrc:path.join(__static,'/img/bg/Autumn-bottom-1.png')
             }
         },
@@ -1675,7 +1675,7 @@
                 }else if(hHour>18&&hHour<=24){
                     tag=3
                 }
-                this.HeadSrc='../../../static/img/bg/'+season+'-'+tag+'.png';
+                this.HeadSrc= 'url(' + require('../../../static/img/bg/'+season+'-'+tag+'.png') + ')';
                 this.BottomSrc=path.join(__static,'/img/bg/'+season+'-bottom-'+tag+'.png')
             },
             mini () {
