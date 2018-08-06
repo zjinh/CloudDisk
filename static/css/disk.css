@@ -132,11 +132,10 @@ option {
 }
 .CloudDiskHeaderDrag{
 	width: 100%;
-	height: 58px;
-
+	height: 60px;
+	background-size: cover!important;
 	padding: 0 2px;
 	-webkit-app-region: drag;
-	margin-top: 2px;
 	overflow: unset;
 }
 .CloudDiskHeaderDrag>.ivu-dropdown{
@@ -201,11 +200,6 @@ background: rgba(255,255,255,0.2);
 .CloudDiskMain,.CloudDiskMain1,.CloudDiskFuncChange{
 width: 100%;
 height: 100%;
-}
-.CloudDiskMain{
-	/*background: url("../img/bg/6.jpg");*/
-	background-size: cover;
-	background-position: 0px -67px;
 }
 .CloudDiskMain1{
 overflow-y: auto;
@@ -488,7 +482,7 @@ z-index: 2;
 }
 .CloudDiskLeft img{
 	position: absolute;
-	width: 140px;
+	width: 100px;
 	bottom: 0px;
 	left: 0;
 	z-index: 0;
