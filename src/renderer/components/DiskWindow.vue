@@ -293,7 +293,7 @@
                 FinishCount:0,
                 NoticeSrc:'',
                 /*自动切换背景*/
-                HeadSrc:'../../../static/img/bg/Spring-0.jpg',
+                HeadSrc:'../../../static/img/bg/Spring-0.png',
                 BottomSrc:path.join(__static,'/img/bg/Autumn-bottom-1.png')
             }
         },
@@ -1675,7 +1675,7 @@
                 }else if(hHour>18&&hHour<=24){
                     tag=3
                 }
-                this.HeadSrc='../../../static/img/bg/'+season+'-'+tag+'.jpg';
+                this.HeadSrc='../../../static/img/bg/'+season+'-'+tag+'.png';
                 this.BottomSrc=path.join(__static,'/img/bg/'+season+'-bottom-'+tag+'.png')
             },
             mini () {
