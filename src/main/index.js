@@ -219,7 +219,6 @@ function CreateDiskWindow() {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    DiskWindow.webContents.openDevTools()
     DiskWindow.loadURL(DiskURL);
     DiskWindow.on('closed', function() {
         DiskWindow = null;

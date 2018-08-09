@@ -362,7 +362,7 @@
                             }else if(item.trans_type==='download'&&item.state==='finish'){
                                 this.FinishCount++;
                             }
-                        })
+                        });
                         this.TransData[0].count=this.DownloadCount;
                         this.TransData[1].count=this.UploadCount;
                         this.TransData[2].count=this.FinishCount;
