@@ -1059,6 +1059,7 @@
                                 }else{
                                     this.DiskData.Clipboard.forEach((item)=>{
                                         item.disk_name=item.disk_name+'-复制';
+                                        item.parent_id=this.NowDiskID;
                                         this.InsertFileData(item)
                                     });
                                 }
@@ -1093,6 +1094,7 @@
                             rs=rs[0];
                             if(rs.state==='success'){
                                 this.DiskData.Clipboard.forEach((item)=>{
+                                    item.parent_id=this.NowDiskID;
                                     this.InsertFileData(item)
                                 });
                                 this.$Message.success('剪贴成功，共'+this.DiskData.Clipboard.length+'个项目');
