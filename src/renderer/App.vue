@@ -16,6 +16,6 @@
 </script>
 
 <style>
-  @import url("../../static/css/icon.css");
-  @import url("../../static/css/disk.css");
+  @import url("assets/css/icon.css");
+  @import url("assets/css/disk.css");
 </style>

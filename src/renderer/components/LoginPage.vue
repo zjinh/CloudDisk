@@ -561,5 +561,5 @@
 </script>
 
 <style scoped>
-    @import url("../../../static/css/login.css");
+    @import url("../assets/css/login.css");
 </style>

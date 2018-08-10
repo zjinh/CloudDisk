@@ -1,11 +1,6 @@
 import { app, BrowserWindow,ipcMain,Menu,Tray,nativeImage } from 'electron'
 const path = require('path');
 import { autoUpdater } from 'electron-updater'
-
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
@@ -107,42 +102,14 @@ let trayMenuTemplate = [//托盘菜单
     }
 ];
 autoUpdater.setFeedURL('http://cloud.com:100/update');
+function CheckUrl(address) {
+    return process.env.NODE_ENV === 'development'
+        ? `http://localhost:9080/#/`+address
+        : `file://${__dirname}/index.html#/`+address;
+}
 const LoginURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
+  ? `http://localhost:9080/index.html`
   : `file://${__dirname}/index.html`;
-const DiskURL= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/main`
-    : `file://${__dirname}/index.html#/main`;
-const InfoURL= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/info`
-    : `file://${__dirname}/index.html#/info`;
-const MusicPlayerURL= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/music-player`
-    : `file://${__dirname}/index.html#/music-player`;
-const VideoPlayerURL= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/video-player`
-    : `file://${__dirname}/index.html#/video-player`;
-const PdfViewerUrl= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/pdf-viewer`
-    : `file://${__dirname}/index.html#/pdf-viewer`;
-const AccountUrl= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/disk-account`
-    : `file://${__dirname}/index.html#/disk-account`;
-const AboutUrl= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/disk-about`
-    : `file://${__dirname}/index.html#/disk-about`;
-const PictureShowerUrl= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/picture-shower`
-    : `file://${__dirname}/index.html#/picture-shower`;
-const FileShowerUrl= process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/file-shower`
-    : `file://${__dirname}/index.html#/file-shower`;
-const FeedBackUrl=process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/disk-feedback`
-    : `file://${__dirname}/index.html#/disk-feedback`;
-const SettingWindowUrl=process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080/#/disk-setting`
-    : `file://${__dirname}/index.html#/disk-setting`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -219,7 +186,7 @@ function CreateDiskWindow() {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    DiskWindow.loadURL(DiskURL);
+    DiskWindow.loadURL(CheckUrl('main'));
     DiskWindow.on('closed', function() {
         DiskWindow = null;
         DiskInfo?DiskInfo.close():'';
@@ -266,7 +233,7 @@ function CreateDiskInfo(data) {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
     });
-    DiskInfo.loadURL(InfoURL);
+    DiskInfo.loadURL(CheckUrl('info'));
     DiskInfo.on('closed', function() {
         DiskInfo = null;
     });
@@ -298,7 +265,7 @@ function CreateMusicPlayer(data) {
         },
     });
     MusicPlayer.setThumbarButtons(MusicButtons);
-    MusicPlayer.loadURL(MusicPlayerURL);
+    MusicPlayer.loadURL(CheckUrl('music-player'));
     MusicPlayer.on('closed', function() {
         MusicPlayer = null;
     });
@@ -329,7 +296,7 @@ function CreateVideoPlayer(data) {
         },
     });
     VideoPlayer.setThumbarButtons(VideoButtons);
-    VideoPlayer.loadURL(VideoPlayerURL);
+    VideoPlayer.loadURL(CheckUrl('video-player'));
     VideoPlayer.on('closed', function() {
         VideoPlayer = null;
     });
@@ -359,7 +326,7 @@ function CreatePictureViewer(data) {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         },
     });
-    PictureViewer.loadURL(PictureShowerUrl);
+    PictureViewer.loadURL(CheckUrl('picture-shower'));
     PictureViewer.on('closed', function() {
         PictureViewer = null;
     });
@@ -388,7 +355,7 @@ function CreatePdfViewer(data) {
         },
         show:false
     });
-    PdfWindow.loadURL(PdfViewerUrl);
+    PdfWindow.loadURL(CheckUrl('pdf-viewer'));
     PdfWindow.on('closed', function() {
         PdfWindow = null;
     });
@@ -420,7 +387,7 @@ function CreateAccountWindow(data) {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    AccountWindow.loadURL(AccountUrl);
+    AccountWindow.loadURL(CheckUrl('disk-account'));
     AccountWindow.on('closed', function() {
         AccountWindow = null;
     });
@@ -450,7 +417,7 @@ function CreateAboutWindow() {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    AboutWindow.loadURL(AboutUrl);
+    AboutWindow.loadURL(CheckUrl('disk-about'));
     AboutWindow.on('closed', function() {
         AccountWindow = null;
     });
@@ -479,7 +446,7 @@ function CreateFileWindow(data) {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    FileWindow.loadURL(FileShowerUrl);
+    FileWindow.loadURL(CheckUrl('file-shower'));
     FileWindow.on('closed', function() {
         FileWindow = null;
     });
@@ -510,7 +477,7 @@ function CreateFeedBackWindow() {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    FeedBackWindow.loadURL(FeedBackUrl);
+    FeedBackWindow.loadURL(CheckUrl('disk-feedback'));
     FeedBackWindow.on('closed', function() {
         FeedBackWindow = null;
     });
@@ -541,7 +508,7 @@ function CreateSettingWindow(data) {
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    SettingWindow.loadURL(SettingWindowUrl);
+    SettingWindow.loadURL(CheckUrl('disk-setting'));
     SettingWindow.on('closed', function() {
         SettingWindow = null;
     });
