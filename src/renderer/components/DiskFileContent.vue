@@ -1,7 +1,7 @@
 <template>
     <div class="WindowContainer FileContent">
         <div class="CloudDiskInfoControl">
-            <p style="width: calc(100% - 120px)">{{NowLoad.disk_name}} 文件查看</p>
+            <p style="width: calc(100% - 120px);color: #000;">{{NowLoad.disk_name}} 文件查看</p>
             <button class="sf-icon-times" @click="close"></button>
             <button :class="ButtonState" @click="restore"></button>
             <button class="sf-icon-window-minimize" @click="mini"></button>

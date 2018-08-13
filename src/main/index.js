@@ -107,9 +107,6 @@ function CheckUrl(address) {
         ? `http://localhost:9080/#/`+address
         : `file://${__dirname}/index.html#/`+address;
 }
-const LoginURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080/index.html`
-  : `file://${__dirname}/index.html`;
 function CheckUpdate(event) {
     //当开始检查更新的时候触发
     autoUpdater.on('checking-for-update', function() {
@@ -139,30 +136,54 @@ function CheckUpdate(event) {
     });
     //执行自动更新检查
 }
-function CreateLoginWindow () {
+function CreateWindow(options) {
+    let win=null;
     Menu.setApplicationMenu(null);
-    LoginWindow = new BrowserWindow({
-        width: 850,
-        height: 550,
-        title:'CloudDisk-登录',
+    win = new BrowserWindow({
+        width: options.width||800,
+        height: options.height||600,
+        minWidth: options.minWidth,
+        minHeight: options.minHeight,
+        title:options.title||'CloudDisk',
         frame:false,
-        maximizable:false,
-        resizable:false,
+        minimizable:options.minimizable === undefined ? true : options.minimizable,
+        maximizable:options.maximizable === undefined ? true : options.maximizable,
+        resizable:options.resizable === undefined ? true : options.resizable,
+        alwaysOnTop:options.alwaysOnTop === undefined ? false : options.alwaysOnTop,
+        backgroundColor:options.backgroundColor||'',
         show:false,
         webPreferences:{
             webSecurity:(process.env.NODE_ENV === 'development')?false:true
         }
     });
-    LoginWindow.loadURL(LoginURL);
-    LoginWindow.on('closed', function() {
-        LoginWindow = null;
+    win.loadURL(CheckUrl(options.url));
+    win.on('closed', function() {
+        win = null;
+        (typeof options.onclose==='function')?options.onclose():"";
     });
-    LoginWindow.webContents.on('did-finish-load',()=>{
-        LoginWindow.show();
-    })
+    win.on('ready-to-show',()=>{
+        win.show();
+        (typeof options.ready==='function')?options.ready():"";
+    });
+    win.webContents.on('did-finish-load',()=>{
+        win.show();
+        win.setTitle(options.title);
+        (typeof options.callback==='function')?options.callback():"";
+    });
+    return win;
+}
+function CreateLoginWindow () {
+    LoginWindow=CreateWindow({
+        url:'index',
+        title:'CloudDisk-登录',
+        width: 850,
+        height: 550,
+        alwaysOnTop:true,
+        maximizable:false,
+        resizable:false,
+    });
 }
 function CreateDiskWindow() {
-    Menu.setApplicationMenu(null);
     let trayIcon = path.join(__static, '/icons');
     appTray = new Tray(path.join(trayIcon, 'icon.ico'));
     //图标的上下文菜单
@@ -174,72 +195,56 @@ function CreateDiskWindow() {
     appTray.on("click", function(){
         DiskWindow.isVisible() ? DiskWindow.hide() : DiskWindow.show();
     });
-    DiskWindow = new BrowserWindow({
+    DiskWindow=CreateWindow({
+        url:'main',
+        title:'CloudDisk',
         width: 950,
         minWidth:800,
         minHeight:560,
         height: 610,
-        title:'CloudDisk',
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            DiskWindow=null;
+            DiskInfo?DiskInfo.close():'';
+            MusicPlayer?MusicPlayer.close():'';
+            VideoPlayer?VideoPlayer.close():'';
+            PictureViewer?PictureViewer.close():"";
+            PdfWindow?PdfWindow.close():'';
+            AccountWindow?AccountWindow.close():'';
+            AboutWindow?AboutWindow.close():'';
+            FileWindow?FileWindow.close():'';
+            FeedBackWindow?FeedBackWindow.close():'';
+            SettingWindow?SettingWindow.close():'';
+            appTray.destroy();
+            if(!LoginWindow) {
+                app.quit();
+            }
+        },
+        callback:()=>{
+            LoginWindow?LoginWindow.close():"";
         }
     });
-    DiskWindow.loadURL(CheckUrl('main'));
-    DiskWindow.on('closed', function() {
-        DiskWindow = null;
-        DiskInfo?DiskInfo.close():'';
-        MusicPlayer?MusicPlayer.close():'';
-        VideoPlayer?VideoPlayer.close():'';
-        PictureViewer?PictureViewer.close():"";
-        PdfWindow?PdfWindow.close():'';
-        AccountWindow?AccountWindow.close():'';
-        AboutWindow?AboutWindow.close():'';
-        FileWindow?FileWindow.close():'';
-        FeedBackWindow?FeedBackWindow.close():'';
-        SettingWindow?SettingWindow.close():'';
-        appTray.destroy();
-        if(!LoginWindow) {
-            app.quit();
-        }
-    });
-    DiskWindow.webContents.on('did-finish-load',()=>{
-        DiskWindow.show();
-        LoginWindow?LoginWindow.close():"";
-    })
 }
 function CreateDiskInfo(data) {
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    let id= 'DiskInfo'+data.disk_id;
     if(DiskInfo){
         DiskInfo.show();
         DiskInfo.focus();
         DiskInfo.webContents.send('DiskInfo',data);
         return
     }
-    DiskInfo= new BrowserWindow({
-        id:id,
+    DiskInfo=CreateWindow({
+        url:'info',
         width: 300,
         height: 450,
         title:'文件属性',
         maximizable:false,
         minimizable:false,
         resizable:false,
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            DiskInfo=null;
         },
-    });
-    DiskInfo.loadURL(CheckUrl('info'));
-    DiskInfo.on('closed', function() {
-        DiskInfo = null;
-    });
-    DiskInfo.webContents.on('did-finish-load', ()=>{
-        DiskInfo.show();
-        DiskInfo.webContents.send('DiskInfo',data);
+        callback:()=>{
+            DiskInfo.webContents.send('DiskInfo',data);
+        }
     });
 }
 function CreateMusicPlayer(data) {
@@ -249,29 +254,21 @@ function CreateMusicPlayer(data) {
         MusicPlayer.webContents.send('MusicList',data);
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    MusicPlayer= new BrowserWindow({
+    MusicPlayer=CreateWindow({
+        url:'music-player',
+        title:'音乐播放器',
         width: 350,
         height: 535,
-        title:'音乐播放器',
         maximizable:false,
         minimizable:false,
         resizable:false,
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            MusicPlayer=null;
         },
-    });
-    MusicPlayer.setThumbarButtons(MusicButtons);
-    MusicPlayer.loadURL(CheckUrl('music-player'));
-    MusicPlayer.on('closed', function() {
-        MusicPlayer = null;
-    });
-    MusicPlayer.webContents.on('did-finish-load', ()=>{
-        MusicPlayer.show();
-        MusicPlayer.webContents.send('MusicList',data);
+        callback:()=>{
+            MusicPlayer.webContents.send('MusicList',data);
+            MusicPlayer.setThumbarButtons(MusicButtons);
+        }
     });
 }
 function CreateVideoPlayer(data) {
@@ -281,28 +278,20 @@ function CreateVideoPlayer(data) {
         VideoPlayer.webContents.send('VideoList',data);
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    VideoPlayer= new BrowserWindow({
+    VideoPlayer=CreateWindow({
+        url:'video-player',
+        title:'视频播放器',
         width: 750,
         height: 500,
         minHeight:350,
         minWidth:500,
-        title:'视频播放器',
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            VideoPlayer=null;
         },
-    });
-    VideoPlayer.setThumbarButtons(VideoButtons);
-    VideoPlayer.loadURL(CheckUrl('video-player'));
-    VideoPlayer.on('closed', function() {
-        VideoPlayer = null;
-    });
-    VideoPlayer.webContents.on('did-finish-load', ()=>{
-        VideoPlayer.show();
-        VideoPlayer.webContents.send('VideoList',data);
+        callback:()=>{
+            VideoPlayer.webContents.send('VideoList',data);
+            VideoPlayer.setThumbarButtons(VideoButtons);
+        }
     });
 }
 function CreatePictureViewer(data) {
@@ -312,26 +301,20 @@ function CreatePictureViewer(data) {
         PictureViewer.webContents.send('PhotoList',data);
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    PictureViewer= new BrowserWindow({
+    PictureViewer=CreateWindow({
+        url:'picture-shower',
+        title:'图片查看',
         width: 750,
         height: 500,
         minHeight:350,
         minWidth:500,
-        title:'图片查看',
         backgroundColor:'#4f4f4f',
-        frame:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            PictureViewer=null;
         },
-    });
-    PictureViewer.loadURL(CheckUrl('picture-shower'));
-    PictureViewer.on('closed', function() {
-        PictureViewer = null;
-    });
-    PictureViewer.webContents.on('did-finish-load', ()=>{
-        PictureViewer.webContents.send('PhotoList',data);
+        callback:()=>{
+            PictureViewer.webContents.send('PhotoList',data);
+        }
     });
 }
 function CreatePdfViewer(data) {
@@ -341,30 +324,23 @@ function CreatePdfViewer(data) {
         PdfWindow.webContents.send('pdf-file',data);
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    PdfWindow= new BrowserWindow({
+    PdfWindow=CreateWindow({
+        url:'pdf-viewer',
+        title:'PDF阅读器',
         width: 750,
         height: 500,
         minHeight:350,
         minWidth:500,
-        title:'PDF阅读器',
-        frame:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        backgroundColor:'#4f4f4f',
+        ready:()=>{
+            DiskWindow.webContents.send('pdf-load-success');
         },
-        show:false
-    });
-    PdfWindow.loadURL(CheckUrl('pdf-viewer'));
-    PdfWindow.on('closed', function() {
-        PdfWindow = null;
-    });
-    PdfWindow.on('ready-to-show',()=>{
-        PdfWindow.show();
-        DiskWindow.webContents.send('pdf-load-success');
-    });
-    PdfWindow.webContents.on('did-finish-load', ()=>{
-        PdfWindow.webContents.send('pdf-file',data);
+        onclose:()=>{
+            PdfWindow=null;
+        },
+        callback:()=>{
+            PdfWindow.webContents.send('pdf-file',data);
+        }
     });
 }
 function CreateAccountWindow(data) {
@@ -375,25 +351,19 @@ function CreateAccountWindow(data) {
     }
     Menu.setApplicationMenu(null);
     Menu.setApplicationMenu(null);
-    AccountWindow= new BrowserWindow({
+    AccountWindow=CreateWindow({
+        url:'disk-account',
+        title:'个人信息',
         width: 670,
         height: 420,
-        title:'个人信息',
         maximizable:false,
         resizable:false,
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            AccountWindow=null;
+        },
+        callback:()=>{
+            AccountWindow.webContents.send('user-data',data);
         }
-    });
-    AccountWindow.loadURL(CheckUrl('disk-account'));
-    AccountWindow.on('closed', function() {
-        AccountWindow = null;
-    });
-    AccountWindow.webContents.on('did-finish-load', ()=>{
-        AccountWindow.show();
-        AccountWindow.webContents.send('user-data',data);
     });
 }
 function CreateAboutWindow() {
@@ -402,28 +372,20 @@ function CreateAboutWindow() {
         AboutWindow.focus();
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    AboutWindow= new BrowserWindow({
+    AboutWindow=CreateWindow({
+        url:'disk-about',
+        title:'关于CloudDisk',
         width: 470,
         height: 300,
-        title:'关于CloudDisk',
         maximizable:false,
         minimizable:false,
         resizable:false,
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            AboutWindow=null;
+        },
+        callback:()=>{
+            AboutWindow.webContents.send('version',require("../../package.json").version);
         }
-    });
-    AboutWindow.loadURL(CheckUrl('disk-about'));
-    AboutWindow.on('closed', function() {
-        AccountWindow = null;
-    });
-    AboutWindow.webContents.on('did-finish-load', ()=>{
-        AboutWindow.show();
-        AboutWindow.webContents.send('version',require("../../package.json").version);
     });
 }
 function CreateFileWindow(data) {
@@ -433,25 +395,19 @@ function CreateFileWindow(data) {
         FileWindow.webContents.send('file',data);
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    FileWindow= new BrowserWindow({
+    FileWindow=CreateWindow({
+        url:'file-shower',
+        title:'文件查看',
         width: 750,
         height: 500,
         minHeight:350,
         minWidth:500,
-        title:'文件查看',
-        frame:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            FileWindow=null;
+        },
+        callback:()=>{
+            FileWindow.webContents.send('file',data);
         }
-    });
-    FileWindow.loadURL(CheckUrl('file-shower'));
-    FileWindow.on('closed', function() {
-        FileWindow = null;
-    });
-    FileWindow.webContents.on('did-finish-load', ()=>{
-        FileWindow.webContents.send('file',data);
     });
 }
 function CreateFeedBackWindow() {
@@ -460,30 +416,20 @@ function CreateFeedBackWindow() {
         FeedBackWindow.focus();
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    FeedBackWindow= new BrowserWindow({
+    FeedBackWindow=CreateWindow({
+        url:'disk-feedback',
+        title:'问题反馈',
         width: 450,
         height: 320,
-        minHeight:320,
-        minWidth:500,
-        title:'问题反馈',
         maximizable:false,
         minimizable:false,
         resizable:false,
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            FeedBackWindow=null;
+        },
+        callback:()=>{
+            FeedBackWindow.webContents.send('version',require("../../package.json").version);
         }
-    });
-    FeedBackWindow.loadURL(CheckUrl('disk-feedback'));
-    FeedBackWindow.on('closed', function() {
-        FeedBackWindow = null;
-    });
-    FeedBackWindow.webContents.on('did-finish-load', ()=>{
-        FeedBackWindow.show();
-        FeedBackWindow.webContents.send('version',require("../../package.json").version);
     });
 }
 function CreateSettingWindow(data) {
@@ -492,28 +438,18 @@ function CreateSettingWindow(data) {
         SettingWindow.focus();
         return
     }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    SettingWindow= new BrowserWindow({
+    SettingWindow=CreateWindow({
+        url:'disk-setting',
+        title:'系统设置',
         width: 600,
         height: 400,
         minHeight:350,
         minWidth:500,
         maximizable:false,
         resizable:false,
-        title:'系统设置',
-        frame:false,
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+        onclose:()=>{
+            SettingWindow=null;
         }
-    });
-    SettingWindow.loadURL(CheckUrl('disk-setting'));
-    SettingWindow.on('closed', function() {
-        SettingWindow = null;
-    });
-    SettingWindow.webContents.on('did-finish-load', ()=>{
-        SettingWindow.show();
     });
 }
 function BindIpc() {
@@ -611,35 +547,13 @@ app.on('ready', function (){
     BindIpc();
     CreateLoginWindow();
 });
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 });
-
 app.on('activate', () => {
   if (LoginWindow === null) {
       CreateLoginWindow()
   }
 });
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */
