@@ -58,7 +58,7 @@ input[type="text"]:disabled{
 .CloudIndexRight{
 	width: calc(100% - 300px);
 	height: 553px;
-	background-image: url("../../../../static/img/login/right-bg.png");
+	background-image: url("../img/login/right-bg.png");
 	background-size: cover;
 }
 .CloudIndexRight img{

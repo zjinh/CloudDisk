@@ -21,6 +21,6 @@
 </script>
 
 <style>
-  @import url("assets/css/icon.css");
-  @import url("assets/css/disk.css");
+  @import url("../../static/css/icon.css");
+  @import url("../../static/css/disk.css");
 </style>
