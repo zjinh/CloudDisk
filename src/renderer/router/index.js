@@ -10,11 +10,6 @@ export default new Router({
       name: 'LoginPage',
       component: require('@/components/LoginPage').default
     },
-      {
-          path: '/index',
-          name: 'LoginPage',
-          component: require('@/components/LoginPage').default
-      },
     {
       path: '/main',
       name: 'DiskWindow',

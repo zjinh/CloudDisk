@@ -4,7 +4,7 @@ import { autoUpdater } from 'electron-updater'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
-
+let version=require("../../package.json").version;
 let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,FileWindow,FeedBackWindow,SettingWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
@@ -174,8 +174,8 @@ function CreateWindow(options) {
 }
 function CreateLoginWindow () {
     LoginWindow=CreateWindow({
-        url:'index',
-        title:'CloudDisk-登录',
+        url:'/',
+        title:'CloudDisk-欢迎',
         width: 850,
         height: 550,
         alwaysOnTop:true,
@@ -384,7 +384,7 @@ function CreateAboutWindow() {
             AboutWindow=null;
         },
         callback:()=>{
-            AboutWindow.webContents.send('version',require("../../package.json").version);
+            AboutWindow.webContents.send('version',version);
         }
     });
 }
@@ -428,7 +428,7 @@ function CreateFeedBackWindow() {
             FeedBackWindow=null;
         },
         callback:()=>{
-            FeedBackWindow.webContents.send('version',require("../../package.json").version);
+            FeedBackWindow.webContents.send('version',version);
         }
     });
 }
