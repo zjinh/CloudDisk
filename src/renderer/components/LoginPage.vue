@@ -523,6 +523,9 @@
                 }
             },
             changeType:function (type) {
+                if(this.PostState.length>5){
+                    return
+                }
                 for(let item in this.ShowState){
                     this.ShowState[item].state = false
                 }

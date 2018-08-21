@@ -126,8 +126,6 @@ function CheckUpdate(event) {
     });
     // 更新下载进度事件
     autoUpdater.on('download-progress', (progressObj)=>{
-        //这个事件无法使用
-        console.log(event)
         event.sender.send('download-progress',progressObj)
     });
     autoUpdater.on('update-downloaded',  function () {
@@ -146,6 +144,8 @@ function CreateWindow(options) {
         minHeight: options.minHeight,
         title:options.title||'CloudDisk',
         frame:false,
+        x:options.x,
+        y:options.y,
         minimizable:options.minimizable === undefined ? true : options.minimizable,
         maximizable:options.maximizable === undefined ? true : options.maximizable,
         resizable:options.resizable === undefined ? true : options.resizable,
