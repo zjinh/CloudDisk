@@ -66,6 +66,11 @@ export default new Router({
       component: require('@/components/DiskSetting').default
     },
     {
+        path: '/disk-msg',
+        name: 'DiskSetting',
+        component: require('@/components/MessageWindow').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

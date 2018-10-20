@@ -1,12 +1,9 @@
 <template>
     <div class="CloudUserMain">
-        <div class="CloudDiskInfoControl" style="margin: 0">
-            <button class="sf-icon-times" @click="close"></button>
-            <button class="sf-icon-window-minimize" @click="mini"></button>
-        </div>
+        <WindowsHeader :data="header"></WindowsHeader>
         <div class="CloudUserLeft">
             <div class="CloudUserLeftDown">
-                <img draggable="false" :src="UploadSrc?UploadSrc:User.userhead+now">
+                <img draggable="false" :src="UploadSrc?UploadSrc:User.userhead">
                 <p class="CloudUserName">{{User.username}}</p>
                 <p class="CloudUserAge">{{User.sex}},{{User.birth}}岁</p>
             </div>
@@ -45,11 +42,11 @@
 
 <script>
     import Api from '../api/api';
-    import electron from 'electron';
-    let AccountWindow=electron.remote.getCurrentWindow();
+    import WindowsHeader from "./DiskWindow/WindowHeader";
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskAccount",
+        components:{WindowsHeader},
         data(){
               return{
                   User:{
@@ -69,21 +66,19 @@
                           value: '保密',
                           label: '保密'
                       },
-                  ]
+                  ],
+                  header:{
+                      title:"",
+                      resize:false
+                  }
               }
         },
         created(){
             ipc.on('user-data', (event, data)=>{//接收打开文件的数据
                 this.$nextTick(()=>{
-                    data.birth=this.age(data.birthday);
                     this.User=data;
                 });
             });
-        },
-        computed:{
-            now(){
-                return '?'+Date.now();
-            }
         },
         methods:{
             clear(){
@@ -95,8 +90,8 @@
                 let elm=event.target;
                 let user_pic = elm.value;
                 if (user_pic.length > 1 && user_pic) {
-                    let type =  this.StringBefore(user_pic,'.');
-                    if (!this.StringExist(type,'png,jpg,jpeg,bmp,gif,PNG,JPG,JPEG,BMP,GIF')) {
+                    let type =  Api.StringBefore(user_pic,'.');
+                    if (!Api.StringExist(type,'png,jpg,jpeg,bmp,gif,PNG,JPG,JPEG,BMP,GIF')) {
                         this.$Message.error('所选格式为' + type + ' 请重新选择上传的文件');
                         return false
                     }
@@ -128,36 +123,13 @@
                 Api.User.UserInfo((rs)=>{
                     this.$nextTick(()=>{
                         rs=rs[0];
-                        rs.userhead=localStorage.server+'/'+rs.userhead+'?'+Date.now();
-                        rs.birth=this.age(rs.birthday);
                         this.User=rs;
                         ipc.send('user',rs);
                     });
                 },()=>{
                 })
             },
-            onSubmit(){return false;},
-            StringExist (str, substr) {
-                if(typeof str !== "string"){ return; }
-                if(substr==='|*|'){return true}
-                for(let i=0;i<substr.split(',').length;i++){
-                    if(str.indexOf(substr.split(',')[i]) >= 0 === true ){ return true; }
-                }
-                return false;
-            },
-            StringBefore (str,substr) {
-                return str.substring(str.lastIndexOf(substr) + 1, str.length);
-            },
-            age(birth){
-                birth = Date.parse(birth?birth:"".replace('/-/g', "/"));
-                return parseInt((new Date() - new Date(birth)) / (1000 * 60 * 60 * 24 * 365));
-            },
-            close(){
-                AccountWindow.close();
-            },
-            mini(){
-                AccountWindow.minimize();
-            }
+            onSubmit(){return false;}
         }
     }
 </script>

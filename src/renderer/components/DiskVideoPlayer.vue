@@ -1,11 +1,6 @@
 <template>
-    <div class="WindowContainer VideoPlayer" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
-        <div class="CloudDiskInfoControl"  v-show="!FullFlag">
-            <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}}</p>
-            <button class="sf-icon-times" @click="close"></button>
-            <button :class="ButtonState" @click="restore"></button>
-            <button class="sf-icon-window-minimize" @click="mini"></button>
-        </div>
+    <div class="WindowContainer" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
+        <WindowsHeader :data=header></WindowsHeader>
         <div class="VideoContainer">
             <video :style="{'height':VideoHeight}" crossorigin="*" @error="VideoError" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
             </video>
@@ -34,20 +29,16 @@
 </template>
 
 <script>
-    import Media from '../media/media';
+    import Media from '../api/media';
     import electron from 'electron';
+    import WindowsHeader from "./DiskWindow/WindowHeader";
     const {ipcRenderer} = require('electron');
     let VideoPlayer=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskVideoPlayer",
+        components:{WindowsHeader},
         watch:{
-            PlayList: {
-                handler(newValue, oldValue) {
-
-                },
-                deep: true
-            },
             FullFlag:{
                 handler(newValue, oldValue) {
                     if(this.FullFlag){
@@ -69,7 +60,6 @@
         data(){
             return{
                 PlayList:[],
-                ButtonState:"sf-icon-window-maximize",//右上角窗口按钮状态
                 NowPlay:{
                     disk_name:'准备播放',
                     count:0,
@@ -85,6 +75,9 @@
                 FullFlag:false,
                 FullButton:'sf-icon-expand',
                 TimeOutID:0,
+                header:{
+                    title:"",
+                }
             }
         },
         created(){
@@ -105,12 +98,6 @@
         },
         methods:{
             bind(){
-                VideoPlayer.on('maximize',()=>{
-                    this.ButtonState='sf-icon-window-restore';
-                });
-                VideoPlayer.on('unmaximize',()=>{
-                    this.ButtonState='sf-icon-window-maximize';
-                });
                 ipcRenderer.on('video-Prev',()=>{
                     this.Prev()
                 });
@@ -120,26 +107,11 @@
                 ipcRenderer.on('video-Next',()=>{
                     this.Next();
                 });
-                if(localStorage.username&&localStorage.password){
-                    this.RemberPass=true;
-                }
-                window.addEventListener( "dragenter", function (e) {
-                    e.preventDefault();
-                }, false);
-                window.addEventListener( "dragover", function (e) {
-                    e.preventDefault();
-                }, false );
-                window.addEventListener( "dragleave", function (e) {
-                    e.preventDefault();
-                }, false );
-                window.addEventListener( "drop", function (e) {
-                    e.preventDefault();
-                }, false );
             },
             playCallBack(item,index){
                 this.NowPlay=item;
                 this.NowPlay.count=index;
-                this.NowPlay.PlayUrl=localStorage.server+'/'+item.disk_main;
+                this.NowPlay.PlayUrl=item.disk_main;
             },
             PlayControl(){
                 if(!this.PlayList.length){
@@ -158,6 +130,7 @@
                     ipc.send('video-play-state','play')
                 }
                 VideoPlayer.setTitle(this.NowPlay.disk_name);
+                this.header.title=this.NowPlay.disk_name;
                 this.$refs.VideoPlayer.focus();
             },
             ChangeTime(state){
@@ -272,19 +245,6 @@
             VideoError(e){
                 console.log(e)
             },
-            restore(){
-                if (VideoPlayer.isMaximized()) {
-                    VideoPlayer.restore();
-                } else {
-                    VideoPlayer.maximize();
-                }
-            },
-            close(){
-                VideoPlayer.close();
-            },
-            mini(){
-                VideoPlayer.minimize();
-            }
         }
     }
 </script>

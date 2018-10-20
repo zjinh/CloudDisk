@@ -1,11 +1,6 @@
 <template>
     <div class="PdfWindow">
-        <div class="CloudDiskInfoControl">
-            <p style="width: calc(100% - 120px)">{{NowPlay.disk_name}} PDF阅读器</p>
-            <button class="sf-icon-times" @click="close"></button>
-            <button :class="ButtonState" @click="restore"></button>
-            <button class="sf-icon-window-minimize" @click="mini"></button>
-        </div>
+        <WindowsHeader :data=header></WindowsHeader>
         <div class="PDfContainer">
             <iframe :src="src"></iframe>
         </div>
@@ -16,65 +11,33 @@
     import electron from 'electron';
     const {ipcRenderer} = require('electron');
     const path = require('path');
+    import WindowsHeader from "./DiskWindow/WindowHeader";
     let PdfViewer=electron.remote.getCurrentWindow();
     export default {
         name: "DiskPdfView",
+        components:{WindowsHeader},
         data(){
             return{
-                ButtonState:"sf-icon-window-maximize",//右上角窗口按钮状态
                 NowPlay:{
                     disk_name:''
                 },
-                src:null
+                src:null,
+                header:{
+                    title:"",
+                    background: '#2d8cf0',
+                    color:'#fff'
+                }
             }
         },
         created(){
             ipcRenderer.on('pdf-file', (event, data)=>{//接收打开文件的数据
                 this.$nextTick(()=>{
                     this.NowPlay.disk_name=data.disk_name;
-                    this.src=path.join(__static, '/pdf/web/viewer.html?file=')+localStorage.server+'/'+data.disk_main;
+                    this.src=path.join(__static, '/pdf/web/viewer.html?file=')+data.disk_main;
                     PdfViewer.setTitle(data.disk_name+'-PDF阅读器');
                 });
+                this.header.title=data.disk_name+'-PDF阅读器';
             });
-            this.bind();
-        },
-        methods:{
-            bind(){
-                PdfViewer.on('maximize',()=>{
-                    this.ButtonState='sf-icon-window-restore';
-                });
-                PdfViewer.on('unmaximize',()=>{
-                    this.ButtonState='sf-icon-window-maximize';
-                });
-                if(localStorage.username&&localStorage.password){
-                    this.RemberPass=true;
-                }
-                window.addEventListener( "dragenter", function (e) {
-                    e.preventDefault();
-                }, false);
-                window.addEventListener( "dragover", function (e) {
-                    e.preventDefault();
-                }, false );
-                window.addEventListener( "dragleave", function (e) {
-                    e.preventDefault();
-                }, false );
-                window.addEventListener( "drop", function (e) {
-                    e.preventDefault();
-                }, false );
-            },
-            restore(){
-                if (PdfViewer.isMaximized()) {
-                    PdfViewer.restore();
-                } else {
-                    PdfViewer.maximize();
-                }
-            },
-            close(){
-                PdfViewer.close();
-            },
-            mini(){
-                PdfViewer.minimize();
-            }
         }
     }
 </script>

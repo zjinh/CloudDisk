@@ -7,7 +7,7 @@
         </div>
         <div class="CloudDiskAbout-main">
             <p class="title">关于CloudDisk</p>
-            <p>开发者：ZJINH</p>
+            <p>开发人员：ZJINH</p>
             <p>联系邮箱：2665229856@qq.com</p>
             <p>当前版本：v{{version}} 正式版 ({{platform}})<span>{{NewVersion}}</span></p>
             <p class="tips">{{message}}&nbsp</p>

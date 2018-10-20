@@ -1,11 +1,6 @@
 <template>
     <div class="ImageShowContainer" @mousewheel="MouseZoom" tabindex="-1"  @keydown.left="Prev" @keydown.right="Next">
-        <div class="CloudDiskInfoControl">
-            <p style="width: calc(100% - 120px)">{{NowShow.disk_name}}-{{ZoomPercent}}</p>
-            <button class="sf-icon-times" @click="close"></button>
-            <button :class="ButtonState" @click="restore"></button>
-            <button class="sf-icon-window-minimize" @click="mini"></button>
-        </div>
+        <WindowsHeader :data=header></WindowsHeader>
         <p class="ImageShowTips"> <span class="ImageShowZoom" :style="{'opacity':ZoomWin}">{{ZoomPercent}}</span>{{NowShow.count+1}}/{{PhotoList.length}}</p>
         <img :class="'ImgShow '+(!Control?'ImgAnim':'')" :src="NowShow.URL" ref="ImgShow" @load="onload" @mousedown="Drag">
         <Spin v-show="loaded">
@@ -27,8 +22,10 @@
     import electron from 'electron';
     let PictureShower=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
+    import WindowsHeader from "./DiskWindow/WindowHeader";
     export default {
         name: "DiskPictureShower",
+        components:{WindowsHeader},
         data(){
             return{
                 loaded:false,
@@ -42,8 +39,12 @@
                 ZoomSize:1,
                 ZoomPercent:'0%',
                 ZoomWin:0,
-                ButtonState:"sf-icon-window-maximize",//右上角窗口按钮状态
                 PhotoList:[],
+                header:{
+                    title:"",
+                    background: 'rgba(103, 103, 103, 0.5)',
+                    color:'#fff'
+                }
             }
         },
         watch:{
@@ -79,17 +80,8 @@
                     this.PhotoList=data;
                 });
             });
-            this.bind();
         },
         methods:{
-            bind(){
-                PictureShower.on('maximize',()=>{
-                    this.ButtonState='sf-icon-window-restore';
-                });
-                PictureShower.on('unmaximize',()=>{
-                    this.ButtonState='sf-icon-window-maximize';
-                });
-            },
             onload(){
                 this.loaded=true;
                 this.ZoomSize=1;
@@ -120,8 +112,9 @@
             ShowPicture(item,index){
                 this.NowShow=item;
                 this.NowShow.count=index;
-                this.NowShow.URL=localStorage.server+'/'+item.disk_main;
-                PictureShower.setTitle(item.disk_name+'-图片查看')
+                this.NowShow.URL=item.disk_main;
+                PictureShower.setTitle(item.disk_name+'-图片查看');
+                this.header.title=item.disk_name+'-图片查看';
             },
             orginz(){
                 let img_show= this.$refs.ImgShow;
@@ -223,19 +216,6 @@
                     this.PhotoList[NowCount-1].now='PlayThis'
                 }
             },
-            restore(){
-                if (PictureShower.isMaximized()) {
-                    PictureShower.restore();
-                } else {
-                    PictureShower.maximize();
-                }
-            },
-            close(){
-                PictureShower.close();
-            },
-            mini(){
-                PictureShower.minimize();
-            }
         }
     }
 </script>

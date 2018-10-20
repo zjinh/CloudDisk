@@ -7,7 +7,7 @@
             <button class="sf-icon-window-minimize" @click="mini"></button>
         </div>
         <div class="CloudDiskSetting-main">
-            <SettingMenu v-bind:data="SettingMenuData" v-on:change="change"></SettingMenu>
+            <SettingMenu :data="SettingMenuData" @change="change"></SettingMenu>
             <div class="CloudDiskSettingContent">
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Account.active">
                     <p class="SettingBigTitle">用户设置</p>
@@ -21,6 +21,17 @@
                         <button class="el-button el-button--default el-button--small el-button--primary " @click="ChangePassword">修改</button>
                     </div>
                 </div>
+                <div class="CloudDiskSettingContainer" v-show="SettingMenuData.System.active">
+                    <p class="SettingBigTitle">系统设置</p>
+                    <p class="SettingSecTitle">开机自启动</p>
+                    <div class="SettingForm">
+                        <Checkbox v-model="AutoStartFlag">系统启动后自动运行CloudDisk</Checkbox>
+                    </div>
+                    <p class="SettingSecTitle">自动登录</p>
+                    <div class="SettingForm" style="width: 100%">
+                        <Checkbox v-model="AutoLogin">打开CloudDisk后自动登录(需勾选记住密码)</Checkbox>
+                    </div>
+                </div>
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Safety.active">
                     <p class="SettingBigTitle">绑定设置</p>
                     <p class="SettingSecTitle">修改安全邮箱</p>
@@ -31,8 +42,9 @@
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Trans.active">
                     <p class="SettingBigTitle">传输设置</p>
                     <p class="SettingSecTitle">下载目录设置</p>
-                    <div class="SettingForm">
-                        <Input type="text" v-model="TransDownFolder"style="width: 100%" />
+                    <div class="SettingInfo">
+                        当前目录：{{TransDownFolder}}
+                        <button @click="ChangeTransAddress">[修改]</button>
                     </div>
                     <p class="SettingSecTitle">同时上传数</p>
                     <div class="SettingForm">
@@ -83,15 +95,34 @@
 
 <script>
     import Api from '../api/api';
+    import StartOnBoot from '../api/StartOnBoot';
     import SettingMenu from './DiskSetting/SettingMenu';
     import electron from 'electron';
     const path = require('path');
+    const {dialog} = require('electron').remote
     let DiskSetting=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskSetting",
         components:{SettingMenu},
         watch:{
+            AutoStartFlag:{
+                handler(newValue, oldValue) {
+                    if(this.AutoStartFlag===true){
+                        StartOnBoot.enableAutoStart('CloudDisk',process.execPath)
+                    }else{
+                        StartOnBoot.disableAutoStart('CloudDisk')
+                    }
+                    localStorage.AutoStartFlag=this.AutoStartFlag;
+                },
+                deep: true
+            },
+            AutoLogin: {
+                handler(newValue, oldValue) {
+                    localStorage.AutoLogin=this.AutoLogin;
+                },
+                deep: true
+            },
             MaxUpTrans: {
                 handler(newValue, oldValue) {
                     localStorage.MaxUpTrans=this.MaxUpTrans;
@@ -137,6 +168,11 @@
                         name:"用户",
                         icon:"sf-icon-user"
                     },
+                    System:{
+                        active:"",
+                        name:"系统",
+                        icon:"sf-icon-hashtag"
+                    },
                     Safety:{
                         active:"",
                         name:"绑定",
@@ -163,6 +199,8 @@
                 loading:'',
                 Phone:'',
                 Email:'',
+                AutoStartFlag:false,
+                AutoLogin:false,
                 TransDownFolder:'',
                 MaxUpTrans:1,
                 MaxDownTrans:1,
@@ -182,6 +220,8 @@
         created(){
             this.user=localStorage.username;
             this.LoginTime=localStorage.LoginTime;
+            this.AutoStartFlag=eval(localStorage.AutoStartFlag);
+            this.AutoLogin=eval(localStorage.AutoLogin);
             this.TransDownFolder=localStorage.TransDownFolder;
             this.MaxUpTrans=parseInt(localStorage.MaxUpTrans);
             this.MaxDownTrans=parseInt(localStorage.MaxDownTrans);
@@ -397,9 +437,6 @@
                 },()=>{
                 })
             },
-            StringBefore (str,substr) {
-                return str.substring(str.lastIndexOf(substr) + 1, str.length);
-            },
             InputConfrim(options){
                 this.$prompt(options.tips, options.title, {
                     confirmButtonText: '确定',
@@ -409,6 +446,22 @@
                     options.callback(value)
                 }).catch(() => {
                 });
+            },
+            ChangeTransAddress(){
+                dialog.showOpenDialog({
+                    //默认路径
+                    defaultPath :'../Desktop',
+                    //选择操作，此处是打开文件夹
+                    properties: [
+                        'openDirectory',
+                    ],
+                    filters: [
+                        { name: 'All', extensions: ['*'] },
+                    ]
+                },(res)=>{
+                    //回调函数内容，此处是将路径内容显示在input框内
+                    this.TransDownFolder=res[0];
+                })
             },
             close(){
                 DiskSetting.close();

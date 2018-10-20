@@ -12,15 +12,10 @@
               duration: 2.5
           });
       },
-      methods:{
-        bind(){
-
-        }
-      }
   }
 </script>
 
 <style>
-  @import url("../../static/css/icon.css");
-  @import url("../../static/css/disk.css");
+  @import url("../../static/font/icon.css");
+  @import url("assets/css/disk.css");
 </style>

@@ -14,8 +14,8 @@
                     <p>{{HeadText.tips}}</p>
                 </div>
                 <div class="CloudIndexForm" v-show="ShowState.login.state">
-                    <Logininput v-bind:data="LoginUserInput"></Logininput>
-                    <Logininput v-bind:data="LoginPassInput" @keyup.enter.native="login"></Logininput>
+                    <Logininput :data="LoginUserInput"></Logininput>
+                    <Logininput :data="LoginPassInput" @keyup.enter.native="login"></Logininput>
                     <div class="CloudIndex-LineContainer">
                         <label><Checkbox v-model="RemberPass">记住我</Checkbox></label>
                         <a @click="changeType('forget')">忘记密码？</a>
@@ -36,10 +36,10 @@
                     </div>
                 </div>
                 <div class="CloudIndexForm" v-show="ShowState.register.state">
-                    <Logininput v-bind:data="RegisterUserInput"></Logininput>
-                    <Logininput v-bind:data="RegisterMailInput"></Logininput>
-                    <Logininput v-bind:data="RegisterPassInput"></Logininput>
-                    <VerifyInput v-bind:data="RegisterCodeInput" @keyup.enter.native="register"></VerifyInput>
+                    <Logininput :data="RegisterUserInput"></Logininput>
+                    <Logininput :data="RegisterMailInput"></Logininput>
+                    <Logininput :data="RegisterPassInput"></Logininput>
+                    <VerifyInput :data="RegisterCodeInput" @keyup.enter.native="register"></VerifyInput>
                     <div class="CloudIndex-postBut">
                         <button @click="register" :class="PostState">创建</button>
                     </div>
@@ -48,9 +48,9 @@
                     </div>
                 </div>
                 <div class="CloudIndexForm"  v-show="ShowState.forget.state">
-                    <Logininput v-bind:data="ForgetUserInput"></Logininput>
-                    <Logininput v-bind:data="ForgetMailInput"></Logininput>
-                    <VerifyInput v-bind:data="ForgetCodeInput"  @keyup.enter.native="forget"></VerifyInput>
+                    <Logininput :data="ForgetUserInput"></Logininput>
+                    <Logininput :data="ForgetMailInput"></Logininput>
+                    <VerifyInput :data="ForgetCodeInput"  @keyup.enter.native="forget"></VerifyInput>
                     <div class="CloudIndex-LineContainer">
                         <p>填写以上信息开始吧</p>
                     </div>
@@ -62,9 +62,9 @@
                     </div>
                 </div>
                 <div class="CloudIndexForm" v-show="ShowState.verify.state">
-                    <Logininput v-bind:data="VerifyUserInput"></Logininput>
-                    <Logininput v-bind:data="VerifyPassInput"></Logininput>
-                    <Logininput v-bind:data="VerifyCodeInput"  @keyup.enter.native="verify"></Logininput>
+                    <Logininput :data="VerifyUserInput"></Logininput>
+                    <Logininput :data="VerifyPassInput"></Logininput>
+                    <Logininput :data="VerifyCodeInput"  @keyup.enter.native="verify"></Logininput>
                     <div class="CloudIndex-Tips">
                         <p style="text-align: left">没有收到邮件&nbsp<span @click="ReSend">{{ResendData.Text}}</span></p>
                     </div>
@@ -231,6 +231,11 @@
             localStorage.server=this.ServerAddress;
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
+                ipc.on('auto-login',(e,msg)=>{
+                    if(eval(localStorage.AutoLogin)&&msg){
+                        this.login();
+                    }
+                })
             }
             window.addEventListener( "dragenter", function (e) {
                 e.preventDefault();
@@ -274,7 +279,7 @@
                     }
                     if(rs.state==='success'){
                         this.LoginSuccess=true;
-                        this.User.head=this.ServerAddress+'/'+rs.head;
+                        this.User.head=rs.head;
                         if(this.RemberPass){
                             localStorage.username=username;
                             localStorage.password=password;
@@ -564,5 +569,5 @@
 </script>
 
 <style scoped>
-    @import url("../../../static/css/login.css");
+    @import url("../assets/css/login.css");
 </style>

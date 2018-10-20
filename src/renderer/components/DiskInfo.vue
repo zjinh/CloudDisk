@@ -1,16 +1,13 @@
 <template>
     <div class="CloudDiskInfoContainer">
-        <div class="CloudDiskInfoControl">
-            <p>{{DiskData.disk_name}} 属性</p>
-            <button class="sf-icon-times" @click="close"></button>
-        </div>
+        <WindowsHeader :data=header></WindowsHeader>
         <div class="CloudDiskInfoHead">
-            <img draggable="false" :src="DiskData.icon">
+            <img draggable="false" :src="DiskData.$icon">
             <span>{{DiskData.disk_name}}</span>
         </div>
         <div class="CloudDiskInfoList">
             <span>文件类型:</span>
-            <div>{{DiskData.disk_type=='folder'?'文件夹':'.'+DiskData.type+'文件'}}</div>
+            <div>{{DiskData.disk_type==='folder'?'文件夹':'.'+DiskData.type+'文件'}}</div>
         </div>
         <div class="CloudDiskInfoList">
             <span>文件位置:</span>
@@ -19,7 +16,7 @@
         <div class="CloudDiskInfoLine"></div>
         <div class="CloudDiskInfoList">
             <span>文件大小:</span>
-            <div>{{DiskData.size}} ({{DiskData.disk_size}}字节)</div>
+            <div>{{DiskData.$size}} ({{DiskData.disk_size}}字节)</div>
         </div>
         <div class="CloudDiskInfoList">
             <span>创建时间:</span>
@@ -37,24 +34,28 @@
         <div class="CloudDiskInfoList">
             <span>文件分享:</span>
             <input v-show="DiskData.share.length" @focus="copy" ref="share" type="text" >
-            <button v-show="DiskData.share" @click="copy" style="margin-top: 2px;">复制</button>
+            <Button v-show="DiskData.share" @click="copy" style="margin-top: 2px;">复制</Button>
             <div v-if="!DiskData.share">未分享</div>
         </div>
         <div class="CloudDiskInfoLine"></div>
         <div class="CloudDiskInfoList" style="position: absolute;bottom: 10px;">
-            <button @click="close">确定</button>
-            <button @click="close" class="CloudDiskInfoBack">取消</button>
+            <Button type="primary"  @click="close">确定</Button>
+            <Button @click="close" class="CloudDiskInfoBack">取消</Button>
         </div>
     </div>
 </template>
 
 <script>
     import Api from '../api/api';
+    import WindowsHeader from "./DiskWindow/WindowHeader";
     import electron from 'electron';
     const {ipcRenderer} = require('electron');
     let DiskInfo=electron.remote.getCurrentWindow();
     export default {
         name: "DiskInfo",
+        components:{
+            WindowsHeader
+        },
         data(){
           return {
               DiskData:{
@@ -72,12 +73,18 @@
                 share:'',
                 size:'',
                 type:'',
+              },
+              header:{
+                  title:"",
+                  resize:false,
+                  mini:false
               }
           }
         },
         created(){
             ipcRenderer.on('DiskInfo', (event, data)=>{//接收打开文件的数据
                 this.DiskData=data;
+                this.header.title=data.disk_name+' 属性';
                 DiskInfo.setTitle(data.disk_name+' 属性');
                 this.$refs.share.value=localStorage.server+'/s/'+data.share;
                 Api.Disk.Address(data.disk_id,(rs)=>{
@@ -87,21 +94,6 @@
                     });
                 })
             });
-            if(localStorage.username&&localStorage.password){
-                this.RemberPass=true;
-            }
-            window.addEventListener( "dragenter", function (e) {
-                e.preventDefault();
-            }, false);
-            window.addEventListener( "dragover", function (e) {
-                e.preventDefault();
-            }, false );
-            window.addEventListener( "dragleave", function (e) {
-                e.preventDefault();
-            }, false );
-            window.addEventListener( "drop", function (e) {
-                e.preventDefault();
-            }, false );
         },
         methods:{
             copy(){

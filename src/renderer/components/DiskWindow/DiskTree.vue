@@ -8,7 +8,7 @@
                     <Icon v-if="item.show&&item.load!=='loading'" type="ios-folder-open"></Icon>
                     <div>{{item.disk_name}}</div>
                 </li>
-                <DiskTree v-bind:DiskTreeData="item.child" v-show="item.show" v-on:SelectDiskTree="SelectTree"></DiskTree>
+                <DiskTree :DiskTreeData="item.child" v-show="item.show" @SelectDiskTree="SelectTree"></DiskTree>
             </div>
         </ul>
     </div>

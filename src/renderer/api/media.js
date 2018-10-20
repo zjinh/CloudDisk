@@ -32,10 +32,10 @@ function MediaControl (media, type, fx, slider, e) {
     document.onmouseup = new Function('this.onmousemove=null');
 };
 function secondDeal (time) {
-        let m = parseInt(time / 60) < 10 ? "0" + parseInt(time / 60) : parseInt(time / 60);
-        let s = parseInt(time % 60) < 10 ? "0" + parseInt(time % 60) : parseInt(time % 60);
-        return m + ":" + s;
-    };
+    let m = parseInt(time / 60) < 10 ? "0" + parseInt(time / 60) : parseInt(time / 60);
+    let s = parseInt(time % 60) < 10 ? "0" + parseInt(time % 60) : parseInt(time % 60);
+    return m + ":" + s;
+};
 export default {
     MediaControl,secondDeal
 }

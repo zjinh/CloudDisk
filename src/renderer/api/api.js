@@ -1,4 +1,5 @@
 import axios from 'axios'
+const path =require("path");
 function Ajax(options) {
     let params = new URLSearchParams();
     let method= options.method?options.method:'POST';
@@ -14,19 +15,109 @@ function Ajax(options) {
         data: params,
         emulateJSON:true,
         url: options.url,
-        headers:options.upload?{"Content-Type": "application/x-www-form-urlencodeed"}:{},
+        headers:options.upload?{"Content-Type": "application/x-www-form-urlencoded"}:{},
     }).then((response) => {
         options.success&&typeof options.success==='function'?options.success(response.data):'';
     },function (error) {
         options.error&&typeof options.error==='function'?options.error(error):'';
     });
 }
+function StringExist (str, substr) {
+    if(typeof str !== "string"){ return; }
+    if(substr==='|*|'){return true}
+    for(let i=0;i<substr.split(',').length;i++){
+        if(str.indexOf(substr.split(',')[i]) >= 0 === true ){ return true; }
+    }
+    return false;
+}
+function StringBefore (str,substr) {
+    return str.substring(str.lastIndexOf(substr) + 1, str.length);
+}
+function FileSize (bytes) {
+    bytes=parseFloat(bytes);
+    if (bytes === 0) return '0B';
+    let k = 1024,
+        sizes = ['B', 'KB', 'MB', 'GB', 'TB'],
+        i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
+}
+function IconGet (item) {
+    let prefix=path.join(__static, '/img/disk/');
+    let type = item.type;
+    if(!item.disk_main){
+        return prefix+'FolderType.png'
+    }
+    if (StringExist(type, '7z,zip,rar,tar.gz')) {
+        return prefix+'RarType.png';
+    }
+    else if (StringExist(type, 'apng,png,jpg,jpeg,bmp,gif')) {
+        return prefix+'ImageType.png';
+    }
+    else if (StringExist(type, 'mp4,rmvb,mkv')) {
+        return prefix+'VideoType.png';
+    }
+    else if (StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape,ncm')) {
+        return prefix+'MusicType.png';
+    }
+    else if (StringExist(type, 'doc,docx')) {
+        return prefix+'DocType.png';
+    }
+    else if (StringExist(type, 'ppt,pptx')) {
+        return prefix+'PptType.png';
+    }
+    else if (StringExist(type, 'xls,xlsx')) {
+        return prefix+'ExcelType.png';
+    }
+    else if (type==='pdf') {
+        return prefix+'PdfType.png';
+    }
+    else if (StringExist(type, 'ini,txt,md')) {
+        return prefix+'TxtType.png';
+    }
+    else if (StringExist(type, 'xml,aspx,php,phtml,.htaccesscss,js,c')) {
+        return prefix+'CodeType.png';
+    }
+    else if (StringExist(type, 'htm,html')) {
+        return prefix+'WebType.png';
+    }
+    else if (type==='log') {
+        return prefix+'OtherType.png';
+    }
+    else if (StringExist(type, 'exe,msi')) {
+        return prefix+'ExeType.png';
+    }
+    else if (type=== 'torrent') {
+        return prefix+'BtType.png';
+    }
+    else if (type==='vcf') {
+        return prefix+'VcfType.png';
+    }
+    else {
+        return prefix+'OtherType.png';
+    }
+}
+function DiskData(item){
+    item.active=false;//设置未选择
+    item.$size=FileSize(item.disk_size);//计算文件大小
+    item.type=StringBefore(item.disk_realname, ".").toLowerCase();
+    item.$icon =IconGet(item);//区别文件类型设置图表
+    item.disk_size=parseInt(item.disk_size);
+    item.disk_main?item.disk_main=localStorage.server+'/'+item.disk_main:"";
+    item.shareAddress=localStorage.server + '/s/' + item.share;
+}
+function age(birth){
+    birth = Date.parse(birth?birth:"".replace('/-/g', "/"));
+    return parseInt((new Date() - new Date(birth)) / (1000 * 60 * 60 * 24 * 365));
+}
 let User={
     Login:function (data,callback,error) {
         Ajax({
             url:localStorage.server+"/service/user/login",
             data:data,
-            success:callback,
+            success:(rs)=>{
+                rs[0].head=localStorage.server+'/'+rs[0].head+'?'+Date.now();
+                callback(rs);
+            },
             error:error
         })
     },
@@ -58,7 +149,11 @@ let User={
         Ajax({
             url:localStorage.server+"/service/user/UserInfo",
             data:[],
-            success:callback,
+            success:(rs)=>{
+                rs[0].birth=age(rs[0].birthday);
+                rs[0].userhead=localStorage.server+'/'+rs[0].userhead+'?'+Date.now();
+                callback(rs);
+            },
             error:error
         })
     },
@@ -119,7 +214,12 @@ let Disk={
         Ajax({
             url:localStorage.server+"/service/disk/GetMainFile",
             data:data,
-            success:callback,
+            success:(rs)=>{
+                rs.forEach((item)=>{
+                    DiskData(item);
+                });
+                callback(rs)
+            },
             error:error
         })
     },
@@ -127,7 +227,10 @@ let Disk={
         Ajax({
             url:localStorage.server+"/service/disk/UnZipFile",
             data:data,
-            success:callback,
+            success:(rs)=>{
+                rs[0]&&rs[0].data?DiskData(rs[0].data):'';
+                callback(rs)
+            },
             error:error
         })
     },
@@ -136,7 +239,12 @@ let Disk={
         Ajax({
             url:localStorage.server+"/service/disk/GetMainFile",
             data:data,
-            success:callback,
+            success:(rs)=>{
+                rs.forEach((item)=>{
+                    DiskData(item);
+                });
+                callback(rs)
+            },
             error:error
         })
     },
@@ -144,7 +252,12 @@ let Disk={
         Ajax({
             url:localStorage.server+"/service/disk/NewFolder",
             data:data,
-            success:callback,
+            success:(rs)=>{
+                rs.forEach((item)=>{
+                    DiskData(item);
+                });
+                callback(rs)
+            },
             error:error
         })
     },
@@ -249,7 +362,10 @@ let Disk={
             url:localStorage.server+"/service/disk/upload",
             data:data,
             upload:true,
-            success:callback,
+            success:(rs)=>{
+                rs.data?DiskData(rs.data):"";
+                callback(rs)
+            },
             error:error
         })
     },
@@ -263,5 +379,5 @@ let Check=function (url,callback,error) {
     })
 };
 export default {
-    Ajax,User,Disk,Check
+    User,Disk,Check,StringExist,StringBefore,FileSize,IconGet
 }

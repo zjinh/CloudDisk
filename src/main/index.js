@@ -1,11 +1,11 @@
-import { app, BrowserWindow,ipcMain,Menu,Tray,nativeImage } from 'electron'
+import {app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen} from 'electron'
 const path = require('path');
 import { autoUpdater } from 'electron-updater'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 let version=require("../../package.json").version;
-let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,FileWindow,FeedBackWindow,SettingWindow;
+let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,FileWindow,FeedBackWindow,SettingWindow,MessageWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -97,7 +97,9 @@ let trayMenuTemplate = [//托盘菜单
     {
         label: '退出',
         click: function () {
-            DiskWindow.close();
+            DiskWindow.show();
+            DiskWindow.focus();
+            DiskWindow.webContents.send('exit');
         }
     }
 ];
@@ -157,7 +159,7 @@ function CreateWindow(options) {
         }
     });
     win.loadURL(CheckUrl(options.url));
-    win.on('closed', function() {
+    win.on('closed', ()=> {
         win = null;
         (typeof options.onclose==='function')?options.onclose():"";
     });
@@ -172,7 +174,10 @@ function CreateWindow(options) {
     });
     return win;
 }
-function CreateLoginWindow () {
+function CreateLoginWindow (flag) {
+    ipcMain.on('login-success', ()=> {
+        CreateDiskWindow();
+    });
     LoginWindow=CreateWindow({
         url:'/',
         title:'CloudDisk-欢迎',
@@ -181,6 +186,13 @@ function CreateLoginWindow () {
         alwaysOnTop:true,
         maximizable:false,
         resizable:false,
+        onclose:()=>{
+            LoginWindow=null;
+            ipcMain.removeAllListeners('login-success');
+        },
+        callback:()=>{
+            LoginWindow.webContents.send('auto-login',flag)
+        }
     });
 }
 function CreateDiskWindow() {
@@ -202,7 +214,7 @@ function CreateDiskWindow() {
         minWidth:800,
         minHeight:560,
         height: 610,
-        onclose:()=>{
+        onclose:(event)=>{
             DiskWindow=null;
             DiskInfo?DiskInfo.close():'';
             MusicPlayer?MusicPlayer.close():'';
@@ -214,13 +226,16 @@ function CreateDiskWindow() {
             FileWindow?FileWindow.close():'';
             FeedBackWindow?FeedBackWindow.close():'';
             SettingWindow?SettingWindow.close():'';
+            MessageWindow?MessageWindow.close():'';
             appTray.destroy();
+            ipcMain.removeAllListeners([]);
             if(!LoginWindow) {
                 app.quit();
             }
         },
         callback:()=>{
             LoginWindow?LoginWindow.close():"";
+            BindIpc();
         }
     });
 }
@@ -233,8 +248,8 @@ function CreateDiskInfo(data) {
     }
     DiskInfo=CreateWindow({
         url:'info',
-        width: 300,
-        height: 450,
+        width: 350,
+        height: 500,
         title:'文件属性',
         maximizable:false,
         minimizable:false,
@@ -452,14 +467,39 @@ function CreateSettingWindow(data) {
         }
     });
 }
-function BindIpc() {
-    /*登录窗口指令*/
-    ipcMain.on('login-success', ()=> {
-        CreateDiskWindow();
+function CreateMessageShow(msg) {
+    if(MessageWindow){
+        MessageWindow.show();
+        MessageWindow.webContents.send('msg',msg);
+        return;
+    }
+    MessageWindow=new BrowserWindow({
+        height: 150,
+        useContentSize: true,
+        width: 250,
+        resizable:false,
+        maximizable:false,
+        frame:false,
+        transparent:true,
+        alwaysOnTop:true,
+        x:screen.getPrimaryDisplay().workAreaSize.width-255,
+        y:screen.getPrimaryDisplay().workAreaSize.height-155,
+        show:false
     });
+    MessageWindow.loadURL(CheckUrl('disk-msg'));
+    MessageWindow.on('closed', () => {
+        MessageWindow = null
+    });
+    MessageWindow.webContents.on('did-finish-load',()=>{
+        MessageWindow.show();
+        MessageWindow.webContents.send('msg',msg);
+    })
+}
+function BindIpc() {
     /*网盘窗口指令*/
     ipcMain.on('disk-error', ()=> {
-        CreateLoginWindow();
+        CreateLoginWindow(false);
+        DiskWindow.webContents.send('exit');
         DiskWindow.close();
     });
     ipcMain.on('DiskInfo', (e,msg)=> {
@@ -515,7 +555,9 @@ function BindIpc() {
     ipcMain.on('show-setting',(e,msg)=>{
         CreateSettingWindow(msg);
     });
-    /*更新*/
+    ipcMain.on('msg',(e,msg)=>{
+        CreateMessageShow(msg);
+    });
     /*检查更新*/
     ipcMain.on('check-for-update',(event, arg)=> {
         CheckUpdate(event);
@@ -525,28 +567,26 @@ function BindIpc() {
         autoUpdater.quitAndInstall();
     });
 }
-
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {});
-if (shouldQuit) {
-    if (DiskWindow) {
-        if (DiskWindow.isMinimized()) {
-            DiskWindow.restore();
-            DiskWindow.focus()
-        }
-    }
-    if(LoginWindow){
-        if (LoginWindow.isMinimized()) {
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+    app.quit()
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        if(LoginWindow){
+            LoginWindow.show();
             LoginWindow.restore();
             LoginWindow.focus()
         }
-    }
-    app.quit();
+        if (DiskWindow) {
+            DiskWindow.show();
+            DiskWindow.restore();
+            DiskWindow.focus()
+        }
+    });
+    app.on('ready', function (){
+        CreateLoginWindow(true);
+    });
 }
-
-app.on('ready', function (){
-    BindIpc();
-    CreateLoginWindow();
-});
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -554,6 +594,6 @@ app.on('window-all-closed', () => {
 });
 app.on('activate', () => {
   if (LoginWindow === null) {
-      CreateLoginWindow()
+      CreateLoginWindow(true)
   }
 });

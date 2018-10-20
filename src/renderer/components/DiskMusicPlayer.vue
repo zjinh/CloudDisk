@@ -1,9 +1,6 @@
 <template>
     <div class="AudioContainer" @mousedown="VolumnState=false" tabindex="-1" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
-        <div class="CloudDiskInfoControl" style="margin-top: 0">
-            <button class="sf-icon-times" @click="close"></button>
-            <button class="sf-icon-window-minimize" @click="mini"></button>
-        </div>
+        <WindowsHeader :data=header></WindowsHeader>
         <div class="AudioPlayerContainer">
             <div class="AudioPlayerTitle">{{NowPlay.disk_name}}</div>
             <ul>
@@ -35,14 +32,15 @@
 
 <script>
     import Api from '../api/api';
-    import Media from '../media/media';
+    import Media from '../api/media';
     import MusicList from './DiskMusicPlayer/MusicList';
+    import WindowsHeader from "./DiskWindow/WindowHeader";
     import electron from 'electron';
     let MusicPlayer=electron.remote.getCurrentWindow();
     let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskMusicPlayer",
-        components:{MusicList},
+        components:{MusicList,WindowsHeader},
         watch:{
             PlayList: {
                 handler(newValue, oldValue) {
@@ -94,6 +92,11 @@
                 duration: 0,
                 /* 歌曲回调函数设置的进度时间 */
                 __duration: -1,
+                header:{
+                    title:"",
+                    resize:false,
+                    mini:true
+                }
             }
         },
         created(){
@@ -123,26 +126,11 @@
                 ipc.on('Play',()=>{
                     this.PlayControl();
                 });
-                if(localStorage.username&&localStorage.password){
-                    this.RemberPass=true;
-                }
-                window.addEventListener( "dragenter", function (e) {
-                    e.preventDefault();
-                }, false);
-                window.addEventListener( "dragover", function (e) {
-                    e.preventDefault();
-                }, false );
-                window.addEventListener( "dragleave", function (e) {
-                    e.preventDefault();
-                }, false );
-                window.addEventListener( "drop", function (e) {
-                    e.preventDefault();
-                }, false );
             },
             playCallBack(item,index){
                 this.NowPlay=item;
                 this.NowPlay.count=index;
-                this.NowPlay.PlayUrl=localStorage.server+'/'+item.disk_main;
+                this.NowPlay.PlayUrl=item.disk_main;
             },
             PlayControl(){
                 if(!this.PlayList.length){
@@ -365,12 +353,6 @@
                 this.regex_time.lastIndex = 0;
                 this.list = [];
             },
-            close(){
-                MusicPlayer.close();
-            },
-            mini(){
-                MusicPlayer.minimize();
-            }
         }
     }
 </script>
