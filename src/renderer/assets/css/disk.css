@@ -1,0 +1,2024 @@
+#Cloud-Disk{
+	height: 100%;
+	background: none!important;
+}
+[class^="ivu-"]{
+	overflow: unset!important;
+}
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	list-style: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale
+}
+:focus,:active{
+	outline:0;
+}
+body,html {
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	-khtml-user-select:none;
+	user-select:none;
+	height:100%;
+	font-size:14px;
+	-webkit-text-size-adjust:100%;
+	-ms-text-size-adjust:100%;
+	background: none!important;
+}
+a,a:hover,a:link,a:visited,button,button:focus,button:hover,i,i:hover,img,img:hover,input,input:focus,input:hover,select:focus,span,span:hover,textarea:focus {
+	-webkit-transition:all .35s;
+	-moz-transition:all .35s;
+	-o-transition:all .35s;
+}
+a:hover,a:link,a:visited {
+	text-decoration:none;
+}
+button:hover {
+	opacity: .95;
+	cursor:pointer;
+	overflow: hidden;
+}
+[ripple],button{
+	position: relative;
+	transform: translate3d(0,0,0);
+	overflow: hidden;
+}
+[ripple]:after,button:after {
+	content: "";
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	background-image: radial-gradient(circle, #666 10%, transparent 10.01%);
+	background-repeat: no-repeat;
+	background-position: 50%;
+	transform: scale(10, 10);
+	opacity: 0;
+	transition: transform .3s, opacity .5s;
+}
+[ripple]:active:after,button:active:after {
+	transform: scale(0, 0);
+	opacity: .3;
+	transition: 0s;
+}
+input:-webkit-autofill{
+	-webkit-box-shadow: 0 0 0 400px #fff inset!important;
+	-webkit-text-fill-color: #666666!important;
+}
+button,input,select,textarea {
+	border: none;
+	outline:0;
+	-webkit-transition:all .35s;
+	-moz-transition:all .35s;
+	-o-transition:all .35s;
+}
+input[type="radio"],input[type="checkbox"]{
+	display: none;
+}
+audio,canvas,progress,video {
+	display:inline-block;
+	vertical-align:baseline;
+}
+pre {
+	display:block;
+	padding:10px;
+	color:#333;
+	word-wrap:break-word;
+	font-size:13px;
+	line-height:1.42857143;
+	word-break:break-all;
+	float: left;
+}
+pre code {
+	padding:0;
+	border-radius:0;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	background-color:transparent;
+	color:inherit;
+	white-space:pre-wrap;
+	font-size:inherit;
+}
+label {
+	display:inline-block;
+	max-width:100%;
+}
+output {
+	display:block;
+	padding-top:7px;
+	color:#555;
+	font-size:14px;
+	line-height:1.42857143;
+}
+textarea {
+	resize: none;
+}
+iframe{
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+option {
+	font-weight: normal;
+	display: block;
+	white-space: pre;
+	min-height: 30px;
+}
+.CloudDiskHeaderDrag{
+	width: 100%;
+	height: 60px;
+	background-size: cover!important;
+	padding: 0 2px;
+	-webkit-app-region: drag;
+	overflow: unset;
+	-webkit-transition: background 0.4s ease-in-out;
+	-moz-transition: background 0.4s ease-in-out;
+	-o-transition: background 0.4s ease-in-out;
+	transition: background 0.4s ease-in-out;
+}
+.CloudDiskHeaderDrag>.ivu-dropdown{
+	float: right;
+}
+.CloudDiskHeaderDrag>.ivu-dropdown>.ivu-dropdown-rel{
+ 	display: block;
+	height: 53px;
+}
+.CloudDiskUser{
+float: right;
+width: 150px;
+height: 35px;
+margin-top: 13px;
+margin-right: 10px;
+}
+.CloudDiskUser *{
+float: right;
+-webkit-app-region: no-drag;
+}
+.CloudDiskUser img{
+border-radius: 100%;
+width: 35px;
+height: 35px;
+}
+.CloudDiskUser span{
+max-width: 105px;
+height: 35px;
+line-height: 35px;
+margin-left: 10px;
+	font-size: 14px;
+color: #fff;
+}
+.CloudDiskHeaderControl{
+float: right!important;
+position: relative;
+height: 45px!important;
+z-index: 5;
+	overflow: unset;
+}
+.CloudDiskHeaderControl span{
+float: left;
+margin-top: 15px;
+height: 25px;
+background: rgba(255, 255, 255, 0.77);
+width: 2px;
+}
+.CloudDiskHeaderControl button{
+float: left;
+width: 30px;
+height: 25px;
+color: #fff;
+margin-left: 5px;
+font-size: 14px;
+background: none;
+margin-top: 15px;
+	border-radius: 3px;
+-webkit-app-region: no-drag;
+}
+.CloudDiskHeaderControl button:hover{
+background: rgba(255,255,255,0.2);
+}
+.CloudDiskMain,.CloudDiskMain1,.CloudDiskFuncChange{
+width: 100%;
+height: 100%;
+}
+.CloudDiskMain1{
+overflow-y: auto;
+position: relative;
+}
+.CloudDiskFuncMenu{
+float: left;
+height: 35px;
+margin-top: 10px;
+-webkit-app-region: no-drag;
+}
+.CloudDiskFuncMenu img{
+float: left;
+width: 35px;
+margin: 0 15px;
+-webkit-app-region: drag;
+}
+.CloudDiskFuncMenu span{
+float: left;
+font-weight: bold;
+color: #fff;
+line-height: 40px;
+padding: 0 10px 0px 0px;
+-webkit-app-region: drag;
+	font-size: 14px;
+}
+.CloudDiskFuncMenu li {
+float: left;
+margin-left: 15px;
+cursor: pointer;
+}
+.CloudDiskFuncMenu li p {
+color: #fff;
+padding: 0 15px;
+text-align: center;
+font-size: 14px;
+line-height: 32px;
+}
+.CloudDiskFuncMenu li>.sf-icon-* {
+display: block
+}
+.CloudDiskFuncLine {
+width: 100%;
+height: 3px;
+background: #fff;
+}
+.CloudDiskFuncLine,.CloudDiskFuncMenu li:hover .CloudDiskFuncLine {
+-webkit-transition: all .35s;
+-moz-transition: all .35s;
+-o-transition: all .35s
+}
+.CloudDiskFuncMenu li:hover .CloudDiskFuncLine {
+width: 100%!important
+}
+.CloudDiskFuncMain{
+width: 100%;
+height: calc(100% - 60px);
+}
+.CloudDiskHead{
+width: 100%;
+height:40px;
+background: white;
+border-bottom: 1px solid #dcdcdc;
+}
+.CloudDiskNavLine{
+	float: left;
+	margin-top: 5px;
+	width: 1.5px;
+	background: #d0d0d0;
+	height: 30px;
+}
+.CloudDiskNav button{
+float: left;
+height: 100%;
+line-height: 40px;
+color: #6d6d6d;
+background: none;
+padding: 0 10px;
+	font-size: 14px;
+}
+.CloudDiskNav button:hover,.CloudDiskNavBlock:hover,.CloudDiskHeadRight button:hover{
+color: #3b8cff;
+}
+.CloudDiskNavBar{
+float: left;
+width: calc(100% - 153px);
+height: 40px;
+}
+.CloudDiskNavBlock{
+float: left;
+height: 40px;
+line-height: 40px;
+color: #757575;
+max-width: 80px;
+	font-size: 14px;
+text-overflow: ellipsis;
+}
+.CloudDiskHeadLeft{
+float: left;
+width: calc(100% - 120px);
+height: 100%;
+}
+.CloudDiskClassify{
+width: 100%;
+height: calc(100% - 60px);
+overflow: auto;
+	position: relative;
+	z-index: 2;
+}
+.CloudDiskClassify li{
+width: 100%;
+height: 40px;
+line-height: 40px;
+color: #424e67;
+cursor: pointer;
+	font-size: 14px;
+}
+.CloudDiskClassify li:hover,.CloudDiskClassifyActive{
+background: rgba(43, 133, 228, 0.12);
+}
+.CloudDiskClassify li div{
+	float: right;
+	padding: 0 6px;
+}
+.CloudDiskClassifyActive{
+	color: #2682fc!important;
+	background: rgba(43, 133, 228, 0.12);
+}
+.CloudDiskCapacity{
+width: 100%;
+height: 35px;
+	position: relative;
+	z-index: 2;
+}
+.CloudDiskSliderContainer{
+width: 95%;
+height: 10px;
+margin: 2px auto;
+background: #d2d2d2;
+border-radius: 10px;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+}
+.CloudDiskSliderContainer div{
+width: 0px;
+background: #2682fc;
+height: 100%;
+float: left;
+border-radius: 10px;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+-webkit-transition: all .35s;
+-moz-transition: all .35s;
+-o-transition: all .35s
+}
+.CloudDiskCapacity p{
+	font-size: 12px;
+	text-indent: 6px;
+	color: #505050;
+	margin-top: 3px;
+	text-align: right;
+	padding: 0 5px;
+	text-shadow: 0px 0px 0px
+
+}
+.CloudDiskEmptyTips{
+width: 100%;
+color: #828282;
+text-align: center;
+font-size: 16px;
+z-index: -1;
+position: unset!important;
+padding-top: calc(25% - 35px);
+}
+.CloudDiskEmptyTips span{
+width: 100%;
+font-size: 45px;
+}
+.CloudDiskTreesContainer{
+width: 100%;
+overflow-y: auto;
+}
+.childFolder{
+padding-left: 10px;
+}
+.CloudDFoContainer{
+width: 100%;
+height: auto;
+}
+.CloudDFoContainer li{
+width: 100%;
+height: 30px;
+line-height: 30px;
+}
+.CloudDFoContainer li:hover,.CloudDiskTreeActive{
+background: #e1e1e1;
+color: #000;
+}
+.CloudDFoContainer span,.CloudDFoContainer i{
+float: left;
+display: block;
+line-height: 30px;
+margin: 0px 5px;
+color: #3b8cff;;
+font-size: 20px;
+}
+.CloudDiskNavBlock span{
+	line-height: 40px;
+	padding: 0 2px;
+}
+.CloudDiskClassify span{
+width: 35px;
+height: 40px;
+display: block;
+float: left;
+text-align: center;
+line-height: 40px;
+font-size: 16px;
+}
+.CloudDiskTree{
+	width: 100%;
+	height: 30px;
+}
+.CloudDiskHeadRight{
+float: right;
+max-width: 120px;
+height: 100%;
+}
+.CloudDiskHeadRight button{
+float: left;
+width: 40px;
+height: 40px;
+line-height: 40px;;
+text-align: center;
+color: #6d6d6d;
+	font-size: 14px;
+background: none;
+z-index: 2;
+}
+/*统一拖拽头部*/
+.WindowHeader{
+	width: 100%;
+	height: 30px;
+	-webkit-app-region: drag;
+	position: relative;
+	z-index: 2;
+}
+.WindowHeader p{
+	float: left;
+	font-size: 13px;
+	line-height: 30px;
+	text-indent: 5px;
+	max-width: calc(100% - 120px);
+	text-overflow: ellipsis;
+	word-wrap: normal;
+	word-break: break-all;
+}
+.WindowHeader button{
+	float: right;
+	width: 40px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 12px;
+	-webkit-app-region: no-drag;
+	background: none;
+}
+.WindowHeader button.sf-icon-times{
+	font-size: 15px;
+}
+.WindowHeader button:hover{
+	background: rgba(238, 238, 238, 0.4);
+}
+.WindowHeader button.sf-icon-times:hover{
+	background: #E83C3C;
+	color: #fff!important;
+}
+/*下拉菜单*/
+.ivu-dropdown-item{
+	float: left;
+	width: 100%;
+	padding: 8px 16px;
+}
+.ivu-dropdown-item img{
+	float: left;
+	width: 35px;
+	height: 35px;
+	border-radius: 100%;
+}
+.ivu-dropdown-item p{
+	float: left;
+	margin-left: 10px;
+	font-size: 14px;
+	width: unset!important;
+	background: none;
+	line-height: 35px;
+}
+/*按钮禁用样式*/
+.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"],.CloudDiskNav button[disabled="disabled"],.MouseMenu li[disabled="disabled"]{
+	color: #c7c7c7!important;
+	background: none!important;
+	cursor: no-drop!important;
+}
+.CDsearchInput{
+	height: 30px;
+	width: 0px;
+	position: absolute;
+	top: 65px;
+	right: 80px;
+	z-index: 1;
+	text-indent: 10px;
+	color: #4f4f4f;
+	padding-right: 40px;
+}
+.CDsearchInput:focus{
+	border-color: #57a3f3!important;
+	-webkit-box-shadow: 0 0 0 2px rgba(45,140,240,.2)!important;
+	box-shadow: 0 0 0 2px rgba(45,140,240,.2)!important;
+}
+.CloudDiskLeft,.CloudDiskRight{
+	float: left;
+	width:200px;
+	height: calc(100% - 40px);
+	border-right: 1px solid #dcdcdc;
+	background: #fff;
+}
+.CloudDiskLeft img{
+	position: absolute;
+	width: 100px;
+	bottom: 0px;
+	left: 0;
+	z-index: 0;
+}
+.CloudDiskMainFunc{
+	width: 100%;
+	height:35px;
+	line-height: 35px;
+}
+/*顶部全选*/
+.CloudDiskMainFunc>.ivu-checkbox-wrapper{
+	float: left;
+	margin-top: 10px;
+	margin-right: 0px;
+	margin-left: 5px;
+}
+/*顶部排序*/
+.CloudDiskFuncBlock{
+	height: 35px;
+	line-height:35px;
+	color: #424e67;
+	width: calc(23% - 10px);
+	text-align: left;
+	cursor: pointer;
+	text-indent: 10px;
+}
+.CloudDiskFuncBlock:active{
+	background: #e6e3e3;
+}
+/*回收站提示*/
+.TrashTips{
+	height: 35px;
+	display: block;
+	font-size: 12px;
+	line-height: 30px;
+	text-indent: 10px;
+	color: #848484;
+}
+.CloudDiskMainFunc *{
+	float: left;
+}
+.CloudDiskMainFunc>*>.Check{
+	margin: 12px 7px;
+}
+.CloudDiskMainFunc button{
+	width: 85px;
+	height: 35px;
+	float: right;
+	background: #f5491f;
+	color: #fff;
+}
+.CloudDiskRight{
+	width: calc(100% - 200px);
+	border:none;
+	background: #fff;
+}
+/*文件图标视图*/
+.CloudDiskMFile{
+	width: 90px;
+	height: 80px;
+	float: left;
+	margin: 10px 0px 0px 10px;
+	text-align: center;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	cursor: pointer;
+}
+.CloudDiskMFile>.CloudDisk-icon{
+	font-size: 30px;
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	margin-top: 5px;
+	display: block;
+}
+.CloudDiskMFile>.CloudDisk-name{
+	color: #333333;
+	text-overflow: ellipsis;
+	word-break: break-all;
+	font-size: 11px;
+	width: 100%;
+}
+.CloudDiskMFile>.CloudDiskTime{
+	display: none;
+}
+/*文件列表视图*/
+.CloudDiskMList{
+	width: 100%;
+	height: 35px;
+	padding-left: 5px;
+	cursor: pointer;
+	margin-top: 5px;
+}
+.CloudDiskMList img{
+	width: 20px;
+	height: 20px;
+}
+.CloudDiskMList>.CloudDisk-icon,.CloudDiskMList>.CloudDisk-name{
+	float: left;
+	display: inline-block;
+	height: 35px;
+	line-height: 35px;
+	margin-left: 5px;
+	font-size: 12px;
+}
+.CloudDiskMList>.ivu-checkbox-wrapper{
+	float: left;
+	margin-top: 8px;
+	margin-right: 3px;
+}
+.CloudDiskMList>.CloudDisk-icon{
+	padding-top: 5px;
+}
+.CloudDiskMList .CloudDisk-name{
+	width: calc(56% - 52px);
+}
+.CloudDiskMList >.CloudDiskTime{
+	width: 22%;
+	float: left;
+	height: 100%;
+	font-size: 12px;
+	line-height: 35px;
+	text-align: left;
+	text-indent: 10px;
+}
+.CloudDiskMFile:hover,.CloudDiskMList:hover{
+	background: #ececec;
+}
+/*选中样式*/
+.CloudDiskChecked{
+	background: rgba(40, 123, 211, 0.28)!important
+}
+/*文件选择提示*/
+.CloudDiskSelectTips{
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+	font-size: 12px;
+	padding: 0 5px;
+	color: #505050;
+	position: relative;
+	z-index: 2;
+}
+/*文件属性窗口*/
+.CloudDiskInfoContainer{
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	color: #000;
+	-webkit-app-region: drag;
+	box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+    border: 1px solid #efefef;
+}
+.CloudDiskInfoHead{
+	height: 50px;
+	border-bottom: 1px solid #ccc;
+	padding: 7px;
+}
+.CloudDiskInfoHead img{
+	width: 35px;
+}
+.CloudDiskInfoHead *{
+	display: inline-block;
+	float: left;
+	line-height: 35px;
+	text-indent: 10px;
+	text-overflow: ellipsis;
+}
+.CloudDiskInfoHead span{
+	width: 240px;
+}
+.CloudDiskInfoList{
+	width: 100%;
+	padding: 0 15px;
+	font-size: 13px;
+	line-height: 32px;
+}
+.CloudDiskInfoList button{
+	float: right;
+	border-radius: 3px;
+	padding: 0 15px;
+	height: 30px;
+	line-height: 30px;
+    overflow: hidden!important;
+	-webkit-app-region: no-drag;
+}
+.CloudDiskInfoBack{
+	margin-right: 10px;
+}
+.CloudDiskInfoList input{
+    width: 150px;
+    border-radius: 0px;
+    height: 29px;
+	-webkit-app-region: no-drag;
+}
+.CloudDiskInfoList span{
+	float: left;
+	height: 30px;
+	display: block;
+}
+.CloudDiskInfoLine{
+	width: 100%;
+	height: 1px;
+	background: #eee;
+	margin: 5px 0;
+}
+.CloudDiskInfoList div{
+	float: left;
+	width: 200px;
+	line-height: 20px;
+	padding-top: 6px;
+    padding-left: 10px;
+	word-break: break-all;
+	color: #2d2d2d;
+}
+/*分享窗口*/
+.CloudDiskShareWindow{
+	width: 100%;
+	height: 100%;
+}
+.CloudDiskShareWindow ul{
+	width: 100%;
+	height: 35px;
+}
+.CloudDiskShareWindow ul>li{
+	width: 50%;
+	float: left;
+	height: 35px;
+	line-height: 33px;
+	text-align: center;
+	cursor: pointer;
+}
+.CloudDiskShareTips{
+	font-size: 16px;
+	padding-bottom: 10px;
+}
+.CloudDiskShareTips span{
+	color: #409EFF;
+}
+.CloudDiskShareLine{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	margin-bottom: 10px;
+}
+.CloudDiskShareLine *{
+	float: left;
+}
+.CloudDiskShareLine span{
+
+}
+.CloudDiskShareLine input{
+	border: 1px solid #eee;
+	height: 32px;
+	padding: 0px 10px;
+	margin-top: 4px;
+	border-radius: 3px;
+}
+.CloudDiskShareLine input:focus{
+	border: 1px solid #409EFF;
+}
+.CloudDiskShareLine button{
+	float: right;
+	height: 32px;
+	background: #409EFF;
+	color: #fff;
+	margin-top: 4px;
+	line-height: 32px;
+	padding: 0px 10px;
+	border: 1px solid #eee;
+	border-radius: 3px;
+}
+.CloudDiskShareActive{
+	border-bottom: 2px solid #3b8cff;
+}
+.CloudDiskShareWContent{
+	width: 100%;
+	height: 60px;
+	background: #eee;
+	margin-top: 10px;
+}
+.CloudDiskShareWindow p{
+	font-size: 14px;
+	line-height: 60px;
+	text-indent: 20px;
+}
+.CloudDiskViewContent{
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background: #fcfcfc;
+}
+/*加载动画*/
+.CloudDiskLoading{
+	text-align: center;
+	color: #2682fc;
+	padding-top: calc(25% - 35px);
+}
+.CloudDiskLoading .sf-icon-hdd{
+	width: 100%;
+	font-size: 45px;
+	position: relative;
+}
+.CloudDiskLoading p{
+	color: #828282;
+	font-size: 16px;
+}
+@-webkit-keyframes CloudDiskLoading {
+	50% {
+		opacity: 0.2;
+		-webkit-transform: scale(0.75);
+		transform: scale(0.75); }
+
+	100% {
+		opacity: 1;
+		-webkit-transform: scale(1);
+		transform: scale(1); } }
+@keyframes CloudDiskLoading {
+	50% {
+		opacity: 0.5;
+		-webkit-transform: scale(0.75);
+		transform: scale(0.75); }
+	100% {
+		opacity: 1;
+		-webkit-transform: scale(1);
+		transform: scale(1); } }
+.CloudDiskLoading-beat{
+	position: absolute;
+	top: 24px;
+	text-align: center;
+	left: calc(50% - 8px);
+	background: #fff;
+	height: 10px;
+	width: 26px;
+}
+.CloudDiskLoading-beat > div {
+	float: right;
+	background-color: #2682fc;
+	width: 4px;
+	height: 4px;
+	margin-top: 3px;
+	margin-right: 2px;
+	border-radius: 100%;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+	display: inline-block;
+	-webkit-animation: CloudDiskLoading 0.7s 0s infinite linear;
+	animation: CloudDiskLoading 0.7s 0s infinite linear;
+}
+.CloudDiskLoading-beat > div:nth-child(2n-1) {
+	-webkit-animation-delay: 0.35s !important;
+	animation-delay: 0.35s !important; }
+/*右键菜单*/
+.MouseMenu {
+	position:absolute;
+	z-index:22;
+	width:auto;
+	height:auto;
+	min-width:90pt;
+	background:#fff;
+	box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	-khtml-user-select:none;
+	user-select:none;
+}
+.MouseMenu li {
+	width: auto;
+	height: 30px;
+	max-width: 400px;
+	font-size: 12px;
+	padding: 6px 10px;
+	color: #333;
+	text-align: left;
+	white-space: nowrap;
+	margin-bottom: 2px;
+}
+.MouseMenu li:last-child{
+	margin-bottom: 0;
+}
+.MouseMenu li span{
+	float: right;
+	font-size: 12px;
+	margin-left: 40px;
+	color: #bfbfbf;
+}
+.MouseMenu li:hover {
+	background-color:#eee;
+	color:#000;
+	cursor:pointer;
+}
+/*传输列表*/
+.CloudDisTrans{
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+.CloudDisTransList{
+	width: 100%;
+	height: 55px;
+	margin-top: 2px;
+	position: relative;
+	border-bottom: 1px solid #eee;
+}
+.CloudDisTransList img{
+	float: left;
+	margin: 10px;
+	width: 30px;
+}
+.CloudDisTransRight .trans-container{
+	float: left;
+	width: calc(100% - 100px);
+	height: 100%;
+}
+.CloudDisTransRight .trans-name,.CloudDisTransRight .trans-size{
+	font-size: 12px;
+	line-height: 22px;
+}
+.CloudDisTransRight .ivu-progress{
+	float: right;
+	width: 310px;
+}
+.CloudDisTransRight {
+	float: left;
+	width: calc(100% - 50px);
+	height: 100%;
+	padding: 4px;
+}
+.CloudDisTransRight button{
+	float: right;
+	margin: 10px;
+	width: 26px;
+	height: 26px;
+	background: white;
+	border-radius: 100%;
+	color: rgba(64, 158, 255, 0.87);
+	border: 1px solid rgba(64, 158, 255, 0.66);
+}
+.CloudDisTransRight button:hover{
+	color: #2d8cf0;
+	border: 1px solid  #2d8cf0;
+}
+.CloudDisTransRight button.sf-icon-times{
+	color: #E83C3C!important;
+	border:1px solid #E83C3C!important;
+}
+.CloudDisTransRight button.sf-icon-trash{
+	color: #19be6b!important;
+	border:1px solid #19be6b!important;
+}
+.CloudDisTransList:hover{
+	background: rgba(0,0,0,.1);
+}
+/*拖选框*/
+.MouseSelect{
+	position: absolute;
+    background: #7dbcff;
+    opacity: .5;
+    border: 1px solid #007cff;
+	z-index: 1;
+}
+/*音乐播放器*/
+.AudioContainer{
+	background-color: #fff;
+	width:100%;
+	height: 100%;
+}
+.AudioContainer audio{
+	display: none;
+}
+.AudioPlayerContainer{
+	width: 100%;
+	height: 150px;
+	border-bottom: 2px solid #3b8cff;
+	-webkit-app-region: drag;
+}
+.AudioPlayerContainer canvas{
+	position: absolute;
+	top: 0;
+	z-index: 1;
+	opacity: .75;
+}
+.AudioPlayerContainer ul{
+	width: 252px;
+	height: 60px;
+	margin: 0px auto;
+	position: relative;
+	z-index: 2;
+}
+.AudioPlayerContainer ul>li{
+	float: left;
+	-webkit-app-region: no-drag;
+}
+.AudioPlayerTitle{
+	width: 100%;
+	height: 35px;
+	text-align: center;
+	color: #585858;
+	font-weight: 700;
+	font-size: 14px;
+	position: relative;
+	z-index: 2;
+}
+.ABtnbig,.ABtnsmall{
+	border: 2px solid #3b8cff;
+	display: block;
+	border-radius: 25px;
+	-webkit-border-radius: 25px;
+	-moz-border-radius: 25px;
+	text-align: center;
+	color: #409EFF;
+	font-size: 18px;
+	cursor: pointer;
+}
+.ABtnbig:hover,.ABtnsmall:hover{
+	opacity: .8;
+}
+.ABtnbig{
+	width: 50px;
+	height: 50px;
+	line-height: 46px;
+	background: #3b8cff;
+	color: #fff;
+}
+.ABtnsmall{
+	width: 35px;
+	height: 35px;
+	line-height: 31px;
+	font-size: 14px;
+	margin: 8px;
+}
+.ABtnmidue{
+	width: 30px;
+	color: #3b8cff;
+	height: 30px;
+	line-height: 30px;
+	margin: 10px;
+	font-size: 14px;
+}
+.AudioTime{
+	width: 91%;
+	height: 25px;
+	line-height: 20px;
+	font-size: 12px;
+	text-align: right;
+	color: #585858;
+	font-weight: bold;
+	position: relative;
+	z-index: 2;
+}
+.AudioSliderContainer{
+	width: 85%;
+	margin: 0px auto;
+	overflow:initial;
+	height: 5px;
+	background: #eee;;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	position: relative;
+	z-index: 2;
+	-webkit-app-region: no-drag;
+}
+.VideoSliderBar span,.VideoVolumnSliderBar span,.AudioSlider span {
+	position:relative;
+	top:-2px;
+	right:-2px;
+	z-index:1;
+	float:right;
+	display:block;
+	width:10px;
+	height:10px;
+	border-radius:10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	background:#1d8ad8;
+}
+.AudioListContainer{
+	width: 100%;
+	height: calc(100% - 180px);
+	overflow-y: auto;
+	background: #fff;
+	position: relative;
+	z-index: 2;
+}
+.AudioListContainer li{
+	width: 100%;
+	height: 35px;
+	line-height: 35px;
+	color: #4a4a4a;
+	border-top: 1px solid #dcdbdb;
+	text-indent: 10px;
+	font-size: 12px;
+}
+.AudioListContainer li:hover{
+	color: #409EFF;
+	cursor: pointer;
+}
+.AudioVolumn{
+	width: 30px;
+	height: 129px;
+	background: #fff;
+	position: absolute;
+	float: right;
+	right: 66px;
+	top: 105px;
+	padding: 12px;
+	border: 1px solid #eee;
+	z-index: 3;
+	-webkit-app-region: no-drag;
+}
+.VideoVolumnSlider {
+	overflow:initial;
+	float:left;
+	width:6px;
+	height:100px;
+	background:#bbbbbb;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	position:relative;
+	bottom:0;
+	overflow: unset!important;
+}
+.VideoVolumnSliderBar {
+	position:relative;
+	top:0;
+	width:100%;
+	height:100%;
+	background: #409EFF;
+	overflow: unset!important;
+}
+.AudioPlayThis{
+	background: #409EFF;
+	color: #fff!important;
+}
+#AudioLrcList{
+	float: left;
+	padding-left: 28px;
+	width: 245px;
+	height: 25px;
+	font-size: 12px;
+	color: #585858;
+	-o-transition: all 350ms;
+	-moz-transition: all 350ms;
+	-webkit-transition: all 350ms;
+}
+#AudioLrcList *{
+	display: none;
+}
+.this_lrc{
+	text-align: left;
+	display: block!important;
+	-o-transition: all 350ms;
+	-moz-transition: all 350ms;
+	-webkit-transition: all 350ms;
+	-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	-webkit-animation-name:slideInUp;animation-name:slideInUp
+}
+/*视频播放器*/
+.WindowContainer {
+    width: 100%;
+    background: #fff;
+    height: 100%;
+}
+.VideoContainer {
+	background:#000;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	-khtml-user-select:none;
+	user-select:none;
+	width:100%;
+	height:100%;
+}
+.VideoContainer video {
+	width:100%;
+	height:calc(100% - 70px);
+	-webkit-transition:all .35s;
+	-moz-transition:all .35s;
+	-o-transition:all .35s;
+	z-index: 9999999;
+}
+.VideoControl {
+	position:absolute;
+	bottom:0;
+	padding:5px;
+	width:100%;
+	height:40px;
+	background:#fff;
+	overflow: unset;
+	-webkit-transition:all .35s;
+	-moz-transition:all .35s;
+	-o-transition:all .35s;
+}
+.VideoSlider{
+	float:left;
+	overflow:initial;
+	width:calc(100% - 210px);
+	height:5px;
+	background: #cecece;
+	margin-top:13px;
+	margin-left:10px;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.VideoSliderBar,.VideoVolumnSliderBar,.AudioSlider{
+	position:relative;
+	z-index:2;
+	overflow:initial;
+	width:0;
+	height:5px;
+	background:#2196f3;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.VideoTempBar {
+	position:relative;
+	top:-10px;
+	z-index:1;
+	height:100%;
+	background:#bbbbbb;
+}
+.VideoControl .sf-icon-volume-up,.VideoControl .sf-icon-expand,.sf-icon-compress {
+	width:30px;
+	float:left;
+	height:30px;
+	line-height:30px;
+	color:#5a5a5a;
+	font-size:16px;
+	text-align:center;
+}
+.VideoPlay {
+	float:left;
+	display:inline-block;
+	width:30px;
+	height:30px;
+	color:#5a5a5a;
+	text-align:center;
+	font-size:22px;
+	line-height:30px;
+}
+.VideoPlay:hover,.VideoControl .sf-icon-expand:hover,.VideoControl .sf-icon-volume-up:hover,.VideoControl .sf-icon-compress:hover {
+	color:#0e88bf;
+	cursor:pointer;
+}
+.VideoVolumn {
+	width:30px;
+	height:129px;
+	background:#fff;
+	position:relative;
+	float:right;
+	right:32px;
+	bottom: 163px;
+	padding:12px;
+	-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	-webkit-animation-name:fadeIn;animation-name:fadeIn;
+}
+.VideoVolumn-active{
+	color:#0e88bf!important;
+}
+.VideoFliter{
+	width: 80px;
+	height: 80px;
+	background: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	line-height: 80px;
+	text-align: center;
+	font-size: 35px;
+	border: 2px solid #eee;
+	color: #eee;
+	border-radius: 100%;
+}
+.VideoFliter:hover{
+	color: #0e88bf;
+	border-color: #0e88bf;
+}
+.VideoVolumnSlider {
+	overflow:initial;
+	float:left;
+	width:6px;
+	height:100px;
+	background:#bbbbbb;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	position:relative;
+	bottom:0;
+}
+.VideoVolumnSliderBar {
+	position:relative;
+	top:0;
+	width:100%;
+	height:100%;
+}
+.VideoTime {
+	float:left;
+	width: 110px;
+	height:30px;
+	line-height:30px;
+	font-size:13px;
+	padding:0px 10px;
+	text-align:center;
+	white-space:nowrap;
+	color:#5a5a5a;
+}
+/*上传提示*/
+.CloudDiskUploadTips{
+	width: 100%;
+	height: 35px;
+	line-height: 35px;
+	background: #2d8cf0;
+	position: absolute;
+	text-indent: 20px;
+	top: 0;
+	z-index: 3;
+	-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both;
+	-webkit-animation-name:fadeIn;animation-name:fadeIn;
+	color: #fff;
+}
+/*滚动条*/
+*::-webkit-scrollbar{
+	width:7px;
+	height:7px;
+	background:none;
+}
+*::-webkit-scrollbar-button{
+	display:none;
+}
+*::-webkit-scrollbar-track{
+	background:none;
+}
+*::-webkit-scrollbar-track-piece {
+	display:none;
+}
+*::-webkit-scrollbar-thumb{
+	background : rgba(0,0,0,0.3);
+	position   : absolute;
+	width      : 3px;
+	right      : 0;
+	top        : 0;
+	bottom     : 0;
+	visibility : hidden\9; /* Target only IE7 and IE8 with this hack */
+	opacity    : .01;
+	-webkit-transition    : .2s;
+	-moz-transition       : .2s;
+	-o-transition         : .2s;
+	transition            : .2s;
+	-moz-border-radius    : 3px;
+	-webkit-border-radius : 3px;
+	border-radius         : 3px;
+}
+*::-webkit-scrollbar-thumb:active,*::-webkit-scrollbar-thumb:hover{
+	background : rgba(0,0,0,.50);
+}
+*::-webkit-scrollbar-corner {
+	display:none;
+}
+*::-webkit-scrollbar-resizer  {
+	display:none;
+}
+/*iview组件处理*/
+.v-modal{
+	opacity: 0;
+}
+.el-message-box{
+	width: 350px;
+}
+.el-input{
+	height: 35px;
+}
+.el-input__inner{
+	height: 35px;
+	line-height: 35px;
+}
+.el-message-box__input{
+	padding-top:10px;
+}
+.el-message-box__errormsg{
+	min-height: unset!important;
+}
+.el-dialog__header{
+	padding: 15px 15px 10px;
+}
+.el-dialog__title{
+	font-size: 18px;
+}
+.el-dialog__body{
+	padding: 5px 15px;
+}
+.el-dialog__body .ivu-input-wrapper{
+	margin: 6px 0;
+}
+.el-dialog__footer{
+	padding: 10px 14px 18px;
+}
+/*用户信息窗口*/
+.CloudUserMain{
+	width: 100%;
+	height: 100%;
+	background: #fff;
+}
+.CloudUserLeft{
+	float: left;
+	width: 50%;
+	height: 100%;
+	background: url("../../../../static/img/login/right-bg.png");
+	background-position: -60px 0px;
+	margin-top: -30px;
+	background-size: cover;
+	background-color: #4996ed;
+}
+.CloudUserLeftDown{
+	width: 100%;
+	height: 150px;
+	text-align: center;
+	margin-top: 135px;
+}
+.CloudUserRight {
+	float: left;
+	width: 50%;
+	height: 100%;
+	background: #fff;
+	padding: 0px 20px 20px;
+}
+.CloudUserLeftDown img{
+	width: 100px;
+	height: 100px;
+	border-radius: 100px;
+	-webkit-border-radius: 100px;
+	-moz-border-radius: 100px;
+}
+.CloudUserLeftDown img:hover{
+	opacity: .5;
+	cursor: pointer;
+}
+.CloudUserName{
+	color: #fff;
+	font-size: 18px;
+	font-weight: lighter;
+}
+.CloudUserAge{
+	color: #a5a5a5;
+	font-size: 13px;
+}
+.CloudUserTitle{
+	width: 100%;
+	font-size: 18px;
+	border-bottom: 1px solid #d0d0d0;
+	color: #2f2f2f;
+}
+.CloudUserLine{
+	width: 100%;
+	height: 45px;
+	line-height: 45px;
+}
+.CloudUserLine label{
+	float: left;
+	width: 42px;
+	font-size: 14px;
+	height: 100%;
+}
+.CloudUserLine textarea{
+	width: calc(100% - 50px);
+	height: 55px;
+	margin-top: 8px;
+	resize: none;
+}
+.CloudUserRight button{
+	float: right;
+	margin-top: 10px;
+	margin-right: 8px;
+}
+.CloudUserUpload{
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	left: 118px;
+	top: 135px;
+	overflow: unset;
+}
+.CloudUserUpload input{
+	position: absolute;
+	top: -50px;
+	left: -11px;
+	display: none;
+}
+/*关于信息窗口*/
+.CloudDiskAbout{
+	width: 100%;
+	height: 100%;
+}
+.CloudDiskAbout-head{
+	width: 100%;
+	height: 50px;
+	background: url("../../../../static/img/login/right-bg.png");
+	background-size: cover;
+	background-position: -160px 58px;
+	background-repeat: repeat-y;
+	border-bottom: 2px solid #eee;
+	-webkit-app-region: drag;
+	background-color: #3b54a8;
+}
+.CloudDiskAbout-head *{
+	float: left;
+}
+.CloudDiskAbout-head img{
+	margin: 8px;
+	width: 32px;
+	height: 32px;
+}
+.CloudDiskAbout-head p{
+	font-size: 14px;
+	line-height: 48px;
+	color: #fff;
+}
+.CloudDiskAbout-head button{
+	float: right;
+	width: 40px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 15px;
+	-webkit-app-region: no-drag;
+	background: none;
+	color: #fff;
+}
+.CloudDiskAbout-head button:hover{
+	background: #E83C3C;
+}
+.CloudDiskAbout-main{
+	width: 100%;
+	height: calc(100% - 50px);
+	background: #fff;
+	padding:10px 20px;
+}
+.CloudDiskAbout-main p{
+	font-weight: bold;
+	padding: 5px 0;
+	font-size: 14px;
+}
+.CloudDiskAbout-main .title{
+	font-size: 16px;
+	border-bottom: 1px solid #eee;
+}
+.CloudDiskAbout-main .release{
+	float: left;
+	font-size: 12px;
+	color: #888888;
+}
+.CloudDiskAbout-main .tips{
+
+}
+.CloudDiskAbout-main p span{
+	padding-left: 10px;
+	color: #E83C3C;
+}
+.CloudDiskAbout-main .process{
+	padding-bottom: 10px;
+	height: 35px;
+}
+.CloudDiskAbout-main .bottom{
+	width: 100%;
+}
+.CloudDiskAbout-main button{
+	float: right;
+	overflow: hidden!important;
+}
+/*反馈窗口*/
+.CloudDiskFeedBack-main{
+	height: calc(100% - 50px);
+	padding: 10px 15px;
+	background: #fff;
+}
+.CloudDiskFeedBack-main p{
+	font-size: 14px;
+	color: #4f4f4f;
+}
+.CloudDiskFeedBack-main .ivu-input-wrapper{
+	margin:10px 0px;
+}
+.CloudDiskFeedBack-main textarea{
+	height: 125px!important;
+	resize: none;
+}
+.CloudDiskFeedBack-main .version{
+	float: left;
+	font-size: 14px;
+	color: #6e6e6e;
+	margin-top: 5px;
+	font-weight: bold;
+}
+.CloudDiskFeedBack-main button{
+	float: right;
+}
+/*图片查看*/
+.ImageShowContainer {
+	float:left;
+	width:100%;
+	height:100%;
+	background:#4f4f4f;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	-khtml-user-select:none;
+	user-select:none;
+}
+.ImageShowContainer .ivu-spin-main{
+	float: right;
+	padding: 30px 10px;
+}
+.ImageShowZoom {
+	height: 30px;
+	color: #fff;
+	text-align: center;
+	font-size: 14px;
+	line-height: 30px;
+	opacity: 1;
+	-webkit-transition: all .35s;
+	-moz-transition: all .35s;
+	-o-transition: all .35s;
+	margin-right: 10px;
+}
+.ImgShow {
+	position:absolute;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	z-index:1;
+	margin: auto;
+	min-width: 0!important;
+	max-width: none!important;
+	min-height: 0!important;
+	max-height: none!important;
+	cursor:-webkit-grab;
+	-webkit-transition:none!important;
+	-moz-transition:none!important;
+	-o-transition:none!important;
+}
+.ImgAnim{
+	-webkit-transition: all .3s ease-out!important;
+	-moz-transition:all .3s ease-out!important;
+	-o-transition: all .3s ease-out!important;
+	transition: all .3s ease-out!important;
+}
+.ImgControl {
+
+	bottom: 30px;
+	z-index: 3;
+	width: 100%;
+	height: 45px;
+}
+.ImageShowTips{
+	width: 100%;
+	text-align: right;
+	padding-right: 10px;
+	line-height: 30px;
+	font-size: 14px;
+	color: #fff;
+	position: absolute;
+	z-index: 2;
+	text-shadow:0px 0px 5px rgb(0, 0, 0);
+}
+.ImgControl{
+	position: absolute;
+	margin:0 auto;
+	bottom: 30px;
+	width:294px;
+	height:42px;
+	left: calc(50% - 147px);
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	background:rgba(103, 103, 103, 0.5);
+	text-align:center;
+	box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 0 1px rgba(0,0,0,.2);
+}
+.ImgControl li {
+	float:left;
+	width:42px;
+	height:42px;
+	font-size: 14px;
+	text-align:center;
+	line-height:42px;
+	cursor:pointer;
+	color:#fff;
+}
+.ImgControl .sf-icon-angle-left,.ImgControl .sf-icon-angle-right{
+	font-size: 22px;
+}
+.ImgControl li:hover {
+	background:rgba(125, 125, 125, 0.5);
+	color:#Fff;
+}
+/*pdf窗口*/
+.PdfWindow{
+	width:100%;
+	height: 100%;
+	background: rgb(45, 140, 240);
+}
+.PDfContainer,.FileShowContainer{
+	width: 100%;
+	height: calc(100% - 32px);
+}
+.PDfContainer iframe{
+	width: 100%;
+	height: 100%;
+}
+/*文件查看窗口*/
+.FileShowContainer iframe{
+	overflow: auto;
+}
+/*设置窗口*/
+.CloudDiskSettingWindow{
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+.CloudDiskSetting-head{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    background: #2d8cf0;
+    -webkit-app-region: drag;
+}
+.CloudDiskSetting-head i{
+    float: left;
+    font-size: 30px;
+    color: #fff;
+    line-height: 50px;
+    margin: 0px 15px;
+    margin-right: 10px;
+}
+.CloudDiskSetting-head p{
+    float: left;
+    line-height: 50px;
+    font-size: 16px;
+    color: #fff;
+}
+.CloudDiskSetting-head button{
+    float: right;
+    width: 40px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
+    -webkit-app-region: no-drag;
+    background: none;
+    color: #fff;
+}
+.CloudDiskSetting-head .sf-icon-window-minimize{
+    font-size: 12px;
+}
+.CloudDiskSetting-head button:hover{
+    background: rgba(255,255,255,0.2);
+}
+.CloudDiskSetting-head .sf-icon-times:hover{
+    background: #E83C3C;
+}
+.CloudDiskSetting-main{
+    width: 100%;
+    height:calc(100% - 50px);
+    padding: 10px;
+}
+.CloudSettingMenu{
+	width: 100px;
+	height: 100%;
+	float: left;
+	overflow: unset!important;
+}
+.CloudSettingMenu li{
+	width: 100%;
+	height: 35px;
+	background: #fff;
+	color: #6e6e6e;
+	border-radius: 5px 0px 0px 5px;
+	border: 1px solid #fff;
+}
+.CloudSettingMenu li *{
+	float: left;
+	line-height: 35px;
+}
+.CloudSettingMenu li.active{
+	width: calc(100% + 1px);
+	border: 1px solid #eee;
+	border-right: none;
+	color: #6e6e6e!important;
+	cursor: default!important;
+}
+.CloudSettingMenu li:hover{
+	color: #2d8cf0;
+	cursor: pointer;
+}
+.CloudSettingMenu li span{
+	width: 35px;
+	height: 35px;
+	text-align: center;
+}
+.CloudSettingMenu li p{
+	width: calc(100% - 60px);
+}
+.CloudDiskSettingContent{
+	width: calc(100% - 100px);
+	height: 100%;
+	border: 1px solid #eee;
+	padding-left: 20px;
+}
+.CloudDiskSettingContainer{
+	width: 100%;
+	height: 100%;
+}
+.SettingBigTitle{
+	width: 100%;
+	font-size: 16px;
+	line-height: 35px;
+	margin-bottom: 10px;
+	color: #2d8cf0;
+}
+.SettingSecTitle{
+	width: 100%;
+	font-size: 14px;
+	border-left: 2px solid #2d8cf0;
+	text-indent: 5px;
+	margin: 5px 0;
+}
+.SettingTips{
+	color: #E83C3C;
+	width: 100%;
+	font-size: 12px;
+	margin-top: 5px;
+}
+.ivu-input-number,.ivu-input-number-input,.ivu-input-number-input-wrap{
+	overflow: hidden!important;
+}
+.SettingInfo{
+	width: 100%;
+	font-size: 14px;
+	padding-left: 5px;
+	line-height: 30px;
+}
+.SettingInfo span{
+	background: #2d8cf0;
+	color: #fff;
+	border-radius: 5px;
+	padding: 3px 5px;
+	font-size: 12px;
+	margin-left: 10px;
+}
+.SettingInfo button{
+	background: none;
+	color: #2d8cf0;
+	font-size: 14px;
+	margin-left: 10px;
+}
+.SettingForm{
+	margin: 8px 0;
+	width: 200px;
+}
+.SettingForm .ivu-input-wrapper,.SettingForm .ivu-input-number{
+	margin: 5px 0;
+}
+.SettingForm button{
+	float: right;
+	margin-top: 10px;
+}
+/*消息弹窗*/
+.MessageMain{
+	width: 100%;
+	height: 100%;
+	background: #fff;
+}
+.MessageContainer{
+	padding: 15px;
+}
+.MessageContainer i{
+	float: left;
+	font-size: 30px;
+}
+.MessageContainer p{
+	float: left;
+	font-size: 14.5px;
+	line-height: 1.6;
+	width: calc(100% - 30px);
+	word-break: break-all;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 4;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	padding-left: 10px;
+}
+/*动画*/
+.animated{-webkit-animation-duration:.35s;animation-duration:.35s;-webkit-animation-fill-mode:both;animation-fill-mode:both}
+@-webkit-keyframes fadeIn{from{opacity:0}
+	to{opacity:1}
+}
+@keyframes fadeIn{from{opacity:0}
+	to{opacity:1}
+}
+.fadeIn{-webkit-animation-name:fadeIn;animation-name:fadeIn}
+@-webkit-keyframes fadeOut{from{opacity:1}
+	to{opacity:0}
+}
+@keyframes fadeOut{from{opacity:1}
+	to{opacity:0}
+}
+.fadeOut{-webkit-animation-name:fadeOut;animation-name:fadeOut}
+@-webkit-keyframes zoomIn{from{opacity:0;transform:scale3d(.85,.85,.85)}
+	50%{opacity:.5}
+	100%{opacity:1}
+}
+@keyframes zoomIn{from{opacity:0;transform:scale3d(.85,.85,.85)}
+	50%{opacity:.5}
+	100%{opacity:1}
+}
+.zoomIn{-webkit-animation-name:zoomIn;animation-name:zoomIn}
+@-webkit-keyframes zoomOut{from{opacity:1}
+	50%{opacity:0;-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}
+	to{opacity:0}
+}
+@keyframes zoomOut{from{opacity:1}
+	50%{opacity:0;transform:scale3d(.9,.9,.9)}
+	to{opacity:0}
+}
+.zoomOut{-webkit-animation-name:zoomOut;animation-name:zoomOut}
+@-webkit-keyframes slideInDown{from{visibility:visible;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+@keyframes slideInDown{from{visibility:visible;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+.slideInDown{-webkit-animation-name:slideInDown;animation-name:slideInDown}
+@-webkit-keyframes slideInLeft{from{visibility:visible;-webkit-transform:translate3d(-100%,0,0);transform:translate3d(-100%,0,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+@keyframes slideInLeft{from{visibility:visible;-webkit-transform:translate3d(-100%,0,0);transform:translate3d(-100%,0,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+.slideInLeft{-webkit-animation-name:slideInLeft;animation-name:slideInLeft}
+@-webkit-keyframes slideInRight{from{visibility:visible;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+@keyframes slideInRight{from{visibility:visible;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+.slideInRight{-webkit-animation-name:slideInRight;animation-name:slideInRight}
+@-webkit-keyframes slideInUp{from{visibility:visible;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+@keyframes slideInUp{from{visibility:visible;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}
+	to{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+}
+.slideInUp{-webkit-animation-name:slideInUp;animation-name:slideInUp}
+@-webkit-keyframes slideOutDown{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}
+}
+@keyframes slideOutDown{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}
+}
+.slideOutDown{-webkit-animation-name:slideOutDown;animation-name:slideOutDown}
+@-webkit-keyframes slideOutLeft{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(-100%,0,0);transform:translate3d(-100%,0,0)}
+}
+@keyframes slideOutLeft{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(-100%,0,0);transform:translate3d(-100%,0,0)}
+}
+.slideOutLeft{-webkit-animation-name:slideOutLeft;animation-name:slideOutLeft}
+@-webkit-keyframes slideOutRight{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
+}
+@keyframes slideOutRight{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
+}
+.slideOutRight{-webkit-animation-name:slideOutRight;animation-name:slideOutRight}
+@-webkit-keyframes slideOutUp{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}
+}
+@keyframes slideOutUp{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+	to{visibility:hidden;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}
+}
+.slideOutUp{-webkit-animation-name:slideOutUp;animation-name:slideOutUp}
