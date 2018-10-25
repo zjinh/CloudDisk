@@ -304,9 +304,8 @@
                             this.$Message[rs.state](rs.msg);
                         }
                     }
-                },(err)=>{
+                },()=>{
                     this.PostState='';
-                    this.$Message.error('请求失败'+err);
                 });
             },
             register:function(){
@@ -365,9 +364,8 @@
                         this.RegisterCodeInput.value='';
                         this.RegisterCodeInput.url+='?'+Math.random();
                     }
-                },(err)=>{
+                },()=>{
                     this.PostState='';
-                    this.$Message.error('请求失败'+err);
                 })
             },
             forget:function(){
@@ -419,9 +417,8 @@
                         this.$Message[rs.state](rs.msg);
                         this.ForgetCodeInput.value='';
                     }
-                },(err)=>{
+                },()=>{
                     this.PostState='';
-                    this.$Message.error('请求失败'+err);
                 })
             },
             verify:function(){
@@ -469,9 +466,8 @@
                         this.$Message[rs.state](rs.msg);
                         this.VerifyCodeInput.value='';
                     }
-                },(err)=>{
+                },()=>{
                     this.PostState='';
-                    this.$Message.error('请求失败'+err);
                 })
             },
             ReSend:function(){

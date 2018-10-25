@@ -51,7 +51,7 @@ axios.interceptors.response.use(function (response) {
     }else{
         err.message = '连接服务器失败，请检查网络连接或联系管理员'
     }
-    this.$Message.error.error(err.message);
+    Message.error(err.message);
     return Promise.reject(err);
 });
 //引入element的部分组件
