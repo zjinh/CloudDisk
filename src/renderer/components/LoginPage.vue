@@ -150,7 +150,6 @@
                     value:""
                 },
                 RegisterCodeInput:{
-                    url:"http://cloud.com:100/service/verifyCode",
                     text:"验证码",
                     value:""
                 },
@@ -166,7 +165,6 @@
                     value:""
                 },
                 ForgetCodeInput:{
-                    url:"http://cloud.com:100/service/verifyCode",
                     text:"验证码",
                     value:""
                 },

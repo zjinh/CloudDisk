@@ -378,6 +378,9 @@ let Check=function (url,callback,error) {
         error:error
     })
 };
+let VerifyCod=function(){
+    return localStorage.server+"/service/verifyCode"+'?'+Math.random();
+};
 export default {
-    User,Disk,Check,StringExist,StringBefore,FileSize,IconGet
+    User,Disk,Check,StringExist,StringBefore,FileSize,IconGet,VerifyCod
 }

@@ -4,7 +4,7 @@
         <input :id="id" type="text" v-model="data.value" autocomplete='off' spellcheck="false" @focus="focusState='CloudIndex-Input Input-Focus'" @blur="blur">
         <label :for="id">{{data.text}}</label>
         <Tooltip content="点击刷新" placement="bottom-end" :transfer="true">
-            <img draggable="false" :src="data.url" @click="refresh">
+            <img draggable="false" :src="url" @click="refresh">
         </Tooltip>
     </div>
 </template>
@@ -20,8 +20,11 @@
         data(){
             return{
                 id:'Input'+Math.random(),
-                focusState:'CloudIndex-Input'
+                focusState:'CloudIndex-Input',
+                url:this.$Api.VerifyCod(),
             }
+        },
+        created(){
         },
         methods:{
             blur () {
@@ -32,7 +35,7 @@
                 }
             },
             refresh(){
-                this.data.url=this.data.url+'?'+Math.random();
+                this.url=this.$Api.VerifyCod();
             }
         }
     }
