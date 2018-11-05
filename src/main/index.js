@@ -103,7 +103,6 @@ let trayMenuTemplate = [//托盘菜单
         }
     }
 ];
-autoUpdater.setFeedURL('http://cloud.com:100/update');
 function CheckUrl(address) {
     return process.env.NODE_ENV === 'development'
         ? `http://localhost:9080/#/`+address
@@ -175,7 +174,8 @@ function CreateWindow(options) {
     return win;
 }
 function CreateLoginWindow (flag) {
-    ipcMain.on('login-success', ()=> {
+    ipcMain.on('login-success', (e,msg)=> {
+        autoUpdater.setFeedURL(msg+'/update');
         CreateDiskWindow();
     });
     if(LoginWindow){
