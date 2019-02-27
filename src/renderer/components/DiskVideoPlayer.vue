@@ -122,12 +122,12 @@
                     media.play();
                     this.PlayButtonState='sf-icon-pause';
                     this.animation='animated zoomOut';
-                    ipc.send('video-play-state','pause')
+                    ipc.send('player-control','video','pause')
                 }else{
                     media.pause();
                     this.PlayButtonState='sf-icon-play';
                     this.animation='animated zoomIn';
-                    ipc.send('video-play-state','play')
+                    ipc.send('player-control','video','play')
                 }
                 VideoPlayer.setTitle(this.NowPlay.disk_name);
                 this.header.title=this.NowPlay.disk_name;

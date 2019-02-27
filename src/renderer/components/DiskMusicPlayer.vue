@@ -139,11 +139,11 @@
                 if(media.paused){
                     media.play();
                     this.PlayButtonState='sf-icon-pause';
-                    ipc.send('play-state','pause')
+                    ipc.send('player-control','audio','pause')
                 }else{
                     media.pause();
                     this.PlayButtonState='sf-icon-play';
-                    ipc.send('play-state','play')
+                    ipc.send('player-control','audio','play')
                 }
                 MusicPlayer.setTitle(this.NowPlay.disk_name);
                 if(this.VisualState) {

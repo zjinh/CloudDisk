@@ -1,11 +1,11 @@
 import {app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen} from 'electron'
-const path = require('path');
 import { autoUpdater } from 'electron-updater'
+const path = require('path');
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 let version=require("../../package.json").version;
-let LoginWindow,DiskWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,FileWindow,FeedBackWindow,SettingWindow,MessageWindow;
+let LoginWindow,MainWindow,DiskInfo,MusicPlayer,VideoPlayer,PictureViewer,PdfWindow,AccountWindow,AboutWindow,FileWindow,FeedBackWindow,SettingWindow,PopupWindow;
 /*播放按钮*/
 let PlayerIcon = path.join(__static, '/img/player');
 let NextBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'next.png'));
@@ -58,84 +58,13 @@ let VideoButtons = [
         }
     }*/
 ];
-let message={
-    appName:'CloudDisk',
-    error:'检查更新出错, 请联系开发人员',
-    checking:'正在检查更新……',
-    updateAva:'检测到新版本，正在下载……',
-    updateNotAva:'现在使用的就是最新版本，不用更新',
-    downloaded: '最新版本已下载，点击安装进行更新'
-};
 let appTray = null;//托盘变量
-let trayMenuTemplate = [//托盘菜单
-    {
-        label: '我的网盘',//菜单显示文本项
-        click: function () {
-            DiskWindow.show();//显示
-            DiskWindow.restore();//窗口欢迎
-            DiskWindow.focus();//窗口聚焦
-        }
-    },
-    {
-        label: '系统设置',//菜单显示文本项
-        click: function () {
-           CreateSettingWindow();
-        }
-    },
-    {
-        label: '反馈',//菜单显示文本项
-        click: function () {
-            CreateFeedBackWindow();
-        }
-    },
-    {
-        label: '关于',//菜单显示文本项
-        click: function () {
-            CreateAboutWindow();
-        }
-    },
-    {
-        label: '退出',
-        click: function () {
-            DiskWindow.show();
-            DiskWindow.focus();
-            DiskWindow.webContents.send('exit');
-        }
-    }
-];
-function CheckUrl(address) {
+function CheckUrl(router) {
     return process.env.NODE_ENV === 'development'
-        ? `http://localhost:9080/#/`+address
-        : `file://${__dirname}/index.html#/`+address;
+        ? `http://localhost:9080/#/`+router
+        : `file://${__dirname}/index.html#/`+router;
 }
-function CheckUpdate(event) {
-    //当开始检查更新的时候触发
-    autoUpdater.on('checking-for-update', function() {
-        event.sender.send('check-for-update',message.checking);//返回一条信息
-    });
-    //当发现一个可用更新的时候触发，更新包下载会自动开始
-    autoUpdater.on('update-available', function(info) {
-        event.sender.send('update-down-success', info);
-        event.sender.send('check-for-update',message.updateAva);//返回一条信息
-    });
-    //当没有可用更新的时候触发
-    autoUpdater.on('update-not-available', function(info) {
-        event.sender.send('check-for-update',message.updateNotAva);//返回一条信息
-    });
-    autoUpdater.on('error', function(error){
-        event.sender.send('check-for-update',message.error);//返回一条信息
-    });
-    // 更新下载进度事件
-    autoUpdater.on('download-progress', (progressObj)=>{
-        event.sender.send('download-progress',progressObj)
-    });
-    autoUpdater.on('update-downloaded',  function () {
-        event.sender.send('check-for-update',message.downloaded);//返回一条信息
-        //通过main进程发送事件给renderer进程，提示更新信息
-    });
-    //执行自动更新检查
-}
-function CreateWindow(options) {
+function CreateWindow(options,data) {
     let win=null;
     Menu.setApplicationMenu(null);
     win = new BrowserWindow({
@@ -145,6 +74,8 @@ function CreateWindow(options) {
         minHeight: options.minHeight,
         title:options.title||'CloudDisk',
         frame:false,
+        useContentSize:options.useContentSize||false,
+        transparent:options.transparent||false,
         x:options.x,
         y:options.y,
         minimizable:options.minimizable === undefined ? true : options.minimizable,
@@ -158,428 +89,486 @@ function CreateWindow(options) {
         }
     });
     win.loadURL(CheckUrl(options.url));
-    win.on('closed', ()=> {
-        win = null;
-        (typeof options.onclose==='function')?options.onclose():"";
+    win.on('closed', (event)=> {
+        event.sender = null;
+        win=null;
+        (typeof options.onclose==='function')?options.onclose(event):"";
     });
-    win.on('ready-to-show',()=>{
+    win.on('ready-to-show',(event)=>{
         win.show();
-        (typeof options.ready==='function')?options.ready():"";
+        win.focus();
+        (typeof options.ready==='function')?options.ready(event):"";
     });
+    win.callback=(data)=>{
+        win.show();
+        win.focus();
+        (typeof options.callback==='function')?options.callback(data):"";
+    };
     win.webContents.on('did-finish-load',()=>{
-        win.show();
         win.setTitle(options.title);
-        (typeof options.callback==='function')?options.callback():"";
+        win.callback(data);
     });
     return win;
 }
-function CreateLoginWindow (flag) {
-    ipcMain.on('login-success', (e,msg)=> {
-        autoUpdater.setFeedURL(msg+'/update');
-        CreateDiskWindow();
-    });
-    if(LoginWindow){
-        LoginWindow.show();
-        LoginWindow.focus();
-        LoginWindow.webContents.send('auto-login',flag);
-        return
-    }
-    LoginWindow=CreateWindow({
-        url:'/',
-        title:'CloudDisk-欢迎',
-        width: 850,
-        height: 550,
-        alwaysOnTop:true,
-        maximizable:false,
-        resizable:false,
-        onclose:()=>{
-            LoginWindow=null;
-            ipcMain.removeAllListeners('login-success');
-        },
-        callback:()=>{
-            LoginWindow.webContents.send('auto-login',flag)
+/*网盘函数*/
+let DiskSystem= {
+    LoginWindow:(flag)=>{
+        if(LoginWindow){
+            return LoginWindow.callback(flag);
         }
-    });
-}
-function CreateDiskWindow() {
-    if(DiskWindow){
-        DiskWindow.show();
-        DiskWindow.focus();
-        LoginWindow?LoginWindow.close():"";
-        BindIpc();
-        return
-    }
-    let trayIcon = path.join(__static, '/icons');
-    appTray = new Tray(path.join(trayIcon, 'icon.ico'));
-    //图标的上下文菜单
-    const contextMenu = Menu.buildFromTemplate(trayMenuTemplate);
-    //设置此托盘图标的悬停提示内容
-    appTray.setToolTip('CloudDisk');
-    //设置此图标的上下文菜单
-    appTray.setContextMenu(contextMenu);
-    appTray.on("click", function(){
-        DiskWindow.isVisible() ? DiskWindow.hide() : DiskWindow.show();
-    });
-    DiskWindow=CreateWindow({
-        url:'main',
-        title:'CloudDisk',
-        width: 950,
-        minWidth:800,
-        minHeight:560,
-        height: 610,
-        onclose:(event)=>{
-            DiskWindow=null;
-            DiskInfo?DiskInfo.close():'';
-            MusicPlayer?MusicPlayer.close():'';
-            VideoPlayer?VideoPlayer.close():'';
-            PictureViewer?PictureViewer.close():"";
-            PdfWindow?PdfWindow.close():'';
-            AccountWindow?AccountWindow.close():'';
-            AboutWindow?AboutWindow.close():'';
-            FileWindow?FileWindow.close():'';
-            FeedBackWindow?FeedBackWindow.close():'';
-            SettingWindow?SettingWindow.close():'';
-            MessageWindow?MessageWindow.close():'';
-            appTray.destroy();
-            ipcMain.removeAllListeners([]);
-            if(!LoginWindow) {
-                app.quit();
+        LoginWindow=CreateWindow({
+            url:'/',
+            title:'CloudDisk-欢迎',
+            width: 850,
+            height: 550,
+            alwaysOnTop:true,
+            maximizable:false,
+            resizable:false,
+            onclose:()=>{
+                LoginWindow=null;
+            },
+            callback:(flag)=>{
+                LoginWindow.webContents.send('auto-login',flag)
             }
-        },
-        callback:()=>{
-            LoginWindow?LoginWindow.close():"";
-            BindIpc();
+        },flag);
+    },
+    MainWindow:()=>{
+        if(MainWindow){
+            return MainWindow.callback();
         }
-    });
-}
-function CreateDiskInfo(data) {
-    if(DiskInfo){
-        DiskInfo.show();
-        DiskInfo.focus();
-        DiskInfo.webContents.send('DiskInfo',data);
-        return
-    }
-    DiskInfo=CreateWindow({
-        url:'info',
-        width: 350,
-        height: 500,
-        title:'文件属性',
-        maximizable:false,
-        minimizable:false,
-        resizable:false,
-        onclose:()=>{
-            DiskInfo=null;
-        },
-        callback:()=>{
-            DiskInfo.webContents.send('DiskInfo',data);
+        let trayIcon = path.join(__static, '/icons');
+        appTray = new Tray(path.join(trayIcon, 'icon.ico'));
+        //图标的上下文菜单
+        let trayMenuTemplate = [//托盘菜单
+            {
+                label: '我的网盘',//菜单显示文本项
+                click: function () {
+                    MainWindow.show();//显示
+                    MainWindow.restore();//窗口欢迎
+                    MainWindow.focus();//窗口聚焦
+                }
+            },
+            {
+                label: '系统设置',//菜单显示文本项
+                click: function () {
+                    DiskSystem.SettingWindow();
+                }
+            },
+            {
+                label: '反馈',//菜单显示文本项
+                click: function () {
+                    DiskSystem.FeedBackWindow();
+                }
+            },
+            {
+                label: '关于',//菜单显示文本项
+                click: function () {
+                    DiskSystem.AboutWindow();
+                }
+            },
+            {
+                label: '退出',
+                click: function () {
+                    MainWindow.show();
+                    MainWindow.focus();
+                    MainWindow.webContents.send('exit');
+                }
+            }
+        ];
+        const contextMenu = Menu.buildFromTemplate(trayMenuTemplate);
+        //设置此托盘图标的悬停提示内容
+        appTray.setToolTip('CloudDisk');
+        //设置此图标的上下文菜单
+        appTray.setContextMenu(contextMenu);
+        appTray.on("click", function(){
+            MainWindow.isVisible() ? MainWindow.hide() : MainWindow.show();
+        });
+        MainWindow=CreateWindow({
+            url:'main',
+            title:'CloudDisk',
+            width: 950,
+            minWidth:800,
+            minHeight:560,
+            height: 610,
+            onclose:()=>{
+                DiskInfo?DiskInfo.close():'';
+                MusicPlayer?MusicPlayer.close():'';
+                VideoPlayer?VideoPlayer.close():'';
+                PictureViewer?PictureViewer.close():"";
+                PdfWindow?PdfWindow.close():'';
+                AccountWindow?AccountWindow.close():'';
+                AboutWindow?AboutWindow.close():'';
+                FileWindow?FileWindow.close():'';
+                FeedBackWindow?FeedBackWindow.close():'';
+                SettingWindow?SettingWindow.close():'';
+                PopupWindow?PopupWindow.close():'';
+                appTray.destroy();
+                ipcMain.removeAllListeners([]);
+                if(!LoginWindow) {
+                    app.quit();
+                }
+            },
+            callback:()=>{
+                LoginWindow?LoginWindow.close():"";
+            }
+        });
+    },
+    AboutWindow:()=>{
+        if(AboutWindow){
+            return AboutWindow.callback();
         }
-    });
-}
-function CreateMusicPlayer(data) {
-    if(MusicPlayer){
-        MusicPlayer.show();
-        MusicPlayer.focus();
-        MusicPlayer.webContents.send('MusicList',data);
-        return
-    }
-    MusicPlayer=CreateWindow({
-        url:'music-player',
-        title:'音乐播放器',
-        width: 350,
-        height: 535,
-        maximizable:false,
-        minimizable:false,
-        resizable:false,
-        onclose:()=>{
-            MusicPlayer=null;
-        },
-        callback:()=>{
-            MusicPlayer.webContents.send('MusicList',data);
-            MusicPlayer.setThumbarButtons(MusicButtons);
+        AboutWindow=CreateWindow({
+            url:'disk-about/'+version,
+            title:'关于CloudDisk',
+            width: 470,
+            height: 300,
+            maximizable:false,
+            minimizable:false,
+            resizable:false,
+            onclose:()=>{
+                AboutWindow=null;
+            }
+        });
+    },
+    AccountWindow:(data)=>{
+        if(AccountWindow){
+            return AccountWindow.callback();
         }
-    });
-}
-function CreateVideoPlayer(data) {
-    if(VideoPlayer){
-        VideoPlayer.show();
-        VideoPlayer.focus();
-        VideoPlayer.webContents.send('VideoList',data);
-        return
-    }
-    VideoPlayer=CreateWindow({
-        url:'video-player',
-        title:'视频播放器',
-        width: 750,
-        height: 500,
-        minHeight:350,
-        minWidth:500,
-        onclose:()=>{
-            VideoPlayer=null;
-        },
-        callback:()=>{
-            VideoPlayer.webContents.send('VideoList',data);
-            VideoPlayer.setThumbarButtons(VideoButtons);
+        AccountWindow=CreateWindow({
+            url:'disk-account',
+            title:'个人信息',
+            width: 670,
+            height: 420,
+            maximizable:false,
+            resizable:false,
+            onclose:()=>{
+                AccountWindow=null;
+            },
+            callback:(data)=>{
+                AccountWindow.webContents.send('user-data',data);
+            }
+        },data);
+    },
+    SettingWindow:()=>{
+        if(SettingWindow){
+            return SettingWindow.callback();
         }
-    });
-}
-function CreatePictureViewer(data) {
-    if(PictureViewer){
-        PictureViewer.show();
-        PictureViewer.focus();
-        PictureViewer.webContents.send('PhotoList',data);
-        return
-    }
-    PictureViewer=CreateWindow({
-        url:'picture-shower',
-        title:'图片查看',
-        width: 750,
-        height: 500,
-        minHeight:350,
-        minWidth:500,
-        backgroundColor:'#4f4f4f',
-        onclose:()=>{
-            PictureViewer=null;
-        },
-        callback:()=>{
-            PictureViewer.webContents.send('PhotoList',data);
+        SettingWindow=CreateWindow({
+            url:'disk-setting',
+            title:'系统设置',
+            width: 600,
+            height: 400,
+            minHeight:350,
+            minWidth:500,
+            maximizable:false,
+            resizable:false,
+            onclose:()=>{
+                SettingWindow=null;
+            }
+        });
+    },
+    FeedBackWindow:()=>{
+        if(FeedBackWindow){
+            return FeedBackWindow.callback();
         }
-    });
-}
-function CreatePdfViewer(data) {
-    if(PdfWindow){
-        PdfWindow.show();
-        PdfWindow.focus();
-        PdfWindow.webContents.send('pdf-file',data);
-        return
-    }
-    PdfWindow=CreateWindow({
-        url:'pdf-viewer',
-        title:'PDF阅读器',
-        width: 750,
-        height: 500,
-        minHeight:350,
-        minWidth:500,
-        backgroundColor:'#4f4f4f',
-        ready:()=>{
-            DiskWindow.webContents.send('pdf-load-success');
-        },
-        onclose:()=>{
-            PdfWindow=null;
-        },
-        callback:()=>{
-            PdfWindow.webContents.send('pdf-file',data);
+        FeedBackWindow=CreateWindow({
+            url:'disk-feedback/'+version,
+            title:'问题反馈',
+            width: 450,
+            height: 320,
+            maximizable:false,
+            minimizable:false,
+            resizable:false,
+            onclose:()=>{
+                FeedBackWindow=null;
+            },
+        });
+    },
+    PopupWindow:(msg)=>{
+        if(PopupWindow){
+            return PopupWindow.callback(msg);
         }
-    });
-}
-function CreateAccountWindow(data) {
-    if(AccountWindow){
-        AccountWindow.show();
-        AccountWindow.focus();
-        return
-    }
-    Menu.setApplicationMenu(null);
-    Menu.setApplicationMenu(null);
-    AccountWindow=CreateWindow({
-        url:'disk-account',
-        title:'个人信息',
-        width: 670,
-        height: 420,
-        maximizable:false,
-        resizable:false,
-        onclose:()=>{
-            AccountWindow=null;
-        },
-        callback:()=>{
-            AccountWindow.webContents.send('user-data',data);
-        }
-    });
-}
-function CreateAboutWindow() {
-    if(AboutWindow){
-        AboutWindow.show();
-        AboutWindow.focus();
-        return
-    }
-    AboutWindow=CreateWindow({
-        url:'disk-about',
-        title:'关于CloudDisk',
-        width: 470,
-        height: 300,
-        maximizable:false,
-        minimizable:false,
-        resizable:false,
-        onclose:()=>{
-            AboutWindow=null;
-        },
-        callback:()=>{
-            AboutWindow.webContents.send('version',version);
-        }
-    });
-}
-function CreateFileWindow(data) {
-    if(FileWindow){
-        FileWindow.show();
-        FileWindow.focus();
-        FileWindow.webContents.send('file',data);
-        return
-    }
-    FileWindow=CreateWindow({
-        url:'file-shower',
-        title:'文件查看',
-        width: 750,
-        height: 500,
-        minHeight:350,
-        minWidth:500,
-        onclose:()=>{
-            FileWindow=null;
-        },
-        callback:()=>{
-            FileWindow.webContents.send('file',data);
-        }
-    });
-}
-function CreateFeedBackWindow() {
-    if(FeedBackWindow){
-        FeedBackWindow.show();
-        FeedBackWindow.focus();
-        return
-    }
-    FeedBackWindow=CreateWindow({
-        url:'disk-feedback',
-        title:'问题反馈',
-        width: 450,
-        height: 320,
-        maximizable:false,
-        minimizable:false,
-        resizable:false,
-        onclose:()=>{
-            FeedBackWindow=null;
-        },
-        callback:()=>{
-            FeedBackWindow.webContents.send('version',version);
-        }
-    });
-}
-function CreateSettingWindow(data) {
-    if(SettingWindow){
-        SettingWindow.show();
-        SettingWindow.focus();
-        return
-    }
-    SettingWindow=CreateWindow({
-        url:'disk-setting',
-        title:'系统设置',
-        width: 600,
-        height: 400,
-        minHeight:350,
-        minWidth:500,
-        maximizable:false,
-        resizable:false,
-        onclose:()=>{
-            SettingWindow=null;
-        }
-    });
-}
-function CreateMessageShow(msg) {
-    if(MessageWindow){
-        MessageWindow.show();
-        MessageWindow.webContents.send('msg',msg);
-        return;
-    }
-    MessageWindow=new BrowserWindow({
-        height: 150,
-        useContentSize: true,
-        width: 250,
-        resizable:false,
-        maximizable:false,
-        frame:false,
-        transparent:true,
-        alwaysOnTop:true,
-        x:screen.getPrimaryDisplay().workAreaSize.width-255,
-        y:screen.getPrimaryDisplay().workAreaSize.height-155,
-        show:false
-    });
-    MessageWindow.loadURL(CheckUrl('disk-msg'));
-    MessageWindow.on('closed', () => {
-        MessageWindow = null
-    });
-    MessageWindow.webContents.on('did-finish-load',()=>{
-        MessageWindow.show();
-        MessageWindow.webContents.send('msg',msg);
-    })
-}
+        PopupWindow=CreateWindow({
+            url:"disk-msg",
+            height: 150,
+            useContentSize: true,
+            width: 250,
+            resizable:false,
+            maximizable:false,
+            frame:false,
+            transparent:true,
+            alwaysOnTop:true,
+            x:screen.getPrimaryDisplay().workAreaSize.width-255,
+            y:screen.getPrimaryDisplay().workAreaSize.height-155,
+            show:false,
+            onclose:()=>{
+                PopupWindow=null;
+            },
+            callback:(msg)=>{
+                PopupWindow.webContents.send('disk-popup-msg',msg);
+            }
+        },msg);
+    },
+    CheckUpdate:(event)=>{
+        let message={
+            appName:'CloudDisk',
+            error:'检查更新出错, 请联系开发人员',
+            checking:'正在检查更新……',
+            updateAva:'检测到新版本，正在下载……',
+            updateNotAva:'现在使用的就是最新版本，不用更新',
+            downloaded: '最新版本已下载，点击安装进行更新'
+        };
+        //当开始检查更新的时候触发
+        autoUpdater.on('checking-for-update', function() {
+            event.sender.send('check-for-update',message.checking);//返回一条信息
+        });
+        //当发现一个可用更新的时候触发，更新包下载会自动开始
+        autoUpdater.on('update-available', function(info) {
+            event.sender.send('update-down-success', info);
+            event.sender.send('check-for-update',message.updateAva);//返回一条信息
+        });
+        //当没有可用更新的时候触发
+        autoUpdater.on('update-not-available', function(info) {
+            event.sender.send('check-for-update',message.updateNotAva);//返回一条信息
+        });
+        autoUpdater.on('error', function(error){
+            event.sender.send('check-for-update',message.error);//返回一条信息
+        });
+        // 更新下载进度事件
+        autoUpdater.on('download-progress', (progressObj)=>{
+            event.sender.send('download-progress',progressObj)
+        });
+        autoUpdater.on('update-downloaded',  function () {
+            event.sender.send('check-for-update',message.downloaded);//返回一条信息
+            //通过main进程发送事件给renderer进程，提示更新信息
+        });
+    },
+    logoff:()=>{
+        DiskSystem.LoginWindow(false);
+        MainWindow.webContents.send('exit');
+        MainWindow.close();
+    },
+    exit:()=>{
+
+    },
+};
 function BindIpc() {
-    /*网盘窗口指令*/
-    ipcMain.on('disk-error', ()=> {
-        CreateLoginWindow(false);
-        DiskWindow.webContents.send('exit');
-        DiskWindow.close();
-    });
-    ipcMain.on('DiskInfo', (e,msg)=> {
-        CreateDiskInfo(msg)
-    });
-    ipcMain.on('Music-player',(e,msg)=>{
-        CreateMusicPlayer(msg)
-    });
-    ipcMain.on('play-state',(e,msg)=>{
-        if(msg==='pause') {
-            MusicButtons[1].icon = PauseBtn;
-            MusicButtons[1].tooltip='暂停'
-        }else{
-            MusicButtons[1].icon =PlayBtn;
-            MusicButtons[1].tooltip='播放'
-        }
-        MusicPlayer.setThumbarButtons(MusicButtons);
-    });
-    ipcMain.on('Video-player',(e,msg)=>{
-        CreateVideoPlayer(msg)
-    });
-    ipcMain.on('picture-viewer',(e,msg)=>{
-        CreatePictureViewer(msg)
-    });
-    ipcMain.on('video-play-state',(e,msg)=>{
-        if(msg==='pause') {
-            VideoButtons[0].icon = PauseBtn;
-            VideoButtons[0].tooltip='暂停'
-        }else{
-            VideoButtons[0].icon =PlayBtn;
-            VideoButtons[0].tooltip='播放'
-        }
-        VideoPlayer.setThumbarButtons(VideoButtons);
-    });
-    ipcMain.on('pdf-viewer',(e,msg)=>{
-        CreatePdfViewer(msg)
-    });
-    ipcMain.on('show-account',(e,msg)=>{
-        CreateAccountWindow(msg);
-    });
     ipcMain.on('user',(e,msg)=>{
-        DiskWindow.webContents.send('user',msg);
+        MainWindow.webContents.send('user',msg);
     });
-    ipcMain.on('show-about',(e,msg)=>{
-        CreateAboutWindow();
+    /*系统操作事件*/
+    ipcMain.on('system',(event,type,data)=>{
+        switch (type) {
+            case 'login':
+                autoUpdater.setFeedURL(data+'/update');
+                DiskSystem.MainWindow();
+                break;
+            case 'popup':
+                DiskSystem.PopupWindow(data);
+                break;
+            case 'account':
+                DiskSystem.AccountWindow(data);
+                break;
+            case 'about':
+                DiskSystem.AboutWindow();
+                break;
+            case 'feedback':
+                DiskSystem.FeedBackWindow();
+                break;
+            case 'setting':
+                DiskSystem.SettingWindow(data);
+                break;
+            case 'check-for-update':/*检查更新*/
+                DiskSystem.CheckUpdate(event);
+                autoUpdater.checkForUpdates();
+                break;
+            case 'update':/*安装更新*/
+                autoUpdater.quitAndInstall();
+                break;
+            case 'logoff':
+                DiskSystem.logoff();
+                break;
+            case 'exit':
+
+                break;
+        }
     });
-    ipcMain.on('show-file',(e,msg)=>{
-        CreateFileWindow(msg)
+    /*网盘文件操作事件*/
+    ipcMain.on('file-control',(event,type,data)=>{
+        switch (type) {
+            case 'audio'://音频
+                FileViewer.Music(data);
+                break;
+            case 'video'://视频
+                FileViewer.Video(data);
+                break;
+            case 'image'://图片
+                FileViewer.Image(data);
+                break;
+            case 'pdf':
+                FileViewer.Pdf(data);
+                break;
+            case 'text'://文本
+                FileViewer.Text(data);
+                break;
+            case 'attributes'://属性
+                FileViewer.Attributes(data);
+                break;
+
+        }
     });
-    ipcMain.on('show-feedback',(e,msg)=>{
-        CreateFeedBackWindow();
-    });
-    ipcMain.on('show-setting',(e,msg)=>{
-        CreateSettingWindow(msg);
-    });
-    ipcMain.on('msg',(e,msg)=>{
-        CreateMessageShow(msg);
-    });
-    /*检查更新*/
-    ipcMain.on('check-for-update',(event, arg)=> {
-        CheckUpdate(event);
-        autoUpdater.checkForUpdates();
-    });
-    ipcMain.on('update', (event, arg)=> {
-        autoUpdater.quitAndInstall();
+    /*播放器操作事件*/
+    ipcMain.on('player-control',(event,type,data)=>{
+        switch (type) {
+            case 'audio':
+                if(data==='pause') {
+                    MusicButtons[1].icon = PauseBtn;
+                    MusicButtons[1].tooltip='暂停'
+                }else{
+                    MusicButtons[1].icon =PlayBtn;
+                    MusicButtons[1].tooltip='播放'
+                }
+                MusicPlayer.setThumbarButtons(MusicButtons);
+                break;
+            case 'video':
+                if(data==='pause') {
+                    VideoButtons[0].icon = PauseBtn;
+                    VideoButtons[0].tooltip='暂停'
+                }else{
+                    VideoButtons[0].icon =PlayBtn;
+                    VideoButtons[0].tooltip='播放'
+                }
+                VideoPlayer.setThumbarButtons(VideoButtons);
+                break;
+        }
     });
 }
+/*文件窗口函数*/
+let FileViewer={
+    Music:(data)=>{
+        if(MusicPlayer){
+            return MusicPlayer.callback(data);
+        }
+        MusicPlayer=CreateWindow({
+            url:'music-player',
+            title:'音乐播放器',
+            width: 350,
+            height: 535,
+            maximizable:false,
+            minimizable:false,
+            resizable:false,
+            onclose:()=>{
+                MusicPlayer=null;
+            },
+            callback:(data)=>{
+                MusicPlayer.webContents.send('MusicList',data);
+                MusicPlayer.setThumbarButtons(MusicButtons);
+            }
+        },data);
+    },
+    Video:(data)=>{
+        if(VideoPlayer){
+            return VideoPlayer.callback(data);
+        }
+        VideoPlayer=CreateWindow({
+            url:'video-player',
+            title:'视频播放器',
+            width: 750,
+            height: 500,
+            minHeight:350,
+            minWidth:500,
+            onclose:()=>{
+                VideoPlayer=null;
+            },
+            callback:(data)=>{
+                VideoPlayer.webContents.send('VideoList',data);
+                VideoPlayer.setThumbarButtons(VideoButtons);
+            }
+        },data);
+    },
+    Image:(data)=>{
+        if(PictureViewer){
+            return PictureViewer.callback(data);
+        }
+        PictureViewer=CreateWindow({
+            url:'picture-shower',
+            title:'图片查看',
+            width: 750,
+            height: 500,
+            minHeight:350,
+            minWidth:500,
+            backgroundColor:'#4f4f4f',
+            onclose:()=>{
+                PictureViewer=null;
+            },
+            callback:(data)=>{
+                PictureViewer.webContents.send('PhotoList',data);
+            }
+        },data);
+    },
+    Pdf:(data)=>{
+        if(PdfWindow){
+            return PdfWindow.callback(data);
+        }
+        PdfWindow=CreateWindow({
+            url:'pdf-viewer',
+            title:'PDF阅读器',
+            width: 750,
+            height: 500,
+            minHeight:350,
+            minWidth:500,
+            backgroundColor:'#4f4f4f',
+            ready:()=>{
+                MainWindow.webContents.send('pdf-load-success');
+            },
+            onclose:()=>{
+                PdfWindow=null;
+            },
+            callback:(data)=>{
+                PdfWindow.webContents.send('pdf-file',data);
+            }
+        },data);
+    },
+    Text:(data)=>{
+        if(FileWindow){
+            return FileWindow.callback(data);
+        }
+        FileWindow=CreateWindow({
+            url:'file-shower',
+            title:'文件查看',
+            width: 750,
+            height: 500,
+            minHeight:350,
+            minWidth:500,
+            onclose:()=>{
+                FileWindow=null;
+            },
+            callback:(data)=>{
+                FileWindow.webContents.send('file',data);
+            }
+        },data);
+    },
+    Attributes:(data)=>{
+        if(DiskInfo){
+            return DiskInfo.callback(data);
+        }
+        DiskInfo=CreateWindow({
+            url:'info',
+            width: 350,
+            height: 500,
+            title:'文件属性',
+            maximizable:false,
+            minimizable:false,
+            resizable:false,
+            onclose:()=>{
+                DiskInfo=null;
+            },
+            callback:(data)=>{
+                DiskInfo.webContents.send('DiskInfo',data);
+            }
+        },data);
+    }
+};
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit()
@@ -590,14 +579,15 @@ if (!gotTheLock) {
             LoginWindow.restore();
             LoginWindow.focus()
         }
-        if (DiskWindow) {
-            DiskWindow.show();
-            DiskWindow.restore();
-            DiskWindow.focus()
+        if (MainWindow) {
+            MainWindow.show();
+            MainWindow.restore();
+            MainWindow.focus()
         }
     });
     app.on('ready', function (){
-        CreateLoginWindow(true);
+        DiskSystem.LoginWindow(true);
+        BindIpc();
     });
 }
 app.on('window-all-closed', () => {
@@ -607,6 +597,6 @@ app.on('window-all-closed', () => {
 });
 app.on('activate', () => {
   if (LoginWindow === null) {
-      CreateLoginWindow(true)
+      DiskSystem.LoginWindow(true)
   }
 });

@@ -18,22 +18,18 @@
 <script>
     import electron from 'electron';
     let DiskFeedBack=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskFeedBack",
         data(){
             return{
                 FeedBackTitle:'',
                 FeedBackContent:'',
-                version:'0.0.0',
             }
         },
-        created(){
-            ipc.on('version', (event, version)=>{//接收当前版本号
-                this.$nextTick(()=>{
-                    this.version=version;
-                });
-            });
+        computed: {
+            version(){
+                return this.$route.params.version;
+            }
         },
         methods:{
             FeedBack(){

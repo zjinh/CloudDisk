@@ -41,7 +41,7 @@ export default new Router({
         component: require('@/components/DiskAccount').default
     },
     {
-      path: '/disk-about',
+      path: '/disk-about/:version',
       name: 'DiskAbout',
       component: require('@/components/DiskAbout').default
     },
@@ -56,7 +56,7 @@ export default new Router({
       component: require('@/components/DiskFileContent').default
     },
     {
-      path: '/disk-feedback',
+      path: '/disk-feedback/:version',
       name: 'DiskFeedBack',
       component: require('@/components/DiskFeedBack').default
     },

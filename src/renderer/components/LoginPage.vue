@@ -288,7 +288,7 @@
                         this.CheckUserConf();
                         setTimeout(()=>{
                             this.LoadingText = '正在加载网盘数据';
-                            ipc.send('login-success',localStorage.server);
+                            ipc.send('system','login',localStorage.server);
                             setTimeout(()=> {
                                 this.LoadingText='欢迎回来 '+rs.user;
                             },1100)

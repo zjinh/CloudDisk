@@ -41,7 +41,7 @@
         },
         methods:{
             bind(){
-                ipc.on('msg',(e,msg)=>{
+                ipc.on('disk-popup-msg',(e,msg)=>{
                     this.$nextTick(()=>{
                         this.MegData=msg;
                         this.animation='animated slideInUp';

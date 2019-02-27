@@ -34,7 +34,6 @@
         data(){
             return{
                 platform:'未知',
-                version:'0.0.0',
                 loading: false,
                 CheckText:'检查更新',
                 ProcessText:"正在检查",
@@ -42,6 +41,11 @@
                 NewVersion:'',
                 message:'',
                 percent:0
+            }
+        },
+        computed: {
+            version(){
+                return this.$route.params.version;
             }
         },
         created(){
@@ -59,12 +63,6 @@
         },
         methods:{
             bind(){
-                ipc.send('get-version');
-                ipc.on('version', (event, version)=>{//接收当前版本号
-                    this.$nextTick(()=>{
-                        this.version=version;
-                    });
-                });
                 ipc.on('check-for-update',(event,message) =>{
                     this.message=message;
                     if(message==='检查更新出错, 请联系开发人员'||message==='现在使用的就是最新版本，不用更新'){
@@ -75,7 +73,7 @@
                         this.loading = false;
                         this.percent=100;
                         this.checkUpdate=()=>{
-                            ipc.send('update');
+                            ipc.send('system','update');
                         }
                     }
                 });
@@ -89,14 +87,14 @@
                             this.CheckText='安装';
                             this.loading = false;
                             this.checkUpdate=()=>{
-                                ipc.send('update');
+                                ipc.send('system','update');
                             }
                         }
                     });
                 })
             },
             checkUpdate () {
-                ipc.send('check-for-update','event-update');
+                ipc.send('system','check-for-update');
                 this.loading = true;
             },
             close() {

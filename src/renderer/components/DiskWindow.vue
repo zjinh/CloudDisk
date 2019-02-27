@@ -186,7 +186,7 @@
     let AccountFile=null;
     const path = require('path');
     let DiskWindow=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
+    let ipc=electron.ipcRenderer;
     export default {
         name: "DiskWindow",
         components:{ClassifyMenu,DiskFile,DiskNav,DiskTree,DiskShare,DiskTransList},
@@ -453,7 +453,7 @@
                         content: '账号状态异常，请重新登录！',
                         onClose:()=> {
                             /////弹出登录页
-                            ipc.send('disk-error');
+                            ipc.send('system','logoff');
                         }
                     });
                 });
@@ -707,7 +707,7 @@
                                 data.push(item)
                             }
                         });
-                        ipc.send('picture-viewer',data);
+                        ipc.send('file-control','image',data);
                     }
                     else if (this.$Api.StringExist(type, 'mp4,rmvb,mkv')) {
                         let data=[];
@@ -716,7 +716,7 @@
                                 data.push(item)
                             }
                         });
-                        ipc.send('Video-player',data);
+                        ipc.send('file-control','video',data);
                     }
                     else if (this.$Api.StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape,ncm')) {
                         let data=[];
@@ -725,7 +725,7 @@
                                 data.push(item)
                             }
                         });
-                        ipc.send('Music-player',data);
+                        ipc.send('file-control','audio',data);
                     }
                     else if (this.$Api.StringExist(type, 'doc,docx')) {
                         this.$Message.warning('暂不支持打开word文档文件');
@@ -738,10 +738,10 @@
                     }
                     else if (type==='pdf') {
                         this.$Message.info('正在加载插件');
-                        ipc.send('pdf-viewer',this.DiskData.NowSelect);
+                        ipc.send('file-control','pdf',this.DiskData.NowSelect);
                     }
                     else if (this.$Api.StringExist(type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
-                        ipc.send('show-file',this.DiskData.NowSelect);
+                        ipc.send('file-control','text',this.DiskData.NowSelect);
                     }
                     else if (this.$Api.StringExist(type, 'exe,msi')) {
                         this.$Message.warning('暂不支持打开windows安装程序');
@@ -1325,7 +1325,7 @@
             },//取消分享
             DiskInfo(){
                 if(this.DiskData.SelectFiles.length<2) {
-                    ipc.send('DiskInfo',this.DiskData.NowSelect);
+                    ipc.send('file-control','attributes',this.DiskData.NowSelect);
                 }
             },//文件属性
             DiskUnZip(){
@@ -1598,17 +1598,17 @@
             },
             showAccount(){
                 if(this.Logined.userid){
-                    ipc.send('show-account',this.Logined)
+                    ipc.send('system','account',this.Logined)
                 }
             },
             showAbout(){
-                ipc.send('show-about')
+                ipc.send('system','about')
             },
             ShowFeedBack(){
-                ipc.send('show-feedback')
+                ipc.send('system','feedback')
             },
             ShowSetting(){
-                ipc.send('show-setting')
+                ipc.send('system','setting')
             },
             SystemDropDown (name) {
                 this.DropMenuShow=false;
@@ -1637,7 +1637,7 @@
                             tips:tips+'确认退出当前账号吗',
                             callback:()=> {
                                 this.QuitFlag=true;
-                                ipc.send('disk-error');
+                                ipc.send('system','logoff');
                             }
                         });
                         break;
@@ -1670,7 +1670,7 @@
             },
             ShowMsgBox(msg){
                 if(eval(localStorage.NoticeBubble)){
-                    ipc.send('msg', msg);
+                    ipc.send('system','popup', msg);
                 }
             },
             /*本地账户存储*/
