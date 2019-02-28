@@ -10,7 +10,6 @@
 <script>
     import WindowsHeader from "./DiskWindow/WindowHeader";
     const path = require('path');
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskFileContent",
         components:{WindowsHeader},
@@ -27,7 +26,7 @@
             }
         },
         created(){
-            ipc.on('file', (event, data)=>{//接收打开文件的数据
+            this.$ipc.on('win-data', (event, data)=>{//接收打开文本文件的数据
                 this.$nextTick(()=>{
                     this.NowLoad=data;
                     this.header.title=data.disk_name+' 文件查看';

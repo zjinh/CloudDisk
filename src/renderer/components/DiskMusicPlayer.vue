@@ -36,7 +36,6 @@
     import WindowsHeader from "./DiskWindow/WindowHeader";
     import electron from 'electron';
     let MusicPlayer=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskMusicPlayer",
         components:{MusicList,WindowsHeader},
@@ -99,7 +98,7 @@
             }
         },
         created(){
-            ipc.on('MusicList', (event, data)=>{//接收打开文件的数据
+            this.$ipc.on('win-data', (event, data)=>{//接收音乐文件列表的数据
                 this.$nextTick(()=>{
                     data.forEach((item,index)=>{
                         item.play=false;
@@ -116,13 +115,13 @@
         },
         methods:{
             bind(){
-                ipc.on('Next',()=>{
+                this.$ipc.on('Next',()=>{
                     this.Next();
                 });
-                ipc.on('Prev',()=>{
+                this.$ipc.on('Prev',()=>{
                     this.Prev();
                 });
-                ipc.on('Play',()=>{
+                this.$ipc.on('Play',()=>{
                     this.PlayControl();
                 });
             },
@@ -139,11 +138,11 @@
                 if(media.paused){
                     media.play();
                     this.PlayButtonState='sf-icon-pause';
-                    ipc.send('player-control','audio','pause')
+                    this.$ipc.send('player-control','audio','pause')
                 }else{
                     media.pause();
                     this.PlayButtonState='sf-icon-play';
-                    ipc.send('player-control','audio','play')
+                    this.$ipc.send('player-control','audio','play')
                 }
                 MusicPlayer.setTitle(this.NowPlay.disk_name);
                 if(this.VisualState) {

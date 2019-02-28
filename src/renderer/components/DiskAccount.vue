@@ -42,7 +42,6 @@
 
 <script>
     import WindowsHeader from "./DiskWindow/WindowHeader";
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskAccount",
         components:{WindowsHeader},
@@ -73,7 +72,7 @@
               }
         },
         created(){
-            ipc.on('user-data', (event, data)=>{//接收打开文件的数据
+            this.$ipc.on('win-data', (event, data)=>{//接收用户数据
                 this.$nextTick(()=>{
                     this.User=data;
                 });
@@ -112,7 +111,7 @@
                         content: '账号状态异常，请重新登录！',
                         onClose:()=> {
                             /////弹出登录页
-                            ipc.send('system','error');
+                            this.$ipc.send('system','error');
                         }
                     });
                 });
@@ -123,7 +122,7 @@
                     this.$nextTick(()=>{
                         rs=rs[0];
                         this.User=rs;
-                        ipc.send('user',rs);
+                        this.$ipc.send('user',rs);
                     });
                 },()=>{
                 })

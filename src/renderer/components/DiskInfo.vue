@@ -81,7 +81,7 @@
           }
         },
         created(){
-            ipcRenderer.on('DiskInfo', (event, data)=>{//接收打开文件的数据
+            ipcRenderer.on('win-data', (event, data)=>{//接收打开文件的数据
                 this.DiskData=data;
                 this.header.title=data.disk_name+' 属性';
                 DiskInfo.setTitle(data.disk_name+' 属性');

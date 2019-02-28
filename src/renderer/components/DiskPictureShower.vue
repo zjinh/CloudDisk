@@ -21,7 +21,6 @@
 <script>
     import electron from 'electron';
     let PictureShower=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
     import WindowsHeader from "./DiskWindow/WindowHeader";
     export default {
         name: "DiskPictureShower",
@@ -67,7 +66,7 @@
             }
         },
         created(){
-            ipc.on('PhotoList', (event, data)=>{//接收打开文件的数据
+            this.$ipc.on('win-data', (event, data)=>{//接收打开图片文件的数据
                 this.$nextTick(()=>{
                     data.forEach((item,index)=>{
                         item.now=false;

@@ -100,7 +100,6 @@
     import Logininput from './LoginPage/l-input';
     import VerifyInput from './LoginPage/Verify-Input';
     import electron from 'electron';
-    let ipc=electron.ipcRenderer;
     let LoginWindow=electron.remote.getCurrentWindow();
     const path = require('path');
     export default {
@@ -228,7 +227,7 @@
             localStorage.server=this.ServerAddress;
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
-                ipc.on('auto-login',(e,msg)=>{
+                this.$ipc.on('win-data',(e,msg)=>{//接收是否允许自动登录
                     if(eval(localStorage.AutoLogin)&&msg){
                         this.login();
                     }
@@ -288,7 +287,7 @@
                         this.CheckUserConf();
                         setTimeout(()=>{
                             this.LoadingText = '正在加载网盘数据';
-                            ipc.send('system','login',localStorage.server);
+                            this.$ipc.send('system','login',localStorage.server);
                             setTimeout(()=> {
                                 this.LoadingText='欢迎回来 '+rs.user;
                             },1100)

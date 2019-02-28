@@ -28,7 +28,6 @@
 <script>
     import electron from 'electron';
     let DiskAbout=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskAbout",
         data(){
@@ -63,7 +62,7 @@
         },
         methods:{
             bind(){
-                ipc.on('check-for-update',(event,message) =>{
+                this.$ipc.on('check-for-update',(event,message) =>{
                     this.message=message;
                     if(message==='检查更新出错, 请联系开发人员'||message==='现在使用的就是最新版本，不用更新'){
                         this.loading=false;
@@ -73,28 +72,28 @@
                         this.loading = false;
                         this.percent=100;
                         this.checkUpdate=()=>{
-                            ipc.send('system','update');
+                            this.$ipc.send('system','update');
                         }
                     }
                 });
-                ipc.on('update-down-success',(event,message) =>{
+                this.$ipc.on('update-down-success',(event,message) =>{
                     this.NewVersion='新版本：V'+message.version;
                 });
-                ipc.on('download-progress',(event,message)=>{
+                this.$ipc.on('download-progress',(event,message)=>{
                     this.$nextTick(()=>{
                         this.percent=parseInt(message.percent);
                         if(this.percent===100){
                             this.CheckText='安装';
                             this.loading = false;
                             this.checkUpdate=()=>{
-                                ipc.send('system','update');
+                                this.$ipc.send('system','update');
                             }
                         }
                     });
                 })
             },
             checkUpdate () {
-                ipc.send('system','check-for-update');
+                this.$ipc.send('system','check-for-update');
                 this.loading = true;
             },
             close() {

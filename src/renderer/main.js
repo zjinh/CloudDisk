@@ -61,7 +61,9 @@ Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.use(Dialog);
-
+//引入electron接口
+let ipc=require('electron').ipcRenderer;
+Vue.ipc = Vue.prototype.$ipc = ipc;//ipc接口
 Vue.api = Vue.prototype.$Api = Api;//请求接口
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 axios.defaults.withCredentials=true;

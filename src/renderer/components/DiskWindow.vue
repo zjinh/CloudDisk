@@ -186,7 +186,6 @@
     let AccountFile=null;
     const path = require('path');
     let DiskWindow=electron.remote.getCurrentWindow();
-    let ipc=electron.ipcRenderer;
     export default {
         name: "DiskWindow",
         components:{ClassifyMenu,DiskFile,DiskNav,DiskTree,DiskShare,DiskTransList},
@@ -434,7 +433,7 @@
                         return false
                     }
                 };
-                ipc.on('exit',()=>{
+                this.$ipc.on('exit',()=>{
                     this.SystemDropDown('exit');
                 });
                 setInterval(()=>{
@@ -453,7 +452,7 @@
                         content: '账号状态异常，请重新登录！',
                         onClose:()=> {
                             /////弹出登录页
-                            ipc.send('system','logoff');
+                            this.$ipc.send('system','logoff');
                         }
                     });
                 });
@@ -707,7 +706,7 @@
                                 data.push(item)
                             }
                         });
-                        ipc.send('file-control','image',data);
+                        this.$ipc.send('file-control','image',data);
                     }
                     else if (this.$Api.StringExist(type, 'mp4,rmvb,mkv')) {
                         let data=[];
@@ -716,7 +715,7 @@
                                 data.push(item)
                             }
                         });
-                        ipc.send('file-control','video',data);
+                        this.$ipc.send('file-control','video',data);
                     }
                     else if (this.$Api.StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape,ncm')) {
                         let data=[];
@@ -725,7 +724,7 @@
                                 data.push(item)
                             }
                         });
-                        ipc.send('file-control','audio',data);
+                        this.$ipc.send('file-control','audio',data);
                     }
                     else if (this.$Api.StringExist(type, 'doc,docx')) {
                         this.$Message.warning('暂不支持打开word文档文件');
@@ -738,10 +737,10 @@
                     }
                     else if (type==='pdf') {
                         this.$Message.info('正在加载插件');
-                        ipc.send('file-control','pdf',this.DiskData.NowSelect);
+                        this.$ipc.send('file-control','pdf',this.DiskData.NowSelect);
                     }
                     else if (this.$Api.StringExist(type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
-                        ipc.send('file-control','text',this.DiskData.NowSelect);
+                        this.$ipc.send('file-control','text',this.DiskData.NowSelect);
                     }
                     else if (this.$Api.StringExist(type, 'exe,msi')) {
                         this.$Message.warning('暂不支持打开windows安装程序');
@@ -785,6 +784,7 @@
                 let file;
                 let count=0;
                 let OneFile={};
+                console.log(fileArea)
                 this.$nextTick(()=>{
                     for (let i = 0; i<fileArea.length; i++) {
                         file = fileArea[i];
@@ -805,7 +805,7 @@
                                 buttonVal:'sf-icon-pause'
                             };
                             OneFile.$icon=this.$Api.IconGet(OneFile);
-                            //debugger
+                            console.log(this.DiskUploadData)
                             for (let j=0;j<this.DiskUploadData.length;j++){
                                 let item=this.DiskUploadData[j];
                                 if(item.name===OneFile.name&&item.percent!==100&&item.disk_main===OneFile.disk_main){
@@ -1325,7 +1325,7 @@
             },//取消分享
             DiskInfo(){
                 if(this.DiskData.SelectFiles.length<2) {
-                    ipc.send('file-control','attributes',this.DiskData.NowSelect);
+                    this.$ipc.send('file-control','attributes',this.DiskData.NowSelect);
                 }
             },//文件属性
             DiskUnZip(){
@@ -1598,17 +1598,17 @@
             },
             showAccount(){
                 if(this.Logined.userid){
-                    ipc.send('system','account',this.Logined)
+                    this.$ipc.send('system','account',this.Logined)
                 }
             },
             showAbout(){
-                ipc.send('system','about')
+                this.$ipc.send('system','about')
             },
             ShowFeedBack(){
-                ipc.send('system','feedback')
+                this.$ipc.send('system','feedback')
             },
             ShowSetting(){
-                ipc.send('system','setting')
+                this.$ipc.send('system','setting')
             },
             SystemDropDown (name) {
                 this.DropMenuShow=false;
@@ -1637,7 +1637,7 @@
                             tips:tips+'确认退出当前账号吗',
                             callback:()=> {
                                 this.QuitFlag=true;
-                                ipc.send('system','logoff');
+                                this.$ipc.send('system','logoff');
                             }
                         });
                         break;
@@ -1670,7 +1670,7 @@
             },
             ShowMsgBox(msg){
                 if(eval(localStorage.NoticeBubble)){
-                    ipc.send('system','popup', msg);
+                    this.$ipc.send('system','popup', msg);
                 }
             },
             /*本地账户存储*/

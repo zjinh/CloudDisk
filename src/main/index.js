@@ -59,65 +59,74 @@ let VideoButtons = [
     }*/
 ];
 let appTray = null;//托盘变量
-function CheckUrl(router) {
-    return process.env.NODE_ENV === 'development'
-        ? `http://localhost:9080/#/`+router
-        : `file://${__dirname}/index.html#/`+router;
-}
-function CreateWindow(options,data) {
-    let win=null;
-    Menu.setApplicationMenu(null);
-    win = new BrowserWindow({
-        width: options.width||800,
-        height: options.height||600,
-        minWidth: options.minWidth,
-        minHeight: options.minHeight,
-        title:options.title||'CloudDisk',
-        frame:false,
-        useContentSize:options.useContentSize||false,
-        transparent:options.transparent||false,
-        x:options.x,
-        y:options.y,
-        minimizable:options.minimizable === undefined ? true : options.minimizable,
-        maximizable:options.maximizable === undefined ? true : options.maximizable,
-        resizable:options.resizable === undefined ? true : options.resizable,
-        alwaysOnTop:options.alwaysOnTop === undefined ? false : options.alwaysOnTop,
-        backgroundColor:options.backgroundColor||'',
-        show:false,
-        webPreferences:{
-            webSecurity:(process.env.NODE_ENV === 'development')?false:true
+/*窗口控制函数*/
+let WindowControl={
+    New:(options)=>{
+        Menu.setApplicationMenu(null);
+        let win = new BrowserWindow({
+            width: options.width||800,
+            height: options.height||600,
+            minWidth: options.minWidth,
+            minHeight: options.minHeight,
+            title:options.title||'CloudDisk',
+            frame:false,
+            useContentSize:options.useContentSize||false,
+            transparent:options.transparent||false,
+            x:options.x,
+            y:options.y,
+            minimizable:options.minimizable === undefined ? true : options.minimizable,
+            maximizable:options.maximizable === undefined ? true : options.maximizable,
+            resizable:options.resizable === undefined ? true : options.resizable,
+            alwaysOnTop:options.alwaysOnTop === undefined ? false : options.alwaysOnTop,
+            backgroundColor:options.backgroundColor||'',
+            show:false,
+            webPreferences:{
+                webSecurity:(process.env.NODE_ENV === 'development')?false:true
+            }
+        });
+        win.loadURL(WindowControl.CheckRouter(options.url));
+        win.callback=(data)=>{
+            win.webContents.send('win-data',data);
+            (typeof options.callback==='function')?options.callback():"";
+        };
+        win.name=options.url;
+        win.on('closed', (event)=> {
+            win=null;
+            (typeof options.onclose==='function')?options.onclose(event):"";
+        });
+        win.on('ready-to-show',(event)=>{
+            win.show();
+            win.focus();
+            (typeof options.ready==='function')?options.ready(event):"";
+        });
+        win.webContents.on('did-finish-load',()=>{
+            win.setTitle(options.title);
+            win.callback(options.data||'无数据');
+        });
+        return win;
+    },
+    CheckRouter:(router)=>{
+        return process.env.NODE_ENV === 'development'
+            ? `http://localhost:9080/#/`+router
+            : `file://${__dirname}/index.html#/`+router;
+    },
+    Active:(win,data)=>{
+        if(win) {
+            win.show();
+            win.focus();
+            win.callback(data);
         }
-    });
-    win.loadURL(CheckUrl(options.url));
-    win.on('closed', (event)=> {
-        event.sender = null;
-        win=null;
-        (typeof options.onclose==='function')?options.onclose(event):"";
-    });
-    win.on('ready-to-show',(event)=>{
-        win.show();
-        win.focus();
-        (typeof options.ready==='function')?options.ready(event):"";
-    });
-    win.callback=(data)=>{
-        win.show();
-        win.focus();
-        (typeof options.callback==='function')?options.callback(data):"";
-    };
-    win.webContents.on('did-finish-load',()=>{
-        win.setTitle(options.title);
-        win.callback(data);
-    });
-    return win;
-}
+    }
+};
 /*网盘函数*/
 let DiskSystem= {
     LoginWindow:(flag)=>{
         if(LoginWindow){
-            return LoginWindow.callback(flag);
+            return WindowControl.Active(LoginWindow,flag);
         }
-        LoginWindow=CreateWindow({
+        LoginWindow=WindowControl.New({
             url:'/',
+            data:flag,
             title:'CloudDisk-欢迎',
             width: 850,
             height: 550,
@@ -127,14 +136,11 @@ let DiskSystem= {
             onclose:()=>{
                 LoginWindow=null;
             },
-            callback:(flag)=>{
-                LoginWindow.webContents.send('auto-login',flag)
-            }
-        },flag);
+        });
     },
     MainWindow:()=>{
         if(MainWindow){
-            return MainWindow.callback();
+            return WindowControl.Active(MainWindow);
         }
         let trayIcon = path.join(__static, '/icons');
         appTray = new Tray(path.join(trayIcon, 'icon.ico'));
@@ -183,7 +189,7 @@ let DiskSystem= {
         appTray.on("click", function(){
             MainWindow.isVisible() ? MainWindow.hide() : MainWindow.show();
         });
-        MainWindow=CreateWindow({
+        MainWindow=WindowControl.New({
             url:'main',
             title:'CloudDisk',
             width: 950,
@@ -191,19 +197,14 @@ let DiskSystem= {
             minHeight:560,
             height: 610,
             onclose:()=>{
-                DiskInfo?DiskInfo.close():'';
-                MusicPlayer?MusicPlayer.close():'';
-                VideoPlayer?VideoPlayer.close():'';
-                PictureViewer?PictureViewer.close():"";
-                PdfWindow?PdfWindow.close():'';
-                AccountWindow?AccountWindow.close():'';
-                AboutWindow?AboutWindow.close():'';
-                FileWindow?FileWindow.close():'';
-                FeedBackWindow?FeedBackWindow.close():'';
-                SettingWindow?SettingWindow.close():'';
-                PopupWindow?PopupWindow.close():'';
+                MainWindow=null;
+                let wins=BrowserWindow.getAllWindows();
+                for(let i=0;i<wins.length;i++){
+                    if(wins[i].name!=='/') {
+                        wins[i] ? wins[i].close() : '';
+                    }
+                }
                 appTray.destroy();
-                ipcMain.removeAllListeners([]);
                 if(!LoginWindow) {
                     app.quit();
                 }
@@ -215,9 +216,9 @@ let DiskSystem= {
     },
     AboutWindow:()=>{
         if(AboutWindow){
-            return AboutWindow.callback();
+            return WindowControl.Active(AboutWindow);
         }
-        AboutWindow=CreateWindow({
+        AboutWindow=WindowControl.New({
             url:'disk-about/'+version,
             title:'关于CloudDisk',
             width: 470,
@@ -232,10 +233,11 @@ let DiskSystem= {
     },
     AccountWindow:(data)=>{
         if(AccountWindow){
-            return AccountWindow.callback();
+            return WindowControl.Active(AccountWindow,data);
         }
-        AccountWindow=CreateWindow({
+        AccountWindow=WindowControl.New({
             url:'disk-account',
+            data:data,
             title:'个人信息',
             width: 670,
             height: 420,
@@ -243,17 +245,14 @@ let DiskSystem= {
             resizable:false,
             onclose:()=>{
                 AccountWindow=null;
-            },
-            callback:(data)=>{
-                AccountWindow.webContents.send('user-data',data);
             }
-        },data);
+        });
     },
     SettingWindow:()=>{
         if(SettingWindow){
-            return SettingWindow.callback();
+            return WindowControl.Active(SettingWindow);
         }
-        SettingWindow=CreateWindow({
+        SettingWindow=WindowControl.New({
             url:'disk-setting',
             title:'系统设置',
             width: 600,
@@ -269,9 +268,9 @@ let DiskSystem= {
     },
     FeedBackWindow:()=>{
         if(FeedBackWindow){
-            return FeedBackWindow.callback();
+            return WindowControl.Active(FeedBackWindow);
         }
-        FeedBackWindow=CreateWindow({
+        FeedBackWindow=WindowControl.New({
             url:'disk-feedback/'+version,
             title:'问题反馈',
             width: 450,
@@ -286,10 +285,11 @@ let DiskSystem= {
     },
     PopupWindow:(msg)=>{
         if(PopupWindow){
-            return PopupWindow.callback(msg);
+            return WindowControl.Active(PopupWindow,msg);
         }
-        PopupWindow=CreateWindow({
+        PopupWindow=WindowControl.New({
             url:"disk-msg",
+            data:msg,
             height: 150,
             useContentSize: true,
             width: 250,
@@ -303,11 +303,8 @@ let DiskSystem= {
             show:false,
             onclose:()=>{
                 PopupWindow=null;
-            },
-            callback:(msg)=>{
-                PopupWindow.webContents.send('disk-popup-msg',msg);
             }
-        },msg);
+        });
     },
     CheckUpdate:(event)=>{
         let message={
@@ -447,10 +444,11 @@ function BindIpc() {
 let FileViewer={
     Music:(data)=>{
         if(MusicPlayer){
-            return MusicPlayer.callback(data);
+            return WindowControl.Active(MusicPlayer,data);
         }
-        MusicPlayer=CreateWindow({
+        MusicPlayer=WindowControl.New({
             url:'music-player',
+            data:data,
             title:'音乐播放器',
             width: 350,
             height: 535,
@@ -460,18 +458,18 @@ let FileViewer={
             onclose:()=>{
                 MusicPlayer=null;
             },
-            callback:(data)=>{
-                MusicPlayer.webContents.send('MusicList',data);
+            callback:()=>{
                 MusicPlayer.setThumbarButtons(MusicButtons);
             }
-        },data);
+        });
     },
     Video:(data)=>{
         if(VideoPlayer){
-            return VideoPlayer.callback(data);
+            return WindowControl.Active(VideoPlayer,data);
         }
-        VideoPlayer=CreateWindow({
+        VideoPlayer=WindowControl.New({
             url:'video-player',
+            data:data,
             title:'视频播放器',
             width: 750,
             height: 500,
@@ -480,18 +478,18 @@ let FileViewer={
             onclose:()=>{
                 VideoPlayer=null;
             },
-            callback:(data)=>{
-                VideoPlayer.webContents.send('VideoList',data);
+            callback:()=>{
                 VideoPlayer.setThumbarButtons(VideoButtons);
             }
-        },data);
+        });
     },
     Image:(data)=>{
         if(PictureViewer){
-            return PictureViewer.callback(data);
+            return WindowControl.Active(PictureViewer,data);
         }
-        PictureViewer=CreateWindow({
+        PictureViewer=WindowControl.New({
             url:'picture-shower',
+            data:data,
             title:'图片查看',
             width: 750,
             height: 500,
@@ -500,41 +498,34 @@ let FileViewer={
             backgroundColor:'#4f4f4f',
             onclose:()=>{
                 PictureViewer=null;
-            },
-            callback:(data)=>{
-                PictureViewer.webContents.send('PhotoList',data);
             }
-        },data);
+        });
     },
     Pdf:(data)=>{
         if(PdfWindow){
-            return PdfWindow.callback(data);
+            return WindowControl.Active(PdfWindow,data);
         }
-        PdfWindow=CreateWindow({
+        PdfWindow=WindowControl.New({
             url:'pdf-viewer',
+            data:data,
             title:'PDF阅读器',
             width: 750,
             height: 500,
             minHeight:350,
             minWidth:500,
             backgroundColor:'#4f4f4f',
-            ready:()=>{
-                MainWindow.webContents.send('pdf-load-success');
-            },
             onclose:()=>{
                 PdfWindow=null;
-            },
-            callback:(data)=>{
-                PdfWindow.webContents.send('pdf-file',data);
             }
-        },data);
+        });
     },
     Text:(data)=>{
         if(FileWindow){
-            return FileWindow.callback(data);
+            return WindowControl.Active(FileWindow,data);
         }
-        FileWindow=CreateWindow({
+        FileWindow=WindowControl.New({
             url:'file-shower',
+            data:data,
             title:'文件查看',
             width: 750,
             height: 500,
@@ -542,18 +533,16 @@ let FileViewer={
             minWidth:500,
             onclose:()=>{
                 FileWindow=null;
-            },
-            callback:(data)=>{
-                FileWindow.webContents.send('file',data);
             }
-        },data);
+        });
     },
     Attributes:(data)=>{
         if(DiskInfo){
-            return DiskInfo.callback(data);
+            return WindowControl.Active(DiskInfo,data);
         }
-        DiskInfo=CreateWindow({
+        DiskInfo=WindowControl.New({
             url:'info',
+            data:data,
             width: 350,
             height: 500,
             title:'文件属性',
@@ -562,11 +551,8 @@ let FileViewer={
             resizable:false,
             onclose:()=>{
                 DiskInfo=null;
-            },
-            callback:(data)=>{
-                DiskInfo.webContents.send('DiskInfo',data);
             }
-        },data);
+        });
     }
 };
 const gotTheLock = app.requestSingleInstanceLock();

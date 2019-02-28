@@ -34,7 +34,6 @@
     import WindowsHeader from "./DiskWindow/WindowHeader";
     const {ipcRenderer} = require('electron');
     let VideoPlayer=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskVideoPlayer",
         components:{WindowsHeader},
@@ -81,7 +80,7 @@
             }
         },
         created(){
-            ipcRenderer.on('VideoList', (event, data)=>{//接收打开文件的数据
+            ipcRenderer.on('win-data', (event, data)=>{//接收打开视频文件的数据
                 this.$nextTick(()=>{
                     data.forEach((item,index)=>{
                         item.play=false;
@@ -122,12 +121,12 @@
                     media.play();
                     this.PlayButtonState='sf-icon-pause';
                     this.animation='animated zoomOut';
-                    ipc.send('player-control','video','pause')
+                    this.$ipc.send('player-control','video','pause')
                 }else{
                     media.pause();
                     this.PlayButtonState='sf-icon-play';
                     this.animation='animated zoomIn';
-                    ipc.send('player-control','video','play')
+                    this.$ipc.send('player-control','video','play')
                 }
                 VideoPlayer.setTitle(this.NowPlay.disk_name);
                 this.header.title=this.NowPlay.disk_name;

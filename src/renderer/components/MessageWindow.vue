@@ -13,7 +13,6 @@
 
 <script>
     import WindowHeader from "./DiskWindow/WindowHeader";
-    let ipc=require('electron').ipcRenderer;
     let MessageMain=require('electron').remote.getCurrentWindow();
     export default {
         name: "MessageWindow",
@@ -41,7 +40,7 @@
         },
         methods:{
             bind(){
-                ipc.on('disk-popup-msg',(e,msg)=>{
+                this.$ipc.on('win-data',(e,msg)=>{
                     this.$nextTick(()=>{
                         this.MegData=msg;
                         this.animation='animated slideInUp';

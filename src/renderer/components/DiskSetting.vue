@@ -100,7 +100,6 @@
     const path = require('path');
     const {dialog} = require('electron').remote;
     let DiskSetting=electron.remote.getCurrentWindow();
-    let ipc=require('electron').ipcRenderer;
     export default {
         name: "DiskSetting",
         components:{SettingMenu},
@@ -431,7 +430,7 @@
                 this.$Api.User.UserInfo((rs)=>{
                     this.$nextTick(()=>{
                         rs=rs[0];
-                        ipc.send('user',rs);
+                        this.$ipc.send('user',rs);
                     });
                 },()=>{
                 })
