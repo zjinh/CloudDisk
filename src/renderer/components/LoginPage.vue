@@ -101,7 +101,6 @@
     import VerifyInput from './LoginPage/Verify-Input';
     import electron from 'electron';
     let LoginWindow=electron.remote.getCurrentWindow();
-    const path = require('path');
     export default {
         name: "LoginPage",
         components:{Logininput,VerifyInput},
@@ -514,7 +513,7 @@
                     localStorage.NoticeFlag=true;
                 }
                 if(!localStorage.NoticeVoice){
-                    localStorage.NoticeVoice=path.join(__static,'/voice/1.wav');
+                    localStorage.NoticeVoice=this.$path.join(__static,'/voice/1.wav');
                 }
                 if(localStorage.NoticeBubble!==false||localStorage.NoticeBubble!==true){
                     localStorage.NoticeBubble=true;

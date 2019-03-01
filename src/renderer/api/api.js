@@ -1,5 +1,8 @@
 import axios from 'axios'
 const path =require("path");
+const fs= require('fs');
+let AccountFile=null;
+let address=process.env.HOMEDRIVE+process.env.HOMEPATH+'/CloudDisk\/';//用户文件地址
 function Ajax(options) {
     let params = new URLSearchParams();
     let method= options.method?options.method:'POST';
@@ -152,6 +155,7 @@ let User={
             success:(rs)=>{
                 rs[0].birth=age(rs[0].birthday);
                 rs[0].userhead=localStorage.server+'/'+rs[0].userhead+'?'+Date.now();
+                LocalFile.Exist(rs[0].userid);
                 callback(rs);
             },
             error:error
@@ -370,6 +374,47 @@ let Disk={
         })
     },
 };
+let LocalFile={
+    User:null,
+    Exist(user){
+        fs.exists(address,(exists)=>{
+            if(!exists){
+                fs.mkdir(address,(err)=>{
+                    if(err) {
+                        return this.$Message.error('用户文件创建失败');
+                    }
+                })
+            }
+        });
+        fs.exists(address+ user+".json",(exists)=>{
+            if(!exists){
+                let content={
+                    download:[],
+                    upload:[],
+                };
+                fs.writeFile(address+ user+".json",JSON.stringify(content),(err)=>{
+                });
+            }
+        });
+        AccountFile=address+ user+".json";
+        this.User=user;
+    },
+    Read(type,callback){
+        if(!this.User){
+            return this.$Message.error('缺少用户数据')
+        }
+        return new Promise((resolve, reject)=>{
+            fs.readFile(AccountFile,{flag:'r+',encoding:'utf8'},(err,data)=>{
+                data=JSON.parse(data);
+                callback&&callback(data);
+                resolve(data[type]);
+            })
+        })
+    },
+    Write(data){
+        fs.writeFile(AccountFile,JSON.stringify(data), (err)=>{});
+    }
+};
 let Check=function (url,callback,error) {
     Ajax({
         url:url,
@@ -382,5 +427,5 @@ let VerifyCod=function(){
     return localStorage.server+"/service/verifyCode"+'?'+Math.random();
 };
 export default {
-    User,Disk,Check,StringExist,StringBefore,FileSize,IconGet,VerifyCod
+    User,Disk,Check,StringExist,StringBefore,FileSize,IconGet,VerifyCod,LocalFile
 }

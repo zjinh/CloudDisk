@@ -9,7 +9,6 @@
 
 <script>
     import electron from 'electron';
-    const path = require('path');
     import WindowsHeader from "./DiskWindow/WindowHeader";
     let PdfViewer=electron.remote.getCurrentWindow();
     export default {
@@ -32,7 +31,7 @@
             this.$ipc.on('win-data', (event, data)=>{//接收打开pdf文件的数据
                 this.$nextTick(()=>{
                     this.NowPlay.disk_name=data.disk_name;
-                    this.src=path.join(__static, '/pdf/web/viewer.html?file=')+data.disk_main;
+                    this.src=this.$path.join(__static, '/pdf/web/viewer.html?file=')+data.disk_main;
                     PdfViewer.setTitle(data.disk_name+'-PDF阅读器');
                 });
                 this.header.title=data.disk_name+'-PDF阅读器';

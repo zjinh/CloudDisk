@@ -58,11 +58,23 @@ axios.interceptors.response.use(function (response) {
 import { MessageBox,Dialog} from 'element-ui';
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
-Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.use(Dialog);
+Vue.prototype.Confrim=(options)=>{
+    MessageBox.confirm(options.tips, options.title, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString:true,
+        type: options.type||'warning',
+    }).then(() => {
+        options.callback()
+    }).catch(() => {
+    });
+};
 //引入electron接口
+const path = require('path');
 let ipc=require('electron').ipcRenderer;
+Vue.path = Vue.prototype.$path = path;//path接口
 Vue.ipc = Vue.prototype.$ipc = ipc;//ipc接口
 Vue.api = Vue.prototype.$Api = Api;//请求接口
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));

@@ -15,95 +15,24 @@
          @keydown.stop.shift="DiskData.KeyFlag = 'Shift'"
          @keyup="DiskData.KeyFlag =null"
          tabindex="1" ref="CloudDiskMain">
-        <div class="CloudDiskHeaderDrag" :style="{background: HeadSrc}">
-            <ul class="CloudDiskFuncMenu">
-                <img draggable="false" :src="static+'/img/bar/disk.png'"><span>CloudDisk</span>
-                <li @click="changeType('disk')"><p> 网盘</p><div class="CloudDiskFuncLine" v-if="DiskType==='disk'"></div></li>
-                <li @click="changeType('share')"><p> 分享</p><div class="CloudDiskFuncLine" v-if="DiskType==='share'"></div></li>
-                <li @click="changeType('trans')"><p> 传输</p><div class="CloudDiskFuncLine" v-if="DiskType==='trans'"></div></li>
-            </ul>
-            <div class="CloudDiskHeaderControl">
-                <span></span>
-                <button type="button" class="sf-icon-chevron-down" @click="DropMenuShow?DropMenuShow=false:DropMenuShow=true"></button>
-                <Dropdown placement="bottom-start" trigger="custom" :visible.sync="DropMenuShow" @on-click="SystemDropDown">
-                    <DropdownMenu slot="list">
-                        <DropdownItem name="account">
-                            <img draggable="false" :src="Logined.userhead">
-                            <p>我的账号</p>
-                        </DropdownItem>
-                        <DropdownItem name="setting">系统设置</DropdownItem>
-                        <DropdownItem name="about">关于</DropdownItem>
-                        <DropdownItem name="feedback">反馈</DropdownItem>
-                        <DropdownItem name="switch">切换账户</DropdownItem>
-                        <DropdownItem name="exit">退出</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
-                <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
-                <button type="button" :class="ButtonState" @click="restore"></button>
-                <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
-            </div>
-            <div class="CloudDiskUser" @click="showAccount">
-                <span>{{Logined.username}}</span>
-                <img draggable="false" :src="Logined.userhead?Logined.userhead+now:''">
-            </div>
-        </div>
+        <DiskHeader :HeadSrc="HeadSrc" :hide="NeedHide" :data="DiskData" @callback="SwitchType"></DiskHeader>
         <div class="CloudDiskFuncMain">
             <div class="CloudDiskHead">
-                <div class="CloudDiskHeadLeft">
-                    <div class="CloudDiskNav">
-                        <button class="sf-icon-chevron-left" @click="NavBack" :disabled="DiskData.NavData.length===0"></button>
-                        <button class="sf-icon-home" @click="NavHomeLoad" style="font-size: 16px;" :disabled="DiskType==='trans'"></button>
-                        <button :class="'sf-icon-redo'+(!LoadCompany?' sf-spin':'')" @click="DiskRefush" :disabled="DiskType==='trans'"></button>
-                        <span class="CloudDiskNavLine"></span>
-                        <button @click="NavHomeLoad" style="padding-right: 0;">{{ClassifyName}}/</button>
-                        <DiskNav :data="DiskData" @SwitchNav="SwitchNav"></DiskNav>
-                    </div>
-                </div>
-                <div class="CloudDiskHeadRight">
-                    <input class="CDsearchInput" type="text" placeholder="搜索" v-model="DiskSearch.SearchKey" @keyup.enter.native="SwitchSearch" :style="DiskSearch.ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
-                    <button class="sf-icon-search" @click="SwitchSearch" v-show="DiskType!=='trans'" :disabled="DiskType==='share'"></button>
-                    <button :class="'sf-icon-sort-amount-'+DiskSortState.amount" @click="DiskSort('amount','disk_name')" v-show="DiskType!=='trans'"></button>
-                    <button :class="DiskStateIcon" @click="changeState" v-show="DiskType!=='trans'"></button>
-                </div>
+                <DiskNavigation :data="DiskData" :loading="LoadCompany" @callback="NavigationControl"></DiskNavigation>
+                <DiskBarFeature :show="NoTransType" :hide="NeedHide" :disabled="IsShare" @callback="DiskBarFeatureControl"></DiskBarFeature>
             </div>
-            <div class="CloudDiskLeft">
-                <ClassifyMenu :data="ClassifyData" @updateClassify="updateClassify" v-show="DiskType==='disk'"></ClassifyMenu>
-                <ClassifyMenu :data="ShareData" @updateClassify="updateClassify" v-show="DiskType==='share'"></ClassifyMenu>
-                <ClassifyMenu :data="TransData" @updateClassify="updateClassify" v-show="DiskType==='trans'"></ClassifyMenu>
-                <img :src="BottomSrc" draggable="false">
-                <div class="CloudDiskSelectTips" v-show="DiskType!=='trans'">{{DiskData.SelectTips}}</div>
-                <div class="CloudDiskCapacity" v-show="DiskType!=='trans'">
-                    <div class="CloudDiskSliderContainer">
-                        <div class="CloudDiskSlider" :style="{'width':DiskSize.Percent,background:DiskSize.Background}"></div>
-                    </div>
-                    <p>{{DiskSize.text}}</p>
-                </div>
-            </div>
+            <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" :BottomSrc="BottomSrc" @callback="SwitchClassify" @change="SwitchClassify"></DiskClassify>
             <div class="CloudDiskRight">
-                <div class="CloudDiskMainFunc" v-show="ClassifyName==='回收站'">
-                    <span class="sf-icon-info-circle TrashTips"> 回收站仍然占用网盘空间，文件保存10天后将被自动清除</span>
-                    <button :disabled="ClassifyName==='回收站'&&UserDiskData.length===0" @click="DiskCleanTrash">清空回收站</button>
-                </div>
-                <div class="CloudDiskMainFunc" v-show="DiskData.DiskShowState!=='CloudDiskMFile'&&DiskType!=='trans'">
-                    <div :class="'CloudDiskFuncBlock sf-icon-sort-alpha-'+DiskSortState.alpha" @click="DiskSort('alpha','disk_name')" ripple style="width:53%;">
-                        文件名
-                    </div>
-                    <div :class="'CloudDiskFuncBlock sf-icon-sort-numeric-'+DiskSortState.mum" @click="DiskSort('mum','create_time')" ripple>
-                        修改日期
-                    </div>
-                    <div :class="'CloudDiskFuncBlock sf-icon-sort-numeric-'+DiskSortState.mum1" @click="DiskSort('mum1','disk_size')" ripple style="width: 25%">
-                        大小
-                    </div>
-                </div>
+                <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
+                <DiskSortBar :show="DiskData.DiskShowState!=='CloudDiskMFile'&&NoTransType" :DiskData="UserDiskData" @callback="DiskBarFeatureControl" ref="DiskSortBar"></DiskSortBar>
                 <div class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain">
-                    <div class="CloudDiskUploadTips" v-show="ShowUploadTips&&DiskType==='disk'&&loadClassify==='normal'">
+                    <div class="CloudDiskUploadTips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">
                         松开鼠标开始上传文件
                     </div>
-                    <DiskFile @SelectFiles="SelectFiles" @OpenFile="OpenFile" v-if="LoadCompany&&DiskType!=='trans'" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
-                    <div class='CloudDiskLoading' v-show="!LoadCompany&&DiskType!=='trans'"><div class='sf-icon-hdd'><div class='CloudDiskLoading-beat'><div></div> <div></div> <div></div> </div></div>正在加载</div>
-                    <div class='CloudDiskEmptyTips' v-if="LoadCompany&&DiskType!=='trans'" v-show="!UserDiskData.length>0"><span class='sf-icon-hdd'></span>这里什么都没有</div>
+                    <DiskFile @SelectFiles="SelectFiles" @OpenFile="OpenFile" v-if="LoadCompany&&NoTransType" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
+                    <loading :loading="IsLoadCompany" :length="UserDiskData.length" :IsNoDiskData="IsNoDiskData"></loading>
                     <div class="MouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
-                    <ul class="CloudDisTrans" v-show="DiskType==='trans'">
+                    <ul class="CloudDisTrans" v-show="DiskData.Type==='trans'">
                         <DiskTransList :data="TransformData" @ControlTrans="ControlTrans"></DiskTransList>
                     </ul>
                 </div>
@@ -118,11 +47,11 @@
             <li @click="DiskInfo" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
         <ul class="MouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
-            <li @click="UploadFile" :disabled="ClassifyName!=='网盘'">上传文件<span>Ctrl+U</span></li>
-            <li @click="CreateFolder" :disabled="ClassifyName!=='网盘'">新建文件夹<span>Ctrl+N</span></li>
-            <li @click="DiskData.Clipboard=[]" v-if="ClassifyName==='网盘'" :disabled="DiskData.Clipboard.length===0">清空剪切板</li>
-            <li @click="DiskPaste" v-if="ClassifyName==='网盘'" :disabled="DiskData.Clipboard.length===0">粘贴<span>Ctrl+V</span></li>
-            <li @click="DiskRefush">刷新<span>F5</span></li>
+            <li @click="UploadFile" :disabled="DiskData.ClassifyName!=='网盘'">上传文件<span>Ctrl+U</span></li>
+            <li @click="CreateFolder" :disabled="DiskData.ClassifyName!=='网盘'">新建文件夹<span>Ctrl+N</span></li>
+            <li @click="DiskData.Clipboard=[]" v-if="DiskData.ClassifyName==='网盘'" :disabled="DiskData.Clipboard.length===0">清空剪切板</li>
+            <li @click="DiskPaste" v-if="DiskData.ClassifyName==='网盘'" :disabled="DiskData.Clipboard.length===0">粘贴<span>Ctrl+V</span></li>
+            <li @click="NavigationControl('reload')">刷新<span>F5</span></li>
         </ul>
         <ul class="MouseMenu" v-show="DiskMouseState.DiskFileMenu.show" ref="DiskFileMenu" >
             <li @click="OpenFile('')" :disabled="DiskData.SelectFiles.length>1">打开<span>Ctrl+O</span></li>
@@ -174,69 +103,24 @@
 </template>
 
 <script>
-    import ClassifyMenu from './DiskWindow/ClassifyMenu';
+    import DiskHeader from"./DiskWindow/DiskHeader";//拖拽头部
+    import DiskNavigation from './DiskWindow/DiskNavigation';//网盘导航栏
+    import DiskBarFeature from './DiskWindow/DiskBarFeature';//网盘右侧工具栏
+    import DiskClassify from './DiskWindow/DiskClassify';//网盘左侧导航栏
+    import DiskRecoverBar from './DiskWindow/DiskRecoverBar';//回收站提示栏
+    import DiskSortBar from './DiskWindow/DiskSortBar';//排序工具栏
+
     import DiskFile from './DiskWindow/DiskFile';
-    import DiskNav from './DiskWindow/DiskNav';
+
     import DiskTree from './DiskWindow/DiskTree';
     import DiskShare from './DiskWindow/DiskShare';
     import DiskTransList from './DiskWindow/DiskTransList';
-    import electron from 'electron';
-    const fs= require('fs');
-    let address=process.env.HOMEDRIVE+process.env.HOMEPATH+'/CloudDisk\/';//用户文件地址
-    let AccountFile=null;
-    const path = require('path');
-    let DiskWindow=electron.remote.getCurrentWindow();
+    import loading from "./DiskWindow/loading";
     export default {
         name: "DiskWindow",
-        components:{ClassifyMenu,DiskFile,DiskNav,DiskTree,DiskShare,DiskTransList},
+        components:{DiskHeader,DiskNavigation,DiskBarFeature,DiskClassify,DiskRecoverBar,DiskSortBar,DiskFile,DiskTree,DiskShare,DiskTransList,loading},
         data(){
             return{
-                QuitFlag:false,
-                Logined:{},
-                UserDiskData:[],//存放用户网盘数据
-                LoadCompany:false,//是否加载完成
-                ButtonState:"sf-icon-window-maximize",//右上角窗口按钮状态
-                ClassifyName:'网盘',//地址栏左侧分类显示文本
-                DiskStateIcon:'sf-icon-th-large',//显示状态图片
-                DiskType:"disk",//头部分类标签
-                ClassifyData:[
-                    {"name":"全部文件","icon":"sf-icon-hdd","data":"normal","active":"CloudDiskClassifyActive"},
-                    {"name":"图片","icon":"","data":"picture","active":""},
-                    {"name":"视频","icon":"","data":"video","active":""},
-                    {"name":"文档","icon":"","data":"document","active":""},
-                    {"name":"音乐","icon":"","data":"music","active":""},
-                    {"name":"种子","icon":"","data":"torrent","active":""},
-                    {"name":"其他","icon":"","data":"other","active":""},
-                    {"name":"回收站","icon":"sf-icon-trash","data":"trash","active":""},
-                ],//网盘分类参数
-                ShareData:[
-                    {"name":"我的分享","icon":"","data":"share","active":"CloudDiskClassifyActive"},
-                    {"name":"失效分享","icon":"","data":"disshare","active":""},
-                ],//分享分类参数
-                TransData:[
-                    {"name":"正在下载","icon":"sf-icon-download","count":0,"data":"download","active":"CloudDiskClassifyActive"},
-                    {"name":"正在上传","icon":"sf-icon-upload","count":0,"data":"upload","active":""},
-                    {"name":"传输完成","icon":"sf-icon-check-circle","count":0,"data":"finish","active":""},
-                ],//传输分类参数
-                /*网盘大小*/
-                DiskSize:{
-                    total:0,
-                    use:0,
-                    Percent:'0%',
-                    Background:'#2682fc',
-                    text:'0B/0B',
-                },
-                /*网盘一些记录的参数*/
-                DiskPage:1,//网盘加载的页数
-                DiskPosting:false,
-                NowDiskID:null,
-                DiskAllCount:0,
-                DiskLoadCount:0,
-                loadClassify:'normal',//网盘加载的分类
-                DiskSearch:{
-                    ShowSearch:false,//搜索框打开关闭
-                    SearchKey:'',//搜索关键词
-                },//搜索参数
                 DiskData:{
                     ClipboardState:false,//剪切板是复制还是剪切
                     Clipboard: [],//剪切板的文件
@@ -246,7 +130,26 @@
                     NowSelect:false,//记录一个选择的文件
                     DiskShowState:'CloudDiskMFile',//文件显示类型，默认图标,
                     SelectTips:'0个项目',//选择文件提示
+                    Type:'disk',//头部分类标签,
+                    ClassifyName:'网盘',//地址栏左侧分类显示文本,
+                    DiskSize:{ /*网盘大小*/
+                        total:0,
+                        use:0,
+                        Percent:'0%',
+                        Background:'#2682fc',
+                        text:'0B/0B',
+                    },
                 },
+                UserDiskData:[],//存放用户网盘数据
+                DiskPage:1,//网盘加载的页数
+                loadClassify:'normal',//网盘加载的分类
+                LoadCompany:false,//是否加载完成
+                NeedHide:false,//是否需要隐藏菜单
+                /*网盘一些记录的参数*/
+                DiskPosting:false,
+                NowDiskID:null,
+                DiskAllCount:0,
+                DiskLoadCount:0,
                 /*树目录参数*/
                 showTree:false,
                 SelectTrees:false,
@@ -254,13 +157,6 @@
                 ShowUnZip:false,
                 /*分享窗口参数*/
                 showShare:false,
-                /*排序参数*/
-                DiskSortState:{
-                    amount:'up',
-                    mum:'up',
-                    mum1:'up',
-                    alpha:'up',
-                },
                 /*拖拽选择参数*/
                 MouseSelectData:{
                     left:0,
@@ -291,7 +187,6 @@
                         left:0
                     }
                 },
-                DropMenuShow:false,
                 /*上传提示*/
                 ShowUploadTips:false,
                 /*文件传输列表参数*/
@@ -304,7 +199,7 @@
                 NoticeSrc:'',
                 /*自动切换背景*/
                 HeadSrc:'url(' + require('../../../static/img/bg/Autumn-1.png') + ')',
-                BottomSrc:path.join(__static,'/img/bg/Autumn-bottom-1.png'),
+                BottomSrc:this.$path.join(__static,'/img/bg/Autumn-bottom-1.png'),
                 /*记录用户个人信息文件*/
                 DiskUploadData:[],
                 DiskDownLoadData:[],
@@ -312,10 +207,18 @@
             }
         },
         watch:{
+            NeedHide:{
+                handler(){
+                    let a=null;
+                    clearTimeout(a);
+                    a=setTimeout(()=>{
+                        this.NeedHide=false;
+                    },1000)
+                }
+            },
             UserDiskData: {
                 handler(newValue, oldValue) {
-                    this.DiskSearch.ShowSearch=false;
-                    this.DropMenuShow=false;
+                    this.NeedHide=true;
                     this.DiskData.SelectFiles=[];
                     this.UserDiskData.forEach((item,index)=>{
                         if (item.active){
@@ -336,7 +239,7 @@
             },
             loadClassify: {
                 handler(newValue, oldValue) {
-                    if(this.DiskType==='trans'){
+                    if(this.DiskData.Type==='trans'){
                         this.$nextTick(()=>{
                             this.TransformData.forEach((item,index)=>{
                                 if(item.state==='finish'&&this.loadClassify!=='finish'){
@@ -383,33 +286,33 @@
             }
         },
         computed:{
-            now(){
-                return '?'+Date.now();
-            },
-            static(){
-                return path.join(__static)
-            },
             isDisk(){
-                return this.loadClassify!=='trash'&&this.DiskType==='disk';
+                return this.loadClassify!=='trash'&&this.DiskData.Type==='disk';
             },
             isTrash(){
-                return this.loadClassify==='trash'&&this.DiskType==='disk'
+                return this.loadClassify==='trash'&&this.DiskData.Type==='disk'
+            },
+            IsShare(){
+                return this.DiskData.Type==='share';
+            },
+            NoTransType(){
+                return this.DiskData.Type!=='trans';
+            },
+            IsLoadCompany(){
+                return !this.LoadCompany&&this.NoTransType;
+            },
+            IsNoDiskData(){
+                return this.LoadCompany&&this.NoTransType;
             }
         },
         created(){
             this.Bind();
-            this.GetUserInfo();
             this.GetMainFile(null,this.loadClassify);
             this.NoticeSrc=localStorage.NoticeVoice;
         },
         methods:{
+            /*初始化*/
             Bind(){
-                DiskWindow.on('maximize',()=>{
-                    this.ButtonState='sf-icon-window-restore';
-                });
-                DiskWindow.on('unmaximize',()=>{
-                    this.ButtonState='sf-icon-window-maximize';
-                });
                 document.onclick=document.onmousewheel=()=>{
                     for(let item in this.DiskMouseState){
                         this.DiskMouseState[item].show = false
@@ -427,38 +330,149 @@
                 window.addEventListener( "drop", function (e) {
                     e.preventDefault();
                 }, false );
-                window.onbeforeunload=()=>{
-                    if(!this.QuitFlag&&process.env.NODE_ENV !== 'development') {
-                        DiskWindow.hide();
-                        return false
-                    }
-                };
-                this.$ipc.on('exit',()=>{
-                    this.SystemDropDown('exit');
-                });
                 setInterval(()=>{
-                    this.TimeBackground();
+                    this.SystemControl('background');
                 },1000);
+                this.SystemControl('popup',123)
             },
-            GetUserInfo () {
-                this.$Api.User.UserInfo((rs)=>{
-                    this.Logined=rs[0];
-                    localStorage.LoginTime=rs[0].login_time;
-                    localStorage.Phone=rs[0].phone;
-                    localStorage.email=rs[0].email;
-                    this.AccountfileExist(rs[0].userid);
-                },()=>{
-                    this.$Message.error({
-                        content: '账号状态异常，请重新登录！',
-                        onClose:()=> {
-                            /////弹出登录页
-                            this.$ipc.send('system','logoff');
+            /*导航栏函数*/
+            NavigationControl(commend){
+                switch (commend) {
+                    case'back'://后退
+                        if(this.DiskData.NavData.length>1) {
+                            this.NavigationControl(this.DiskData.NavData[this.DiskData.NavData.length - 2])
+                        }else{
+                            this.NavigationControl('home');
                         }
-                    });
-                });
-            },//获取用户信息
+                        break;
+                    case'home'://返回顶层
+                        if(this.DiskData.Type==='share'){
+                            this.SwitchType('share');
+                            this.NavigationControl('clear');
+                        }else if(this.NoTransType&&this.DiskData.ClassifyName!=='搜索') {
+                            this.GetMainFile(null, this.loadClassify);
+                            this.NavigationControl('clear');
+                        }else if(this.DiskData.ClassifyName==='搜索'){
+                            this.SwitchType('disk');
+                            this.NavigationControl('clear');
+                        }
+                        break;
+                    case'reload'://刷新
+                        this.DiskPage=1;
+                        this.GetMainFile(this.NowDiskID, this.loadClassify);
+                        break;
+                    case'clear':
+                        this.DiskData.NavData=[];
+                        break;
+                    default://默认切换
+                        for (let i = this.DiskData.NavData.length - 1; i > 0; i--) {
+                            if (commend ===  this.DiskData.NavData[i]) {
+                                break;
+                            }
+                            this.DiskData.NavData.splice(i,1);
+                        }
+                        this.GetMainFile(commend.disk_id, 'normal');
+                        break;
+                }
+            },
+            /*导航右侧功能函数*/
+            DiskBarFeatureControl(commend,data,flag){
+                switch (commend) {
+                    case 'search':
+                        if(flag){
+                            this.DiskPage=1;
+                            this.UserDiskData=[];
+                            this.DiskData.ClassifyName='搜索';
+                            this.NavigationControl('clear');
+                        }
+                        this.$Api.Disk.Search({
+                            id:data,
+                            page: this.DiskPage,
+                        },(rs)=>{
+                            this.PrintFile(rs);
+                        });
+                        break;
+                    case 'sort'://网盘排序方法
+                        if(typeof data==='object') {
+                            this.UserDiskData = data;
+                        }else{
+                            this.$refs.DiskSortBar.DiskSort(data,flag);
+                        }
+                        break;
+                    case 'state'://切换文件显示模式
+                        this.DiskData.DiskShowState=data;
+                        break;
+                }
+            },
+            /*切换顶部网盘分享、传输类型*/
+            SwitchType(type){
+                this.NavigationControl('clear');
+                this.DiskData.Type=type;
+            },
+            /*切换左侧网盘导航*/
+            SwitchClassify(type,item){
+                this.UserDiskData=[];//清空数据
+                this.DiskData.ClassifyName=item.name==='全部文件'?'网盘':item.name;
+                this.loadClassify=item.data;
+                this.DiskPage = 1;
+                if(type!=='trans') {
+                    this.GetMainFile(null, this.loadClassify);
+                }
+                this.SwitchType(type);
+            },
+            /*系统消息通知等函数*/
+            SystemControl(commend,data){
+               switch (commend) {
+                   case 'background':
+                       let season='Spring';
+                       let tag=0;
+                       let D=new Date();
+                       let month=D.getMonth();
+                       let hHour=D.getHours();
+                       if(month>2&&month<6){
+                           season='Spring'
+                       }else if(month>5&&month<9){
+                           season='Summer';
+                       }else if(month>8&&month<12){
+                           season='Autumn'
+                       }else if(month===12||month===1||month===2){
+                           season='Winter'
+                       }
+                       if(hHour>=1&&hHour<=8){
+                           tag=0;
+                       }
+                       else if(hHour>8&&hHour<=16){
+                           tag=1
+                       }else if(hHour>16&&hHour<=18){
+                           tag=2
+                       }else if(hHour>18&&hHour<=24){
+                           tag=3
+                       }
+                       this.HeadSrc= 'url(' + require('../../../static/img/bg/'+season+'-'+tag+'.png') + ')';
+                       this.BottomSrc=this.$path.join(__static,'/img/bg/'+season+'-bottom-'+tag+'.png');
+                       break;
+                   case 'popup':
+                       if(eval(localStorage.NoticeFlag)){
+                           this.NoticeSrc=localStorage.NoticeVoice;
+                           let a=setTimeout(()=>{
+                               clearTimeout(a);
+                               this.$refs.NoticeAudio.play();
+                           },200)
+                       }
+                       if(eval(localStorage.NoticeBubble)){
+                           this.$ipc.send('system','popup', data);
+                       }
+                       break;
+               }
+            },
+            /*网盘数据控制*/
+            DiskDataControl(commend,data){
+                /*switch () {
+
+                }*/
+            },
             GetMainFile(id,type){
-               if(this.DiskType==='trans'){
+               if(this.DiskData.Type==='trans'){
                    return
                }
                 if(this.DiskPage===1){
@@ -493,28 +507,21 @@
                     this.UserDiskData.push(item);
                 });
                 if(rs.length){
-                    this.DiskSize.total=rs[0].max_size;
-                    this.DiskSize.use=rs[0].use_size;
-                    let Percent=(this.DiskSize.use/this.DiskSize.total)*100;
-                    this.DiskSize.Percent=Percent+'%';
-                    this.DiskSize.text=this.$Api.FileSize(this.DiskSize.use)+'/'+this.$Api.FileSize(this.DiskSize.total)
+                    this.DiskData.DiskSize.total=rs[0].max_size;
+                    this.DiskData.DiskSize.use=rs[0].use_size;
+                    let Percent=(this.DiskData.DiskSize.use/this.DiskData.DiskSize.total)*100;
+                    this.DiskData.DiskSize.Percent=Percent+'%';
+                    this.DiskData.DiskSize.text=this.$Api.FileSize(this.DiskData.DiskSize.use)+'/'+this.$Api.FileSize(this.DiskData.DiskSize.total)
                     if (65 < Percent && Percent < 85) {
-                        this.DiskSize.Background = '#f7ab21';
+                        this.DiskData.DiskSize.Background = '#f7ab21';
                     } else if (Percent >= 85) {
-                        this.DiskSize.Background = '#e83c3c';
+                        this.DiskData.DiskSize.Background = '#e83c3c';
                     }else{
-                        this.DiskSize.Background = '#2682fc';
+                        this.DiskData.DiskSize.Background = '#2682fc';
                     }
                     this.DiskAllCount=rs[0].all_count;
                     this.DiskLoadCount=this.DiskLoadCount+rs.length;
                 }
-            },
-            updateClassify(value){//更新网盘分类子组件传回的数据
-                this.ClassifyName=value.name==='全部文件'?'网盘':value.name;
-                this.loadClassify=value.data;
-                this.DiskPage = 1;
-                this.GetMainFile(null,this.loadClassify);
-                this.DiskData.NavData=[];
             },
             LoadMore(){
                 let elm=event.target;
@@ -525,75 +532,6 @@
                     }
                 }
             },//下拉加载更多
-            changeType(type){
-                this.UserDiskData=[];//清空数据
-                this.DiskData.NavData=[];
-                this.DiskType=type;
-                if(type==='disk') {
-                    this.ClassifyData.forEach(function (item) {
-                        item.active='';
-                    });
-                    this.ClassifyName='网盘';
-                    this.loadClassify=this.ClassifyData[0].data;
-                    this.ClassifyData[0].active='CloudDiskClassifyActive';
-                    this.GetMainFile(null,this.ClassifyData[0].data);
-                }else if(type==='share'){
-                    this.ShareData.forEach(function (item) {
-                        item.active='';
-                    });
-                    this.ClassifyName=this.ShareData[0].name;
-                    this.loadClassify=this.ShareData[0].data;
-                    this.ShareData[0].active='CloudDiskClassifyActive';
-                    this.GetMainFile(null,type);
-                }else{
-                    this.TransData.forEach(function (item) {
-                        item.active='';
-                    });
-                    this.ClassifyName=this.TransData[0].name;
-                    this.loadClassify=this.TransData[0].data;
-                    this.TransData[0].active='CloudDiskClassifyActive';
-                }
-            },//切换网盘分享、传输等
-            /*网盘搜索*/
-            SwitchSearch(){//搜索有问题
-                if(this.DiskSearch.ShowSearch===false){
-                    this.DiskSearch.ShowSearch=true;
-                }else if(this.DiskSearch.SearchKey.length&&this.DiskSearch.ShowSearch){
-                    this.DiskPage=1;
-                    this.UserDiskData=[];
-                    this.ClassifyData.forEach((item)=>{
-                       item.active='';
-                    });
-                    this.ClassifyName='搜索';
-                    this.SearchDisk();
-                    this.DiskData.NavData=[];
-                }else{
-                    this.DiskSearch.ShowSearch=false;
-                }
-            },
-            SearchDisk(){
-                this.$Api.Disk.Search({
-                    id:this.DiskSearch.SearchKey,
-                    page: this.DiskPage,
-                },(rs)=>{
-                    this.PrintFile(rs);
-                });
-            },
-            //切换文件显示模式
-            changeState(){
-                this.DiskData.DiskShowState==='CloudDiskMFile'?this.DiskData.DiskShowState='CloudDiskMList':this.DiskData.DiskShowState='CloudDiskMFile';
-                this.DiskStateIcon==='sf-icon-th-large'?this.DiskStateIcon='sf-icon-list-ul':this.DiskStateIcon='sf-icon-th-large';
-            },
-            //网盘排序方法(排序自段)
-            DiskSort(type,key){
-                if(this.DiskSortState[type]==='up'){
-                    this.UserDiskData=this.ArraySort(this.UserDiskData, key, '<');
-                    this.DiskSortState[type]='down';
-                }else{
-                    this.UserDiskData=this.ArraySort(this.UserDiskData, key, '>');
-                    this.DiskSortState[type]='up';
-                }
-            },
             /*选择文件数据操作方法*/
             SelectFiles(event,item,index){
                 this.$refs.CloudDiskMain.focus();
@@ -650,35 +588,6 @@
                 });
                 this.DiskData.SelectFiles=[];
             },
-            /*导航栏函数*/
-            SwitchNav(item){
-                for (let i = this.DiskData.NavData.length - 1; i > 0; i--) {
-                    if (item ===  this.DiskData.NavData[i]) {
-                        break;
-                    }
-                    this.DiskData.NavData.splice(i,1);
-                }
-                this.GetMainFile(item.disk_id, 'normal');
-            },///导航栏点击切换
-            NavHomeLoad(){
-               if(this.DiskType==='share'){
-                    this.changeType('share');
-                    this.DiskData.NavData=[];
-                }else if(this.DiskType!=='trans'&&this.ClassifyName!=='搜索') {
-                   this.GetMainFile(null, this.loadClassify);
-                   this.DiskData.NavData=[];
-               }else if(this.ClassifyName==='搜索'){
-                    this.changeType('disk');
-                    this.DiskData.NavData=[];
-                }
-            },//导航栏首页点击加载
-            NavBack(){
-                if(this.DiskData.NavData.length>1) {
-                    this.SwitchNav(this.DiskData.NavData[this.DiskData.NavData.length - 2])
-                }else{
-                    this.NavHomeLoad();
-                }
-            },//导航栏后退
             /*打开文件夹/文件*/
             OpenFile(item){
                 if(this.DiskData.SelectFiles.length>1){
@@ -841,12 +750,12 @@
             ControlTrans(item,index){
                 if(event.target.className==='sf-icon-times'){
                     this.TransformData.splice(index,1);
-                    this.WriteAccountFile('upload', this.TransformData);
+                    this.$Api.LocalFile.Write(this.TransformData);
                     return
                 }
                 if(item.state==='finish'){
                     this.TransformData.splice(index,1);
-                    this.WriteAccountFile('upload', this.TransformData);
+                    this.$Api.LocalFile.Write(this.TransformData);
                     return
                 }
                 if (!item.paused) {
@@ -915,8 +824,7 @@
                                 }
                             });
                             /*播放提示音*/
-                            this.PlayNoticeVoice();
-                            this.ShowMsgBox(item.name+'上传完成');
+                            this.SystemControl('popup',item.name+'上传完成');
                         }else {
                             item.chunk = ++chunk;
                             // 这样设置可以暂停，但点击后动态的设置就暂停不了..
@@ -930,14 +838,14 @@
                             }
                         }
                         this.$nextTick(()=> {
-                            this.WriteAccountFile('upload', this.TransformData);
+                            this.$Api.LocalFile.Write(this.TransformData);
                         });
                     }else{
                         this.$nextTick(()=>{
                             item.state='fail';
                             item.buttonVal='sf-icon-play';
                             //删除记录
-                            this.WriteAccountFile('upload', this.TransformData);
+                            this.$Api.LocalFile.Write(this.TransformData);
                         });
                     }
                 });
@@ -971,7 +879,7 @@
                 })
             },//下载文件
             CreateFolder(){
-                if(this.ClassifyName==='网盘') {
+                if(this.DiskData.ClassifyName==='网盘') {
                     this.InputConfrim({
                         title: "新建文件夹",
                         tips: '请输入文件夹名称',
@@ -997,14 +905,14 @@
                 }
             },//右键新建文件夹
             DiskPaste(){
-                if(this.DiskData.Clipboard.length&&this.ClassifyName==='网盘'){
+                if(this.DiskData.Clipboard.length&&this.DiskData.ClassifyName==='网盘'){
                     let data=this.MakeSelectData(this.DiskData.Clipboard);
                     if(this.DiskData.ClipboardState==='copy'){
                         let size=0;
                         this.DiskData.Clipboard.forEach((item)=>{
                             size=size+parseInt(item.disk_size);
                         });
-                        if(size>(this.DiskSize.total-this.DiskSize.use)){
+                        if(size>(this.DiskData.DiskSize.total-this.DiskData.DiskSize.use)){
                             this.$Message.error('空间不足！请清理一些文件后重试');
                             return false;
                         }
@@ -1022,7 +930,7 @@
                                     }
                                 });
                                 if(copy_flag){
-                                    this.DiskRefush();
+                                    this.NavigationControl('reload')();
                                 }else{
                                     this.DiskData.Clipboard.forEach((item)=>{
                                         item.disk_name=item.disk_name+'-复制';
@@ -1080,7 +988,6 @@
                     try {
                         this.$refs.DiskTree.init();
                     }catch (e) {
-
                     }
                 });
             },
@@ -1174,32 +1081,6 @@
                     }
                 });
             },//删除(回收站)
-            DiskRefush(){
-                this.DiskPage=1;
-                this.GetMainFile(this.NowDiskID, this.loadClassify);
-            },//右键刷新
-            DiskCleanTrash(){
-                this.Confrim({
-                    title:'清空回收站',
-                    tips:'该操作将清空回收站且不可恢复,是否继续',
-                    callback:()=> {
-                        this.$Message.info('正在清空回收站');
-                        this.$Api.Disk.Delete({
-                            id: ''
-                        },(rs)=>{
-                            rs=rs[0];
-                            if(rs.state==='success'){
-                                this.$Message.success('回收站已清空');
-                                if(this.loadClassify==='trash') {
-                                    this.UserDiskData = [];
-                                }
-                            }else{
-                                this.$Message.error('回收站清空失败');
-                            }
-                        })
-                    }
-                });
-            },//清空回收站
             DiskDelete(){
                 let delete_data=[];
                 let tips='';
@@ -1412,7 +1293,7 @@
             },
             MainMouseFunc(){
                 //this.ClearSelect();
-                if(this.DiskType!=='trans') {
+                if(this.NoTransType) {
                     this.MouseMenu('DiskMainMenu', event);
                     this.MouseSelect(event);
                 }
@@ -1505,17 +1386,6 @@
                     }
                 };
             },
-            Confrim(options){
-                this.$confirm(options.tips, options.title, {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    dangerouslyUseHTMLString:true,
-                    type: options.type||'warning',
-                }).then(() => {
-                    options.callback()
-                }).catch(() => {
-                });
-            },
             FindInDisk(list,callback){
                 let result=null;
                 this.UserDiskData.forEach((item)=>{
@@ -1536,187 +1406,9 @@
                 }).catch(() => {
                 });
             },
-            ArraySort(array, key,type){
-                let temp,unfix;
-                for (unfix = array.length - 1; unfix > 0; unfix--) {
-                    for (let i = 0; i < unfix; i++) {
-                        if (array[i][key] < array[i + 1][key] && type === '<') {
-                            temp = array[i];
-                            array.splice(i, 1, array[i + 1]);
-                            array.splice(i + 1, 1, temp);
-                        }
-                        else if (array[i][key] > array[i + 1][key] && type !== '<') {
-                            temp = array[i];
-                            array.splice(i, 1, array[i + 1]);
-                            array.splice(i + 1, 1, temp);
-                        }
-                    }
-                }
-                return array;
-            },
-            /*系统操作函数*/
-            TimeBackground(){
-                let season='Spring';
-                let tag=0;
-                let D=new Date();
-                let month=D.getMonth();
-                let hHour=D.getHours();
-                if(month>2&&month<6){
-                    season='Spring'
-                }else if(month>5&&month<9){
-                    season='Summer';
-                }else if(month>8&&month<12){
-                    season='Autumn'
-                }else if(month===12||month===1||month===2){
-                    season='Winter'
-                }
-                if(hHour>=1&&hHour<=8){
-                    tag=0;
-                }
-                else if(hHour>8&&hHour<=16){
-                    tag=1
-                }else if(hHour>16&&hHour<=18){
-                    tag=2
-                }else if(hHour>18&&hHour<=24){
-                    tag=3
-                }
-                this.HeadSrc= 'url(' + require('../../../static/img/bg/'+season+'-'+tag+'.png') + ')';
-                this.BottomSrc=path.join(__static,'/img/bg/'+season+'-bottom-'+tag+'.png')
-            },
-            mini () {
-                DiskWindow.minimize();
-            },
-            close () {
-                DiskWindow.hide();
-            },
-            restore () {
-                if (DiskWindow.isMaximized()) {
-                    DiskWindow.restore();
-                } else {
-                    DiskWindow.maximize();
-                }
-            },
-            showAccount(){
-                if(this.Logined.userid){
-                    this.$ipc.send('system','account',this.Logined)
-                }
-            },
-            showAbout(){
-                this.$ipc.send('system','about')
-            },
-            ShowFeedBack(){
-                this.$ipc.send('system','feedback')
-            },
-            ShowSetting(){
-                this.$ipc.send('system','setting')
-            },
-            SystemDropDown (name) {
-                this.DropMenuShow=false;
-                let tips='';
-                switch (name){
-                    case 'account':
-                        this.showAccount();
-                        break;
-                    case 'setting':
-                        this.ShowSetting();
-                        break;
-                    case 'about':
-                        this.showAbout();
-                        break;
-                    case 'feedback':
-                        this.ShowFeedBack();
-                        break;
-                    case 'switch':
-                        if(this.UploadCount>0){
-                            tips=this.UploadCount+'个文件正在上传，切换后将在下次登录后重新选择以继续传输<br>'
-                        }else if(this.DownloadCount>0){
-                            tips=this.DownloadCount+'个文件正在下载，切换将暂停传输'
-                        }
-                        this.Confrim({
-                            title:'切换账号',
-                            tips:tips+'确认退出当前账号吗',
-                            callback:()=> {
-                                this.QuitFlag=true;
-                                this.$ipc.send('system','logoff');
-                            }
-                        });
-                        break;
-                    case 'exit':
-                        if(this.UploadCount>0){
-                            tips=this.UploadCount+'个文件正在上传，退出后将在下次打开后重新选择以继续传输<br>'
-                        }else if(this.DownloadCount>0){
-                            tips=this.DownloadCount+'个文件正在下载，退出将暂停传输'
-                        }
-                        this.Confrim({
-                            title:'退出',
-                            tips:tips+'确认退出CloudDisk吗?',
-                            type:'info',
-                            callback:()=> {
-                                this.QuitFlag=true;
-                                DiskWindow.close();
-                            }
-                        });
-                        break;
-                    }
-            },
-            PlayNoticeVoice(){
-                if(eval(localStorage.NoticeFlag)){
-                    this.NoticeSrc=localStorage.NoticeVoice;
-                    let a=setTimeout(()=>{
-                        clearTimeout(a);
-                        this.$refs.NoticeAudio.play();
-                    },200)
-                }
-            },
-            ShowMsgBox(msg){
-                if(eval(localStorage.NoticeBubble)){
-                    this.$ipc.send('system','popup', msg);
-                }
-            },
             /*本地账户存储*/
-            AccountfileExist(user){
-                fs.exists(address,(exists)=>{
-                    if(!exists){
-                        fs.mkdir(address,(err)=>{
-                            if(err) {
-                                return this.$Message.error('用户文件创建失败');
-                            }
-                        })
-                    }
-                });
-                fs.exists(address+ user+".json",(exists)=>{
-                    if(!exists){
-                        let content={
-                            download:[],
-                            upload:[],
-                        };
-                        fs.writeFile(address+ user+".json",JSON.stringify(content),(err)=>{
-                            this.GetAccountData();
-                        });
-                    }else{
-                        this.GetAccountData();
-                    }
-                });
-                AccountFile=address+ user+".json";
-            },
-            ReadAccountFile(type){
-                if(!this.Logined.userid){
-                    return this.$Message.error('缺少用户数据')
-                }
-                return new Promise((resolve, reject)=>{
-                    fs.readFile(AccountFile,{flag:'r+',encoding:'utf8'},(err,data)=>{
-                        data=JSON.parse(data);
-                        this.DiskUserAllData=data;
-                        resolve(data[type]);
-                    })
-                })
-            },
-            WriteAccountFile(type,data){
-                this.DiskUserAllData[type]=data;
-                fs.writeFile(AccountFile,JSON.stringify(this.DiskUserAllData), (err)=>{});
-            },
             GetAccountData(){
-                this.ReadAccountFile('upload').then((res)=>{
+                this.$Api.LocalFile.Read('upload').then((res)=>{
                     this.DiskUploadData=res;
                     this.DiskUploadData.forEach((item)=>{
                         this.TransformData.push(item);

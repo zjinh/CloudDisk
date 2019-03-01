@@ -97,7 +97,6 @@
     import StartOnBoot from '../api/StartOnBoot';
     import SettingMenu from './DiskSetting/SettingMenu';
     import electron from 'electron';
-    const path = require('path');
     const {dialog} = require('electron').remote;
     let DiskSetting=electron.remote.getCurrentWindow();
     export default {
@@ -401,19 +400,19 @@
             VoiceChange(a){
                 switch (a) {
                     case "音效一":
-                        this.VoiceSrc=path.join(__static,'/voice/1.wav');
+                        this.VoiceSrc=this.$path.join(__static,'/voice/1.wav');
                         this.PlayVoice();
                         break;
                     case "音效二":
-                        this.VoiceSrc=path.join(__static,'/voice/2.wav');
+                        this.VoiceSrc=this.$path.join(__static,'/voice/2.wav');
                         this.PlayVoice();
                         break;
                     case "音效三":
-                        this.VoiceSrc=path.join(__static,'/voice/3.wav');
+                        this.VoiceSrc=this.$path.join(__static,'/voice/3.wav');
                         this.PlayVoice();
                         break;
                     case "音效四":
-                        this.VoiceSrc=path.join(__static,'/voice/4.wav');
+                        this.VoiceSrc=this.$path.join(__static,'/voice/4.wav');
                         this.PlayVoice();
                         break;
                 }

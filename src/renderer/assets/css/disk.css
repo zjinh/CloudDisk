@@ -518,6 +518,7 @@ z-index: 2;
 	text-indent: 10px;
 	color: #4f4f4f;
 	padding-right: 40px;
+	border-radius: 20px!important;
 }
 .CDsearchInput:focus{
 	border-color: #57a3f3!important;

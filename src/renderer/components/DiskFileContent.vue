@@ -9,7 +9,6 @@
 
 <script>
     import WindowsHeader from "./DiskWindow/WindowHeader";
-    const path = require('path');
     export default {
         name: "DiskFileContent",
         components:{WindowsHeader},
@@ -30,7 +29,7 @@
                 this.$nextTick(()=>{
                     this.NowLoad=data;
                     this.header.title=data.disk_name+' 文件查看';
-                    this.LoadUrl=path.join(__static, '/syntaxhighlighter/index.html?id=')+data.disk_id+'&type='+data.type;
+                    this.LoadUrl=this.$path.join(__static, '/syntaxhighlighter/index.html?id=')+data.disk_id+'&type='+data.type;
                 });
             });
         }

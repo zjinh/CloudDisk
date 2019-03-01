@@ -100,7 +100,7 @@ let WindowControl={
             (typeof options.ready==='function')?options.ready(event):"";
         });
         win.webContents.on('did-finish-load',()=>{
-            win.setTitle(options.title);
+            win.setTitle(options.title || 'CloudDisk');
             win.callback(options.data||'无数据');
         });
         return win;
@@ -111,6 +111,7 @@ let WindowControl={
             : `file://${__dirname}/index.html#/`+router;
     },
     Active:(win,data)=>{
+        console.log(win);
         if(win) {
             win.show();
             win.focus();
@@ -290,17 +291,15 @@ let DiskSystem= {
         PopupWindow=WindowControl.New({
             url:"disk-msg",
             data:msg,
+            width: 250,
             height: 150,
             useContentSize: true,
-            width: 250,
             resizable:false,
             maximizable:false,
-            frame:false,
             transparent:true,
             alwaysOnTop:true,
             x:screen.getPrimaryDisplay().workAreaSize.width-255,
             y:screen.getPrimaryDisplay().workAreaSize.height-155,
-            show:false,
             onclose:()=>{
                 PopupWindow=null;
             }
