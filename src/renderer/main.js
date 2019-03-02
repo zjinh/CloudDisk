@@ -58,7 +58,6 @@ axios.interceptors.response.use(function (response) {
 import { MessageBox,Dialog} from 'element-ui';
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
-Vue.prototype.$prompt = MessageBox.prompt;
 Vue.use(Dialog);
 Vue.prototype.Confrim=(options)=>{
     MessageBox.confirm(options.tips, options.title, {
@@ -68,6 +67,16 @@ Vue.prototype.Confrim=(options)=>{
         type: options.type||'warning',
     }).then(() => {
         options.callback()
+    }).catch(() => {
+    });
+};
+Vue.prototype.InputConfrim=(options)=>{
+    MessageBox.prompt(options.tips, options.title, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue:options.value||'',
+    }).then(({ value }) => {
+        options.callback(value)
     }).catch(() => {
     });
 };

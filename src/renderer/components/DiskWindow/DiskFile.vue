@@ -27,7 +27,7 @@
                 this.$emit("SelectFiles",event,item,index)
             },
             OpenFile(item) {
-                this.$emit("OpenFile",item)
+                this.$emit("OpenFile",'open',item)
             }
         }
     }

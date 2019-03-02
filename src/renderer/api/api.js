@@ -107,6 +107,33 @@ function DiskData(item){
     item.disk_size=parseInt(item.disk_size);
     item.disk_main?item.disk_main=localStorage.server+'/'+item.disk_main:"";
     item.shareAddress=localStorage.server + '/s/' + item.share;
+    if(item.disk_main){
+        if (item.type==='zip') {
+            item.OpenType='zip';
+        }
+        else if (StringExist(item.type, 'apng,png,jpg,jpeg,bmp,gif')) {
+            item.TypeArray='apng,png,jpg,jpeg,bmp,gif';
+            item.OpenType='image';
+        }
+        else if (StringExist(item.type, 'mp4,rmvb,mkv')) {
+            item.TypeArray='mp4,rmvb,mkv';
+            item.OpenType='video';
+        }
+        else if (StringExist(item.type, 'm4a,mp3,ogg,flac,f4a,wav,ape,ncm')) {
+            item.TypeArray='m4a,mp3,ogg,flac,f4a,wav,ape,ncm';
+            item.OpenType='audio';
+        }
+        else if (item.type==='pdf') {
+            item.OpenType='pdf';
+        }
+        else if (this.$Api.StringExist(item.item.type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
+            item.TypeArray='ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java';
+            item.OpenType='text';
+        }
+        else {
+            item.OpenType=null;
+        }
+    }
 }
 function age(birth){
     birth = Date.parse(birth?birth:"".replace('/-/g', "/"));
