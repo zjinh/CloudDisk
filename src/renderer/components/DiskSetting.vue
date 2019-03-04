@@ -176,7 +176,6 @@
         created(){
             this.LoginTime=localStorage.LoginTime;
             this.GetLocalSetting();
-            this.GetUserInfo(()=>{});
         },
         methods:{
             change(item,index){
@@ -215,6 +214,7 @@
                             this.SettingData.NoticeVoice='音效四';
                             break;
                     }
+                    this.GetUserInfo();
                 });
             },
             ChangePassword(){

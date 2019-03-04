@@ -3,7 +3,7 @@
          @keydown.stop.ctrl.67="isDisk?DiskFeatureControl('Copy'):''"
          @keydown.stop.ctrl.88="isDisk? DiskFeatureControl('Cut'):''"
          @keydown.stop.ctrl.86="isDisk? DiskFeatureControl('paste'):''"
-         @keydown.stop.ctrl.85="isDisk? UploadFile():''"
+         @keydown.stop.ctrl.85="isDisk? DiskFeatureControl('upload'):''"
          @keydown.stop.ctrl.82="isTrash? DiskFeatureControl('restore'):''"
          @keydown.stop.!ctrl.46="isDisk? DiskFeatureControl('trash'):''"
          @keydown.stop.ctrl.46="isTrash? DiskFeatureControl('delete'):''"
@@ -15,13 +15,13 @@
          @keydown.stop.shift="DiskData.KeyFlag = 'Shift'"
          @keyup="DiskData.KeyFlag =null"
          tabindex="1" ref="CloudDiskMain">
-        <DiskHeader :HeadSrc="HeadSrc" :hide="NeedHide" :data="DiskData" @callback="SwitchType"></DiskHeader>
+        <DiskHeader :HeadSrc="HeadSrc" :hide="NeedHide" :data="DiskData" :count="DownloadCount+UploadCount" @callback="SwitchType"></DiskHeader>
         <div class="CloudDiskFuncMain">
             <div class="CloudDiskHead">
                 <DiskNavigation :data="DiskData" :loading="LoadCompany" @callback="NavigationControl"></DiskNavigation>
                 <DiskBarFeature :show="NoTransType" :hide="NeedHide" :disabled="IsShare" @callback="DiskFeatureControl"></DiskBarFeature>
             </div>
-            <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" :BottomSrc="BottomSrc" @callback="SwitchClassify" @change="SwitchClassify"></DiskClassify>
+            <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" :BottomSrc="BottomSrc" @callback="SwitchClassify" @change="SwitchClassify" ref="DiskClassify"></DiskClassify>
             <div class="CloudDiskRight">
                 <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
                 <DiskSortBar :show="DiskData.DiskShowState!=='CloudDiskMFile'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
@@ -47,7 +47,7 @@
             <li @click="DiskFeatureControl('info')" :disabled="DiskData.SelectFiles.length>1">属性<span>Alt+Enter</span></li>
         </ul>
         <ul class="MouseMenu" v-show="DiskMouseState.DiskMainMenu.show" ref="DiskMainMenu">
-            <li @click="UploadFile" :disabled="DiskData.ClassifyName!=='网盘'">上传文件<span>Ctrl+U</span></li>
+            <li @click="DiskFeatureControl('upload')" :disabled="DiskData.ClassifyName!=='网盘'">上传文件<span>Ctrl+U</span></li>
             <li @click="DiskFeatureControl()" :disabled="DiskData.ClassifyName!=='网盘'">新建文件夹<span>Ctrl+N</span></li>
             <li @click="DiskData.Clipboard=[]" v-if="DiskData.ClassifyName==='网盘'" :disabled="DiskData.Clipboard.length===0">清空剪切板</li>
             <li @click="DiskFeatureControl('paste')" v-if="DiskData.ClassifyName==='网盘'" :disabled="DiskData.Clipboard.length===0">粘贴<span>Ctrl+V</span></li>
@@ -109,13 +109,11 @@
     import DiskClassify from './DiskWindow/DiskClassify';//网盘左侧导航栏
     import DiskRecoverBar from './DiskWindow/DiskRecoverBar';//回收站提示栏
     import DiskSortBar from './DiskWindow/DiskSortBar';//排序工具栏
-
-    import DiskFile from './DiskWindow/DiskFile';
-
-    import DiskTree from './DiskWindow/DiskTree';
-    import DiskShare from './DiskWindow/DiskShare';
-    import DiskTransList from './DiskWindow/DiskTransList';
-    import loading from "./DiskWindow/loading";
+    import DiskFile from './DiskWindow/DiskFile';//网盘文件块
+    import DiskTree from './DiskWindow/DiskTree';//树目录
+    import DiskShare from './DiskWindow/DiskShare';//文件分享
+    import DiskTransList from './DiskWindow/DiskTransList';//下载列表
+    import loading from "./DiskWindow/loading";//加载
     export default {
         name: "DiskWindow",
         components:{DiskHeader,DiskNavigation,DiskBarFeature,DiskClassify,DiskRecoverBar,DiskSortBar,DiskFile,DiskTree,DiskShare,DiskTransList,loading},
@@ -191,19 +189,17 @@
                 ShowUploadTips:false,
                 /*文件传输列表参数*/
                 TransformData:[],
-                SelectUploadFiles:[],
-                SelectDownLoadFiles:[],
-                UploadCount:0,
-                DownloadCount:0,
-                FinishCount:0,
+                SelectUploadFiles:[],//选择上传的文件
+                SelectDownLoadFiles:[],//选择下载的文件
+                DiskUploadData:[],//上传文件记录
+                DiskDownLoadData:[],//下载文件记录，
+                UploadCount:0,//上传技术
+                DownloadCount:0,//下载计数
+                FinishCount:0,//完成计数
                 NoticeSrc:'',
                 /*自动切换背景*/
                 HeadSrc:'url(' + require('../../../static/img/bg/Autumn-1.png') + ')',
                 BottomSrc:this.$path.join(__static,'/img/bg/Autumn-bottom-1.png'),
-                /*记录用户个人信息文件*/
-                DiskUploadData:[],
-                DiskDownLoadData:[],
-                DiskUserAllData:[],
             }
         },
         watch:{
@@ -277,10 +273,11 @@
                                 this.FinishCount++;
                             }
                         });
-                        this.TransData[0].count=this.DownloadCount;
-                        this.TransData[1].count=this.UploadCount;
-                        this.TransData[2].count=this.FinishCount;
+                        this.$refs.DiskClassify.TransData[0].count=this.DownloadCount;
+                        this.$refs.DiskClassify.TransData[1].count=this.UploadCount;
+                        this.$refs.DiskClassify.TransData[2].count=this.FinishCount;
                     });
+                    this.$Api.LocalFile.Write('transfer',this.TransformData);
                 },
                 deep: true
             }
@@ -333,6 +330,9 @@
                 setInterval(()=>{
                     this.SystemControl('background');
                 },1000);
+                this.$Api.LocalFile.Read('transfer').then((data)=>{
+                    this.TransformData=data;
+                });
             },
             /*导航栏函数*/
             NavigationControl(commend){
@@ -439,13 +439,22 @@
             DiskCommendTips(type){
                 let tips;
                 if(this.DiskData.SelectFiles.length){
-                    this.DiskData.Clipboard=this.DiskData.SelectFiles;
+                    if(type==='download'){
+                        this.SelectDownLoadFiles=this.DiskData.SelectFiles;
+                    }else {
+                        this.DiskData.Clipboard = this.DiskData.SelectFiles;
+                    }
                     if(this.DiskData.SelectFiles.length===1){
                         tips=this.DiskData.SelectFiles[0].disk_name;
                     }else {
                         tips='所选' + this.DiskData.Clipboard.length+'个项目';
                     }
                 }else{
+                    if(type==='download'){
+                        this.SelectDownLoadFiles.push(this.DiskData.NowSelect);
+                    }else {
+                        this.DiskData.Clipboard.push(this.DiskData.NowSelect);
+                    }
                     tips=this.DiskData.NowSelect.disk_name;
                 }
                 switch (type) {
@@ -454,6 +463,9 @@
                         break;
                     case 'Cut':
                         tips=tips+'已剪切到剪贴板';
+                        break;
+                    case 'download':
+                        tips=tips+'已加入下载列队';
                         break;
                     default:
                         tips=null;
@@ -503,6 +515,16 @@
                                 this.$ipc.send('file-control', OpenType, data.length?data:this.DiskData.NowSelect);
                             }else{
                                 this.$Message.warning('暂不支持打开该类型文件');
+                            }
+                        }
+                        break;
+                    case 'upload'://上传文件
+                        if(this.loadClassify==='normal') {
+                            this.$refs.FileArea.value='';
+                            this.$refs.FileArea.click();
+                            if(datas){
+                                this.PreparUpload(datas.dataTransfer);
+                                this.ShowUploadTips = false;
                             }
                         }
                         break;
@@ -876,32 +898,19 @@
                     this.ShowUploadTips = false;
                 }
             },//拖拽上传
-            UploadFile(){
-                if(this.loadClassify==='normal') {
-                    this.$refs.FileArea.value='';
-                    this.$refs.FileArea.click();
-                }
-            },//上传文件
             PreparUpload(data){
                 if(data.target){
                     data=data.target;
-                    for(let k=0;k<data.files.length;k++){
-                        this.SelectUploadFiles.push(data.files[k]);
-                    }
-                }else{
-                    for(let k=0;k<data.files.length;k++){
-                        this.SelectUploadFiles.push(data.files[k]);
-                    }
+                }
+                for(let k=0;k<data.files.length;k++){
+                    this.SelectUploadFiles.push(data.files[k]);
                 }
                 let fileArea=data.files;
                 let file;
-                let count=0;
                 let OneFile={};
-                console.log(fileArea)
                 this.$nextTick(()=>{
                     for (let i = 0; i<fileArea.length; i++) {
                         file = fileArea[i];
-                        if (file.name.split('.').length>1) {
                             OneFile = {
                                 name: file.name,
                                 chunk: 0,
@@ -918,7 +927,6 @@
                                 buttonVal:'sf-icon-pause'
                             };
                             OneFile.$icon=this.$Api.IconGet(OneFile);
-                            console.log(this.DiskUploadData)
                             for (let j=0;j<this.DiskUploadData.length;j++){
                                 let item=this.DiskUploadData[j];
                                 if(item.name===OneFile.name&&item.percent!==100&&item.disk_main===OneFile.disk_main){
@@ -928,15 +936,13 @@
                                     return false
                                 }
                             }
-                            count++;
                             this.DiskUploadData.push(OneFile);
                             this.TransformData.push(OneFile);
                             this.PostUpload(OneFile,'first');
-                        }
                     }
                     this.$Notice.info({
                         title: '开始上传',
-                        desc: count+'个文件已加入上传列队'
+                        desc: fileArea.length+'个文件已加入上传列队'
                     });
                 });
             },//处理上传
@@ -954,12 +960,10 @@
             ControlTrans(item,index){
                 if(event.target.className==='sf-icon-times'){
                     this.TransformData.splice(index,1);
-                    this.$Api.LocalFile.Write('transfer',this.TransformData);
                     return
                 }
                 if(item.state==='finish'){
                     this.TransformData.splice(index,1);
-                    this.$Api.LocalFile.Write('transfer',this.TransformData);
                     return
                 }
                 if (!item.paused) {
@@ -1011,14 +1015,11 @@
                 fd.append('isFirstUpload', times === 'first' ? 1 : 0); // 是否是第一段（第一次上传）
                 // 上传
                 this.$Api.Disk.Upload(fd,(rs)=>{
-                    // 上传成功
-                    if (parseInt(rs.status) === 200) {
-                        // 记录已经上传的百分比
+                    if (parseInt(rs.status) === 200) {// 上传成功
                         this.$nextTick(()=>{
-                            item.percent=parseFloat(percent);
+                            item.percent=parseFloat(percent);// 记录已经上传的百分比
                         });
-                        // 已经上传完毕
-                        if (rs.data) {
+                        if (rs.data) {// 已经上传完毕
                             this.$nextTick(()=>{
                                 item.state='finish';
                                 item.show=false;
@@ -1027,8 +1028,7 @@
                                     this.UserDiskData.push(rs.data);
                                 }
                             });
-                            /*播放提示音*/
-                            this.SystemControl('popup',item.name+'上传完成');
+                            this.SystemControl('popup',item.name+'上传完成');/*消息提醒*/
                         }else {
                             item.chunk = ++chunk;
                             // 这样设置可以暂停，但点击后动态的设置就暂停不了..
@@ -1041,33 +1041,17 @@
                                 this.PostUpload(item);
                             }
                         }
-                        this.$nextTick(()=> {
-                            this.$Api.LocalFile.Write('transfer',this.TransformData);
-                        });
                     }else{
                         this.$nextTick(()=>{
                             item.state='fail';
                             item.buttonVal='sf-icon-play';
-                            //删除记录
-                            this.$Api.LocalFile.Write('transfer',this.TransformData);
                         });
                     }
                 });
             },
             DiskDownload(){
-                if(this.DiskData.SelectFiles.length){
-                    this.SelectDownLoadFiles=this.DiskData.SelectFiles;
-                    if(this.DiskData.SelectFiles.length===1){
-                        this.$Message.info(this.DiskData.SelectFiles[0].disk_name+' 开始下载');
-                    }else {
-                        this.$Message.info('所选' + this.SelectDownLoadFiles.length + '开始下载');
-                    }
-                }else{
-                    this.SelectDownLoadFiles.push(this.DiskData.NowSelect);
-                    this.$Message.info(this.DiskData.NowSelect.disk_name+' 开始下载');
-                }
                 this.SelectDownLoadFiles.forEach((item)=>{
-                    // 定义回调函数
+                   /* // 定义回调函数
                     function downloadFileCallback(arg, percentage)
                     {
                         if (arg === "progress")
@@ -1079,10 +1063,10 @@
                         {
                             // 通知完成
                         }
-                    }
+                    }*/
+                   //this.$Api.Download
                 })
             },//下载文件
-
             DiskMoveTo(){
                 this.showTree=true;
                 this.$nextTick(()=>{
@@ -1092,7 +1076,6 @@
                     }catch (e) {}
                 });
             },
-
             Share(){
                 this.$refs.DiskShareModel.ShareFile(this.DiskData.NowSelect)
             },//提交文件分享
@@ -1215,7 +1198,6 @@
             SelectDiskTree(item){
                 this.SelectTrees=item;
             },//选择树目录
-
             MainMouseFunc(){
                 //this.ClearSelect();
                 if(this.NoTransType) {
@@ -1321,15 +1303,6 @@
                 });
                 return result;
             },
-            /*本地账户存储*/
-            GetAccountData(){
-                this.$Api.LocalFile.Read('transfer').then((res)=>{
-                    this.DiskUploadData=res;
-                    this.DiskUploadData.forEach((item)=>{
-                        this.TransformData.push(item);
-                    })
-                });
-            }
         }
     }
 </script>

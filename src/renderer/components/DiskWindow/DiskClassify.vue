@@ -88,7 +88,6 @@
                         this.$emit("change", this.type,item)
                     }
                 });
-
             },
             change(index) {
                 this.ClassifyMenuData.forEach(function (item) {

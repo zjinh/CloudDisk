@@ -48,6 +48,9 @@
             },
             hide:{
                 type:Boolean
+            },
+            count:{
+                type:Number
             }
         },
         computed:{
@@ -124,12 +127,10 @@
                 if(command!=='switch'&&command!=='exit') {
                     this.$ipc.send('system', command,command==='account'?this.UserInfo:"");
                 }else{
-                    let tips,type='';
+                    let tips='',type='';
                     type=(command==='switch'?'切换':'退出');
-                    if(this.UploadCount>0){
-                        tips=this.UploadCount+'个文件正在上传，'+type+'后将在下次登录后重新选择以继续传输<br>'
-                    }else if(this.DownloadCount>0){
-                        tips=this.DownloadCount+'个文件正在下载，'+type+'将暂停传输'
+                    if(this.count>0){
+                        tips=this.count+'个传输任务未完成，'+type+'将暂停传输<br>'
                     }
                     switch (command){
                         case 'switch':
