@@ -100,6 +100,9 @@
             this.$ipc.on('exit',()=>{
                 this.SystemDropDown('exit');
             });
+            this.$ipc.on('user-update',()=>{
+                this.GetUserInfo();
+            });
             this.GetUserInfo();
         },
         methods:{
@@ -158,9 +161,9 @@
                     this.$nextTick(()=>{
                         this.UserInfo=rs[0];
                     });
+                    this.$Api.LocalFile.Exist(rs[0].userid);
+                    this.$Api.LocalFile.Write('user',rs[0]);
                     localStorage.LoginTime=rs[0].login_time;
-                    localStorage.Phone=rs[0].phone;
-                    localStorage.email=rs[0].email;
                 },()=>{
                     this.$Message.error({
                         content: '账号状态异常，请重新登录！',

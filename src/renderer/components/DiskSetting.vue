@@ -25,34 +25,34 @@
                     <p class="SettingBigTitle">系统设置</p>
                     <p class="SettingSecTitle">开机自启动</p>
                     <div class="SettingForm">
-                        <Checkbox v-model="AutoStartFlag">系统启动后自动运行CloudDisk</Checkbox>
+                        <Checkbox v-model="SettingData.AutoStartFlag">系统启动后自动运行CloudDisk</Checkbox>
                     </div>
                     <p class="SettingSecTitle">自动登录</p>
                     <div class="SettingForm" style="width: 100%">
-                        <Checkbox v-model="AutoLogin">打开CloudDisk后自动登录(需勾选记住密码)</Checkbox>
+                        <Checkbox v-model="SettingData.AutoLogin">打开CloudDisk后自动登录(需勾选记住密码)</Checkbox>
                     </div>
                 </div>
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Safety.active">
                     <p class="SettingBigTitle">绑定设置</p>
                     <p class="SettingSecTitle">修改安全邮箱</p>
-                    <p class="SettingInfo">当前绑定邮箱：{{Email}}<button @click="OpenChangeEmailDialog">[修改]</button></p>
+                    <p class="SettingInfo">当前绑定邮箱：{{SettingData.Email}}<button @click="OpenChangeEmailDialog">[修改]</button></p>
                     <p class="SettingSecTitle">更换手机</p>
-                    <p class="SettingInfo">当前绑定手机号：{{Phone}}<button @click="ChangePhone">[修改]</button></p>
+                    <p class="SettingInfo">当前绑定手机号：{{SettingData.Phone}}<button @click="ChangePhone">[修改]</button></p>
                 </div>
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Trans.active">
                     <p class="SettingBigTitle">传输设置</p>
                     <p class="SettingSecTitle">下载目录设置</p>
                     <div class="SettingInfo">
-                        当前目录：{{TransDownFolder}}
+                        当前目录：{{SettingData.TransDownFolder}}
                         <button @click="ChangeTransAddress">[修改]</button>
                     </div>
                     <p class="SettingSecTitle">同时上传数</p>
                     <div class="SettingForm">
-                        <InputNumber :max="5"  :min="1" v-model="MaxUpTrans"></InputNumber>
+                        <InputNumber :max="5"  :min="1" v-model="SettingData.MaxUpTrans"></InputNumber>
                     </div>
                     <p class="SettingSecTitle">同时下载数</p>
                     <div class="SettingForm" style="margin-bottom: 0">
-                        <InputNumber :max="5" :min="1" v-model="MaxDownTrans"></InputNumber>
+                        <InputNumber :max="5" :min="1" v-model="SettingData.MaxDownTrans"></InputNumber>
                     </div>
                     <p class="SettingTips">*请不要在正在下载文件的情况下修改下载目录</p>
                     <p class="SettingTips">*修改后将立刻保存生效</p>
@@ -61,17 +61,17 @@
                     <p class="SettingBigTitle">提醒设置</p>
                     <p class="SettingSecTitle">弹窗提醒</p>
                     <div class="SettingForm">
-                        <Checkbox v-model="NoticeBubble">传输完成后气泡提示</Checkbox>
+                        <Checkbox v-model="SettingData.NoticeBubble">传输完成后气泡提示</Checkbox>
                     </div>
                     <p class="SettingSecTitle">声音提醒</p>
                     <div class="SettingForm" style="width: 100%">
-                        <Checkbox v-model="NoticeFlag">传输完成后声音提醒</Checkbox>
+                        <Checkbox v-model="SettingData.NoticeFlag">传输完成后声音提醒</Checkbox>
                         <div class="SettingForm" style="width: 100%">
-                            <RadioGroup v-model="NoticeVoice" @on-change="VoiceChange">
-                                <Radio label="音效一" :disabled="!NoticeFlag"></Radio>
-                                <Radio label="音效二" :disabled="!NoticeFlag"></Radio>
-                                <Radio label="音效三" :disabled="!NoticeFlag"></Radio>
-                                <Radio label="音效四" :disabled="!NoticeFlag"></Radio>
+                            <RadioGroup v-model="SettingData.NoticeVoice" @on-change="VoiceChange">
+                                <Radio label="音效一" :disabled="!SettingData.NoticeFlag"></Radio>
+                                <Radio label="音效二" :disabled="!SettingData.NoticeFlag"></Radio>
+                                <Radio label="音效三" :disabled="!SettingData.NoticeFlag"></Radio>
+                                <Radio label="音效四" :disabled="!SettingData.NoticeFlag"></Radio>
                             </RadioGroup>
                         </div>
                         <audio :src="VoiceSrc" ref="audio"></audio>
@@ -79,14 +79,14 @@
                 </div>
             </div>
         </div>
-        <el-dialog title="更换邮箱" :visible.sync="ShowChangeEmailWindow1" width="300px" top="70px">
+        <el-dialog title="更换邮箱" :visible.sync="ShowEmailDialog" width="300px" top="70px">
             <div style="height: 120px;">
                 <p class="SettingSecTitle">我们需要以下信息</p>
                 <Input type="password" v-model="ChangeEmailData.pass" placeholder="当前账号密码" clearable style="width: 100%" />
                 <Input type="text" v-model="ChangeEmailData.email" placeholder="您的新邮箱地址" clearable style="width: 100%" />
             </div>
             <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button--default el-button--small" @click="ShowChangeEmailWindow1 = false">取 消</button>
+                <button class="el-button el-button--default el-button--small" @click="ShowEmailDialog = false">取 消</button>
                 <button class="el-button el-button--default el-button--small el-button--primary" @click="ChangeEmail">确 定</button>
             </span>
         </el-dialog>
@@ -103,56 +103,14 @@
         name: "DiskSetting",
         components:{SettingMenu},
         watch:{
-            AutoStartFlag:{
+            SettingData: {
                 handler(newValue, oldValue) {
-                    if(this.AutoStartFlag===true){
+                    if(this.SettingData.AutoStartFlag===true){
                         StartOnBoot.enableAutoStart('CloudDisk',process.execPath)
                     }else{
                         StartOnBoot.disableAutoStart('CloudDisk')
                     }
-                    localStorage.AutoStartFlag=this.AutoStartFlag;
-                },
-                deep: true
-            },
-            AutoLogin: {
-                handler(newValue, oldValue) {
-                    localStorage.AutoLogin=this.AutoLogin;
-                },
-                deep: true
-            },
-            MaxUpTrans: {
-                handler(newValue, oldValue) {
-                    localStorage.MaxUpTrans=this.MaxUpTrans;
-                },
-                deep: true
-            },
-            MaxDownTrans: {
-                handler(newValue, oldValue) {
-                    localStorage.MaxDownTrans=this.MaxDownTrans;
-                },
-                deep: true
-            },
-            TransDownFolder: {
-                handler(newValue, oldValue) {
-                    localStorage.TransDownFolder=this.TransDownFolder
-                },
-                deep: true
-            },
-            VoiceSrc:{
-                handler(newValue, oldValue) {
-                    localStorage.NoticeVoice=this.VoiceSrc
-                },
-                deep: true
-            },
-            NoticeFlag:{
-                handler(newValue, oldValue) {
-                    localStorage.NoticeFlag=this.NoticeFlag;
-                },
-                deep: true
-            },
-            NoticeBubble:{
-                handler(newValue, oldValue) {
-                    localStorage.NoticeBubble=this.NoticeBubble;
+                    this.$Api.LocalFile.Write('setting',this.SettingData);
                 },
                 deep: true
             },
@@ -191,56 +149,34 @@
                     newpass:'',
                     againPass:'',
                 },
-                user:'',
-                LoginTime:0,
-                loading:'',
-                Phone:'',
-                Email:'',
-                AutoStartFlag:false,
-                AutoLogin:false,
-                TransDownFolder:'',
-                MaxUpTrans:1,
-                MaxDownTrans:1,
-                ShowChangeEmailWindow1:false,
-                EmailSendFlag:false,
                 ChangeEmailData:{
                     ctype:1,
                     pass:'',
                     email:''
                 },
-                NoticeBubble:true,//气泡提示
-                NoticeFlag:true,//提醒声音
-                NoticeVoice:'音效一',//哪个提醒声音
-                VoiceSrc:'',//提醒测试音效
+                LoginTime:0,
+                VoiceSrc:'',//提醒测试音效.
+                ShowEmailDialog:false,
+                EmailSendFlag:false,
+                SettingData:{
+                    AutoLogin:false,
+                    AutoStartFlag:false,
+                    Phone:"",
+                    Email:'',
+                    TransDownFolder:'',
+                    MaxUpTrans:1,
+                    MaxDownTrans:1,
+                    NoticeBubble:true,//气泡提示
+                    NoticeFlag:true,//提醒声音
+                    NoticeVoice:'音效一',//哪个提醒声音
+                },
+                loading:'',
             }
         },
         created(){
-            this.user=localStorage.username;
             this.LoginTime=localStorage.LoginTime;
-            this.AutoStartFlag=eval(localStorage.AutoStartFlag);
-            this.AutoLogin=eval(localStorage.AutoLogin);
-            this.TransDownFolder=localStorage.TransDownFolder;
-            this.MaxUpTrans=parseInt(localStorage.MaxUpTrans);
-            this.MaxDownTrans=parseInt(localStorage.MaxDownTrans);
-            this.Phone=localStorage.Phone;
-            this.Email=localStorage.email;
-            this.NoticeBubble=eval(localStorage.NoticeBubble);
-            this.NoticeFlag=eval(localStorage.NoticeFlag);
-            this.VoiceSrc=localStorage.NoticeVoice;
-            switch (localStorage.NoticeVoice.substr(-5)) {
-                case "1.wav":
-                    this.NoticeVoice='音效一';
-                    break;
-                case "2.wav":
-                    this.NoticeVoice='音效二';
-                    break;
-                case "3.wav":
-                    this.NoticeVoice='音效三';
-                    break;
-                case "4.wav":
-                    this.NoticeVoice='音效四';
-                    break;
-            }
+            this.GetLocalSetting();
+            this.GetUserInfo(()=>{});
         },
         methods:{
             change(item,index){
@@ -248,6 +184,38 @@
                     this.SettingMenuData[i].active='';
                 }
                 this.SettingMenuData[index].active='active';
+            },
+            GetUserInfo () {
+                this.$Api.User.UserInfo((rs)=>{
+                    this.SettingData.Phone=rs[0].phone;
+                    this.SettingData.Email=rs[0].email;
+                });
+            },//获取用户信息,
+            GetLocalSetting(){
+                this.$Api.LocalFile.Read('setting',(data)=>{
+                    if(data.Email!==undefined){
+                        this.$nextTick(()=>{
+                            this.SettingData=data;
+                        });
+                    }else{
+                        this.SettingData.TransDownFolder=process.env.USERPROFILE;
+                        this.$Api.LocalFile.Write('setting',this.SettingData);
+                    }
+                    switch (this.SettingData.NoticeVoice.substr(-5)) {
+                        case "1.wav":
+                            this.SettingData.NoticeVoice='音效一';
+                            break;
+                        case "2.wav":
+                            this.SettingData.NoticeVoice='音效二';
+                            break;
+                        case "3.wav":
+                            this.SettingData.NoticeVoice='音效三';
+                            break;
+                        case "4.wav":
+                            this.SettingData.NoticeVoice='音效四';
+                            break;
+                    }
+                });
             },
             ChangePassword(){
                 if(this.loading){
@@ -293,11 +261,10 @@
                         this.$Message.error(rs.msg);
                     }
                 })
-
             },
             OpenChangeEmailDialog(){
                 if(this.ChangeEmailData.ctype===1) {
-                    this.ShowChangeEmailWindow1=true;
+                    this.ShowEmailDialog=true;
                 }else{
                     this.SubmitChangeEmail();
                 }
@@ -321,7 +288,7 @@
                 }
                 if(this.ChangeEmailData.email===this.Email){
                     this.$Message.warning('新旧邮箱地址一致，操作取消');
-                    this.ShowChangeEmailWindow1=false;
+                    this.ShowEmailDialog=false;
                     return
                 }
                 if(this.ChangeEmailData.ctype===1&&this.EmailSendFlag){
@@ -340,7 +307,7 @@
                     }
                     if(rs[0].state==='success'){
                         this.ChangeEmailData.ctype=2;
-                        this.ShowChangeEmailWindow1=false;
+                        this.ShowEmailDialog=false;
                         this.ChangeEmailData.pass='';
                         this.ChangeEmailData.email='';
                         this.SubmitChangeEmail();
@@ -356,7 +323,7 @@
                 })
             },
             MailSended(){
-                this.ShowChangeEmailWindow1=false;
+                this.ShowEmailDialog=false;
                 this.$confirm('10分钟内无法再进行更改邮箱操作，如果您已收到授权码，请点击继续', '操作终止', {
                     confirmButtonText: '继续',
                     cancelButtonText: '取消',
@@ -378,14 +345,11 @@
                         },(rs)=>{
                             this.loading=false;
                             if(!rs[0]){
-                                this.$Message.error('服务器错误');
-                                return
+                                return this.$Message.error('服务器错误');
                             }
                             if(rs[0].state==='success'){
                                 this.$Message.success('安全邮箱已修改');
-                                this.Email=rs[0].email;
-                                localStorage.email=rs[0].email;
-                                this.getUser();
+                                this.SettingData.Email=rs[0].email;
                             }else {
                                 this.$Message.error(rs[0].msg);
                             }
@@ -416,6 +380,7 @@
                         this.PlayVoice();
                         break;
                 }
+                localStorage.NoticeVoice=this.VoiceSrc;
             },
             PlayVoice(){
                 this.$refs.audio.currentTime=0;
@@ -424,25 +389,6 @@
                 setTimeout(()=>{
                     this.$refs.audio.play();
                 },200)
-            },
-            getUser(){
-                this.$Api.User.UserInfo((rs)=>{
-                    this.$nextTick(()=>{
-                        rs=rs[0];
-                        this.$ipc.send('user',rs);
-                    });
-                },()=>{
-                })
-            },
-            InputConfrim(options){
-                this.$prompt(options.tips, options.title, {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputValue:options.value||'',
-                }).then(({ value }) => {
-                    options.callback(value)
-                }).catch(() => {
-                });
             },
             ChangeTransAddress(){
                 dialog.showOpenDialog({
@@ -457,7 +403,7 @@
                     ]
                 },(res)=>{
                     //回调函数内容，此处是将路径内容显示在input框内
-                    this.TransDownFolder=res[0];
+                    this.SettingData.TransDownFolder=res[0];
                 })
             },
             close(){

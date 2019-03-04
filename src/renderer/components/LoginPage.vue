@@ -219,18 +219,25 @@
                 ResendData:{
                     State:true,
                     Text:'重新发送'
-                }
+                },
+                /*是否自动登录*/
+                AutoLogin:false,
             }
         },
         created:function () {
             localStorage.server=this.ServerAddress;
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
-                this.$ipc.on('win-data',(e,msg)=>{//接收是否允许自动登录
-                    if(eval(localStorage.AutoLogin)&&msg){
-                        this.login();
+                this.$Api.LocalFile.Read('setting',(data)=>{
+                    if(data.AutoLogin!==undefined){
+                        this.AutoLogin=data.AutoLogin;
                     }
-                })
+                    this.$ipc.on('win-data',(e,msg)=>{//接收是否允许自动登录
+                        if(this.AutoLogin&&eval(msg)===true){
+                            this.login();
+                        }
+                    })
+                });
             }
             window.addEventListener( "dragenter", function (e) {
                 e.preventDefault();
@@ -500,24 +507,7 @@
                 })
             },
             CheckUserConf:function(){
-                if(!localStorage.TransDownFolder){
-                    localStorage.TransDownFolder=process.env.USERPROFILE
-                }
-                if(!localStorage.MaxUpTrans){
-                    localStorage.MaxUpTrans=5
-                }
-                if(!localStorage.MaxDownTrans){
-                    localStorage.MaxDownTrans=5
-                }
-                if(localStorage.NoticeFlag!==false||localStorage.NoticeFlag!==true){
-                    localStorage.NoticeFlag=true;
-                }
-                if(!localStorage.NoticeVoice){
-                    localStorage.NoticeVoice=this.$path.join(__static,'/voice/1.wav');
-                }
-                if(localStorage.NoticeBubble!==false||localStorage.NoticeBubble!==true){
-                    localStorage.NoticeBubble=true;
-                }
+
             },
             changeType:function (type) {
                 if(this.PostState.length>5){
@@ -531,23 +521,22 @@
                 this.HeadText.tips=this.ShowState[type].tips
             },
             OpenServerWindow:function(){
-                this.$prompt('请输入服务器地址', '修改服务器地址', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputValue:this.ServerAddress,
+                this.InputConfrim({
+                    title: "修改服务器地址",
+                    tips: '请输入服务器地址',
+                    value:this.ServerAddress,
                     inputPattern: /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])/,
-                    inputErrorMessage: '服务器地址格式不正确'
-                }).then(({ value }) => {
-                    this.$Message.info('正在验证'+value+'是否可用');
-                    this.$Api.Check(value,(rs)=>{
-                        this.$Message.success(value+'可用！');
-                        this.ServerAddress=value;
-                        localStorage.server=value;
-                    },(error)=>{
-                        this.$Message.error(value+'不可用');
-                    })
-                }).catch(() => {
-
+                    inputErrorMessage: '服务器地址格式不正确',
+                    callback:(value)=>{
+                        this.$Message.info('正在验证'+value+'是否可用');
+                        this.$Api.Check(value,(rs)=>{
+                            this.$Message.success(value+'可用！');
+                            this.ServerAddress=value;
+                            localStorage.server=value;
+                        },(error)=>{
+                            this.$Message.error(value+'不可用');
+                        })
+                    }
                 });
             },
             mini:function () {

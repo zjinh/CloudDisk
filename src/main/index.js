@@ -349,9 +349,6 @@ let DiskSystem= {
     },
 };
 function BindIpc() {
-    ipcMain.on('user',(e,msg)=>{
-        MainWindow.webContents.send('user',msg);
-    });
     /*系统操作事件*/
     ipcMain.on('system',(event,type,data)=>{
         switch (type) {
@@ -380,6 +377,9 @@ function BindIpc() {
                 break;
             case 'update':/*安装更新*/
                 autoUpdater.quitAndInstall();
+                break;
+            case 'user-update':
+                MainWindow.webContents.send('user-update',data);
                 break;
             case 'logoff':
                 DiskSystem.logoff();

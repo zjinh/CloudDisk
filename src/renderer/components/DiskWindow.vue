@@ -954,12 +954,12 @@
             ControlTrans(item,index){
                 if(event.target.className==='sf-icon-times'){
                     this.TransformData.splice(index,1);
-                    this.$Api.LocalFile.Write(this.TransformData);
+                    this.$Api.LocalFile.Write('transfer',this.TransformData);
                     return
                 }
                 if(item.state==='finish'){
                     this.TransformData.splice(index,1);
-                    this.$Api.LocalFile.Write(this.TransformData);
+                    this.$Api.LocalFile.Write('transfer',this.TransformData);
                     return
                 }
                 if (!item.paused) {
@@ -1042,14 +1042,14 @@
                             }
                         }
                         this.$nextTick(()=> {
-                            this.$Api.LocalFile.Write(this.TransformData);
+                            this.$Api.LocalFile.Write('transfer',this.TransformData);
                         });
                     }else{
                         this.$nextTick(()=>{
                             item.state='fail';
                             item.buttonVal='sf-icon-play';
                             //删除记录
-                            this.$Api.LocalFile.Write(this.TransformData);
+                            this.$Api.LocalFile.Write('transfer',this.TransformData);
                         });
                     }
                 });
@@ -1323,7 +1323,7 @@
             },
             /*本地账户存储*/
             GetAccountData(){
-                this.$Api.LocalFile.Read('upload').then((res)=>{
+                this.$Api.LocalFile.Read('transfer').then((res)=>{
                     this.DiskUploadData=res;
                     this.DiskUploadData.forEach((item)=>{
                         this.TransformData.push(item);

@@ -101,7 +101,7 @@
                 this.$Api.User.Update(formdata,(r)=>{
                     if (r[0].state==='success') {
                         this.$Message.success('信息已更新');
-                        this.getUser();
+                        this.$ipc.send('system','user-update');
                     }else{
                         this.$Message.error('信息更新失败');
                     }
@@ -116,16 +116,6 @@
                     });
                 });
                 return false;
-            },
-            getUser(){
-                this.$Api.User.UserInfo((rs)=>{
-                    this.$nextTick(()=>{
-                        rs=rs[0];
-                        this.User=rs;
-                        this.$ipc.send('user',rs);
-                    });
-                },()=>{
-                })
             },
             onSubmit(){return false;}
         }

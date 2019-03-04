@@ -75,6 +75,8 @@ Vue.prototype.InputConfrim=(options)=>{
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValue:options.value||'',
+        inputPattern:options.inputPattern||'',
+        inputErrorMessage: options.inputErrorMessage||'',
     }).then(({ value }) => {
         options.callback(value)
     }).catch(() => {

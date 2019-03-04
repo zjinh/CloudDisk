@@ -1,7 +1,6 @@
 import axios from 'axios'
 const path =require("path");
 const fs= require('fs');
-let AccountFile=null;
 let address=process.env.HOMEDRIVE+process.env.HOMEPATH+'/CloudDisk\/';//用户文件地址
 function Ajax(options) {
     let params = new URLSearchParams();
@@ -126,7 +125,7 @@ function DiskData(item){
         else if (item.type==='pdf') {
             item.OpenType='pdf';
         }
-        else if (this.$Api.StringExist(item.item.type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
+        else if (StringExist(item.type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
             item.TypeArray='ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java';
             item.OpenType='text';
         }
@@ -182,7 +181,6 @@ let User={
             success:(rs)=>{
                 rs[0].birth=age(rs[0].birthday);
                 rs[0].userhead=localStorage.server+'/'+rs[0].userhead+'?'+Date.now();
-                LocalFile.Exist(rs[0].userid);
                 callback(rs);
             },
             error:error
@@ -403,43 +401,52 @@ let Disk={
 };
 let LocalFile={
     User:null,
+    AccountFile:{},//用户本地文件对象
     Exist(user){
         fs.exists(address,(exists)=>{
             if(!exists){
-                fs.mkdir(address,(err)=>{
-                    if(err) {
-                        return this.$Message.error('用户文件创建失败');
-                    }
-                })
+                fs.mkdir(address,(err)=>{});
             }
         });
-        fs.exists(address+ user+".json",(exists)=>{
+        fs.exists(address+user,(exists)=>{
             if(!exists){
-                let content={
-                    download:[],
-                    upload:[],
-                };
-                fs.writeFile(address+ user+".json",JSON.stringify(content),(err)=>{
+                fs.mkdir(address+user,(err)=>{
+                   this.Create(address+user+'/')
                 });
+            }else{
+                this.Create(address+user+'/')
             }
         });
-        AccountFile=address+ user+".json";
-        this.User=user;
+        localStorage.User=user;
+    },
+    Create(location){
+        location=location?location:address+localStorage.User+'/';
+        this.AccountFile={};
+        let File=['user','transfer','setting'];
+        let content={};
+        File.forEach((item)=>{
+            this.AccountFile[item]=location+item+".json";
+            fs.exists(location+item+".json",(exists)=>{
+                if(!exists){
+                    fs.writeFile(location+item+".json",JSON.stringify(content),(err)=>{
+                    });
+                }
+            });
+        });
     },
     Read(type,callback){
-        if(!this.User){
-            return this.$Message.error('缺少用户数据')
-        }
+        this.Create();
         return new Promise((resolve, reject)=>{
-            fs.readFile(AccountFile,{flag:'r+',encoding:'utf8'},(err,data)=>{
+            fs.readFile(this.AccountFile[type],{flag:'r+',encoding:'utf8'},(err,data)=>{
                 data=JSON.parse(data);
                 callback&&callback(data);
-                resolve(data[type]);
+                resolve(data);
             })
         })
     },
-    Write(data){
-        fs.writeFile(AccountFile,JSON.stringify(data), (err)=>{});
+    Write(type,data){
+        this.Create();
+        fs.writeFile(this.AccountFile[type],JSON.stringify(data), (err)=>{});
     }
 };
 let Check=function (url,callback,error) {
