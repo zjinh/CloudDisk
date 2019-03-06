@@ -34,9 +34,10 @@
         "styleLibraryName": "theme-chalk"
       },
       "import", {
-        "libraryName": "iview",
-        "libraryDirectory": "src/components"
-      }
-    ]
+      "libraryName": "iview",
+      "libraryDirectory": "src/components"
+    }
+    ],
+    ["transform-runtime"]
   ]
 }
