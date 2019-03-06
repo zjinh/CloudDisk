@@ -55,7 +55,7 @@
                         <InputNumber :max="5" :min="1" v-model="SettingData.MaxDownTrans"></InputNumber>
                     </div>
                     <p class="SettingTips">*请不要在正在下载文件的情况下修改下载目录</p>
-                    <p class="SettingTips">*修改后将立刻保存生效</p>
+                    <p class="SettingTips">*下次登录生效</p>
                 </div>
                 <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Notice.active">
                     <p class="SettingBigTitle">提醒设置</p>
@@ -402,8 +402,9 @@
                         { name: 'All', extensions: ['*'] },
                     ]
                 },(res)=>{
+                    res=res[0]||process.env.USERPROFILE;
                     //回调函数内容，此处是将路径内容显示在input框内
-                    this.SettingData.TransDownFolder=res[0];
+                    this.SettingData.TransDownFolder=res;
                 })
             },
             close(){

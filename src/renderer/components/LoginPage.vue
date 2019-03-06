@@ -222,6 +222,8 @@
                 },
                 /*是否自动登录*/
                 AutoLogin:false,
+                /*配置对象*/
+                ConfigObject:{}
             }
         },
         created:function () {
@@ -229,6 +231,7 @@
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
                 this.$Api.LocalFile.Read('setting',(data)=>{
+                    this.ConfigObject=data;
                     if(data.AutoLogin!==undefined){
                         this.AutoLogin=data.AutoLogin;
                     }
@@ -293,7 +296,7 @@
                         this.CheckUserConf();
                         setTimeout(()=>{
                             this.LoadingText = '正在加载网盘数据';
-                            this.$ipc.send('system','login',localStorage.server);
+                            this.$ipc.send('system','login',this.ConfigObject);
                             setTimeout(()=> {
                                 this.LoadingText='欢迎回来 '+rs.user;
                             },1100)

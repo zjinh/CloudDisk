@@ -1,6 +1,8 @@
-import {app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen} from 'electron'
+import {app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen,session } from 'electron'
 import { autoUpdater } from 'electron-updater'
 const path = require('path');
+let TransDownFolder=process.env.USERPROFILE;
+let DownloadList={};
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
@@ -14,7 +16,7 @@ let PauseBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'pause.png'));
 let PrevBtn = nativeImage.createFromPath(path.join(PlayerIcon, 'prev.png'));
 let MusicButtons = [
     {
-        tooltip: '上一曲',
+        tooltip: '上一首',
         icon: PrevBtn,
         click: () => {
             MusicPlayer.webContents.send('Prev');
@@ -28,7 +30,7 @@ let MusicButtons = [
         }
     },
     {
-        tooltip: '下一曲',
+        tooltip: '下一首',
         icon:NextBtn,
         click: () => {
             MusicPlayer.webContents.send('Next');
@@ -89,7 +91,6 @@ let WindowControl={
             win.webContents.send('win-data',data);
             (typeof options.callback==='function')?options.callback():"";
         };
-        win.name=options.url;
         win.on('closed', (event)=> {
             win=null;
             (typeof options.onclose==='function')?options.onclose(event):"";
@@ -111,7 +112,6 @@ let WindowControl={
             : `file://${__dirname}/index.html#/`+router;
     },
     Active:(win,data)=>{
-        console.log(win);
         if(win) {
             win.show();
             win.focus();
@@ -120,6 +120,19 @@ let WindowControl={
     }
 };
 /*网盘函数*/
+function FileObject(item,state){
+    return {
+        id:Math.round(item.getStartTime()),
+        name:item.getFilename(),
+        chunk:item.getReceivedBytes(),
+        size:item.getTotalBytes(),
+        trans_type: 'download',
+        state:state||item.getState(),
+        disk_main:item.getURL(),
+        canResume:item.canResume(),
+        shows:true,
+    }
+}
 let DiskSystem= {
     LoginWindow:(flag)=>{
         if(LoginWindow){
@@ -139,9 +152,9 @@ let DiskSystem= {
             },
         });
     },
-    MainWindow:()=>{
+    MainWindow:(data)=>{
         if(MainWindow){
-            return WindowControl.Active(MainWindow);
+            return WindowControl.Active(MainWindow,data);
         }
         let trayIcon = path.join(__static, '/icons');
         appTray = new Tray(path.join(trayIcon, 'icon.ico'));
@@ -192,6 +205,7 @@ let DiskSystem= {
         });
         MainWindow=WindowControl.New({
             url:'main',
+            data:data,
             title:'CloudDisk',
             width: 950,
             minWidth:800,
@@ -353,8 +367,8 @@ function BindIpc() {
     ipcMain.on('system',(event,type,data)=>{
         switch (type) {
             case 'login':
-                autoUpdater.setFeedURL(data+'/update');
-                DiskSystem.MainWindow();
+                TransDownFolder=data.TransDownFolder;
+                DiskSystem.MainWindow(data);
                 break;
             case 'popup':
                 DiskSystem.PopupWindow(data);
@@ -372,6 +386,7 @@ function BindIpc() {
                 DiskSystem.SettingWindow(data);
                 break;
             case 'check-for-update':/*检查更新*/
+                autoUpdater.setFeedURL(data+'/update');
                 DiskSystem.CheckUpdate(event);
                 autoUpdater.checkForUpdates();
                 break;
@@ -438,6 +453,44 @@ function BindIpc() {
                 break;
         }
     });
+    /*下载事件控制*/
+    ipcMain.on('download',(event,type,data)=>{
+        let downloadItem=DownloadList[data];
+        if(downloadItem===undefined){
+            return
+        }
+        switch (type) {
+            case 'pause':
+                downloadItem.pause();
+                break;
+            case 'cancel':
+                downloadItem.cancel();
+                break;
+            case 'resume':
+                if(downloadItem.canResume()){
+                    downloadItem.resume();
+                }
+                break;
+        }
+    });
+    session.defaultSession.removeAllListeners('will-download');
+    session.defaultSession.on('will-download', (event, item, webContents) => {
+        item.setSavePath(TransDownFolder+'/'+item.getFilename()); // 设置保存路径,使Electron不提示保存对话框。
+        item.on('updated', (event, state) => {
+            DownloadList[Math.round(item.getStartTime())]=item;
+            let file=FileObject(item,item.isPaused()?'interrupted':false);
+            webContents&&webContents.send('download',file);
+        });
+        item.once('done', (event, state) => {
+            let file=FileObject(item,item.isPaused()?'interrupted':false);
+            webContents&&webContents.send('download',file);
+            if (state === 'completed') {
+                delete DownloadList[Math.round(item.getStartTime())];
+            } else {
+                console.log(`Download failed: ${state}`)
+            }
+        })
+    })
 }
 /*文件窗口函数*/
 let FileViewer={

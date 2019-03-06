@@ -93,7 +93,7 @@
                 })
             },
             checkUpdate () {
-                this.$ipc.send('system','check-for-update');
+                this.$ipc.send('system','check-for-update',localStorage.server);
                 this.loading = true;
             },
             close() {

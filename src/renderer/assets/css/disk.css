@@ -503,7 +503,7 @@ z-index: 2;
 	line-height: 35px;
 }
 /*按钮禁用样式*/
-.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"],.CloudDiskNav button[disabled="disabled"],.MouseMenu li[disabled="disabled"]{
+.CloudDiskHeadRight button[disabled="disabled"],.CloudDiskMainFunc button[disabled="disabled"],.CloudDiskNav button[disabled="disabled"],.MouseMenu li[disabled="disabled"],.MouseMenu li button[disabled="disabled"]{
 	color: #c7c7c7!important;
 	background: none!important;
 	cursor: no-drop!important;
@@ -894,7 +894,7 @@ z-index: 2;
 	z-index:22;
 	width:auto;
 	height:auto;
-	min-width:90pt;
+	min-width:120pt;
 	background:#fff;
 	box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
 	-moz-user-select:none;
@@ -907,21 +907,25 @@ z-index: 2;
 	width: auto;
 	height: 30px;
 	max-width: 400px;
-	font-size: 12px;
-	padding: 6px 10px;
+	margin-bottom: 2px;
+}
+.MouseMenu li button{
+	width: 100%;
 	color: #333;
 	text-align: left;
+	padding:6px 10px;
+	background: none;
+	font-size: 12px;
 	white-space: nowrap;
-	margin-bottom: 2px;
 }
 .MouseMenu li:last-child{
 	margin-bottom: 0;
 }
 .MouseMenu li span{
-	float: right;
 	font-size: 12px;
-	margin-left: 40px;
 	color: #bfbfbf;
+	position: absolute;
+	right: 10px;
 }
 .MouseMenu li:hover {
 	background-color:#eee;

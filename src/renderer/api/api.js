@@ -45,7 +45,8 @@ function FileSize (bytes) {
 }
 function IconGet (item) {
     let prefix=path.join(__static, '/img/disk/');
-    let type = item.type;
+    let type = StringBefore(item.disk_realname||item.disk_main, ".").toLowerCase();
+    item.type=type;
     if(!item.disk_main){
         return prefix+'FolderType.png'
     }
@@ -76,14 +77,11 @@ function IconGet (item) {
     else if (StringExist(type, 'ini,txt,md')) {
         return prefix+'TxtType.png';
     }
-    else if (StringExist(type, 'xml,aspx,php,phtml,.htaccesscss,js,c')) {
+    else if (StringExist(type, 'xml,aspx,php,phtml,js,c')) {
         return prefix+'CodeType.png';
     }
     else if (StringExist(type, 'htm,html')) {
         return prefix+'WebType.png';
-    }
-    else if (type==='log') {
-        return prefix+'OtherType.png';
     }
     else if (StringExist(type, 'exe,msi')) {
         return prefix+'ExeType.png';
@@ -101,14 +99,16 @@ function IconGet (item) {
 function DiskData(item){
     item.active=false;//设置未选择
     item.$size=FileSize(item.disk_size);//计算文件大小
-    item.type=StringBefore(item.disk_realname, ".").toLowerCase();
     item.$icon =IconGet(item);//区别文件类型设置图表
     item.disk_size=parseInt(item.disk_size);
     item.disk_main?item.disk_main=localStorage.server+'/'+item.disk_main:"";
-    item.shareAddress=localStorage.server + '/s/' + item.share;
+    item.shareAddress=item.share?localStorage.server + '/s/' + item.share:"";
     if(item.disk_main){
         if (item.type==='zip') {
             item.OpenType='zip';
+        }
+        else if (item.type==='pdf') {
+            item.OpenType='pdf';
         }
         else if (StringExist(item.type, 'apng,png,jpg,jpeg,bmp,gif')) {
             item.TypeArray='apng,png,jpg,jpeg,bmp,gif';
@@ -121,9 +121,6 @@ function DiskData(item){
         else if (StringExist(item.type, 'm4a,mp3,ogg,flac,f4a,wav,ape,ncm')) {
             item.TypeArray='m4a,mp3,ogg,flac,f4a,wav,ape,ncm';
             item.OpenType='audio';
-        }
-        else if (item.type==='pdf') {
-            item.OpenType='pdf';
         }
         else if (StringExist(item.type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
             item.TypeArray='ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java';
@@ -435,7 +432,7 @@ let LocalFile={
         });
     },
     Read(type,callback){
-        this.Create();
+        this.Create(this.User);
         return new Promise((resolve, reject)=>{
             fs.readFile(this.AccountFile[type],{flag:'r+',encoding:'utf8'},(err,data)=>{
                 data=JSON.parse(data);
@@ -445,7 +442,7 @@ let LocalFile={
         })
     },
     Write(type,data){
-        this.Create();
+        this.Create(this.User);
         fs.writeFile(this.AccountFile[type],JSON.stringify(data), (err)=>{});
     }
 };

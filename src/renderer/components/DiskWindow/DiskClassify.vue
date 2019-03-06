@@ -65,7 +65,7 @@
                 TransData:[
                     {"name":"正在下载","icon":"sf-icon-download","count":0,"data":"download","active":"CloudDiskClassifyActive"},
                     {"name":"正在上传","icon":"sf-icon-upload","count":0,"data":"upload","active":""},
-                    {"name":"传输完成","icon":"sf-icon-check-circle","count":0,"data":"finish","active":""},
+                    {"name":"传输完成","icon":"sf-icon-check-circle","count":0,"data":"completed","active":""},
                 ],//传输分类参数,
                 ClassifyMenuData:[]
             }
