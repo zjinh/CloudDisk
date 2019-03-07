@@ -96,9 +96,6 @@
 <script>
     import StartOnBoot from '../api/StartOnBoot';
     import SettingMenu from './DiskSetting/SettingMenu';
-    import electron from 'electron';
-    const {dialog} = require('electron').remote;
-    let DiskSetting=electron.remote.getCurrentWindow();
     export default {
         name: "DiskSetting",
         components:{SettingMenu},
@@ -391,7 +388,7 @@
                 },200)
             },
             ChangeTransAddress(){
-                dialog.showOpenDialog({
+                this.$electron.remote.dialog.showOpenDialog({
                     //默认路径
                     defaultPath :'../Desktop',
                     //选择操作，此处是打开文件夹
@@ -408,10 +405,10 @@
                 })
             },
             close(){
-                DiskSetting.close();
+                this.$electron.remote.getCurrentWindow().close();
             },
             mini(){
-                DiskSetting.minimize();
+                this.$electron.remote.getCurrentWindow().minimize();
             }
         }
     }

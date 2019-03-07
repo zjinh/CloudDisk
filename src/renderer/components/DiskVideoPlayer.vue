@@ -30,10 +30,7 @@
 
 <script>
     import Media from '../api/media';
-    import electron from 'electron';
     import WindowsHeader from "./DiskWindow/WindowHeader";
-    const {ipcRenderer} = require('electron');
-    let VideoPlayer=electron.remote.getCurrentWindow();
     export default {
         name: "DiskVideoPlayer",
         components:{WindowsHeader},
@@ -80,7 +77,7 @@
             }
         },
         created(){
-            ipcRenderer.on('win-data', (event, data)=>{//接收打开视频文件的数据
+            this.$ipc.on('win-data', (event, data)=>{//接收打开视频文件的数据
                 this.$nextTick(()=>{
                     data.forEach((item,index)=>{
                         item.play=false;
@@ -97,13 +94,13 @@
         },
         methods:{
             bind(){
-                ipcRenderer.on('video-Prev',()=>{
+                this.$ipc.on('video-Prev',()=>{
                     this.Prev()
                 });
-                ipcRenderer.on('video-Play',()=>{
+                this.$ipc.on('video-Play',()=>{
                     this.PlayControl();
                 });
-                ipcRenderer.on('video-Next',()=>{
+                this.$ipc.on('video-Next',()=>{
                     this.Next();
                 });
             },
@@ -128,7 +125,6 @@
                     this.animation='animated zoomIn';
                     this.$ipc.send('player-control','video','play')
                 }
-                VideoPlayer.setTitle(this.NowPlay.disk_name);
                 this.header.title=this.NowPlay.disk_name;
                 this.$refs.VideoPlayer.focus();
             },

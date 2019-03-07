@@ -47,9 +47,6 @@
 
 <script>
     import WindowsHeader from "./DiskWindow/WindowHeader";
-    import electron from 'electron';
-    const {ipcRenderer} = require('electron');
-    let DiskInfo=electron.remote.getCurrentWindow();
     export default {
         name: "DiskInfo",
         components:{
@@ -77,14 +74,16 @@
                   title:"",
                   resize:false,
                   mini:false
-              }
+              },
+              window:false,
           }
         },
         created(){
-            ipcRenderer.on('win-data', (event, data)=>{//接收打开文件的数据
+            this.window=this.$electron.remote.getCurrentWindow();
+            this.$ipc.on('win-data', (event, data)=>{//接收打开文件的数据
                 this.DiskData=data;
                 this.header.title=data.disk_name+' 属性';
-                DiskInfo.setTitle(data.disk_name+' 属性');
+                this.window.setTitle(data.disk_name+' 属性');
                 this.$refs.share.value=localStorage.server+'/s/'+data.share;
                 this.$Api.Disk.Address(data.disk_id,(rs)=>{
                     this.$refs.address.innerHTML='我的网盘'+rs;
@@ -100,7 +99,7 @@
                 document.execCommand('copy');
             },
             close(){
-                DiskInfo.close();
+                this.window.close();
             }
         }
     }

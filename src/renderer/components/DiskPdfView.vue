@@ -8,9 +8,7 @@
 </template>
 
 <script>
-    import electron from 'electron';
     import WindowsHeader from "./DiskWindow/WindowHeader";
-    let PdfViewer=electron.remote.getCurrentWindow();
     export default {
         name: "DiskPdfView",
         components:{WindowsHeader},
@@ -32,7 +30,6 @@
                 this.$nextTick(()=>{
                     this.NowPlay.disk_name=data.disk_name;
                     this.src=this.$path.join(__static, '/pdf/web/viewer.html?file=')+data.disk_main;
-                    PdfViewer.setTitle(data.disk_name+'-PDF阅读器');
                 });
                 this.header.title=data.disk_name+'-PDF阅读器';
             });

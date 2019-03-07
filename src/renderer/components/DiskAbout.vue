@@ -26,8 +26,6 @@
 </template>
 
 <script>
-    import electron from 'electron';
-    let DiskAbout=electron.remote.getCurrentWindow();
     export default {
         name: "DiskAbout",
         data(){
@@ -97,7 +95,7 @@
                 this.loading = true;
             },
             close() {
-                DiskAbout.hide();
+                this.$electron.remote.getCurrentWindow().hide();
             }
         }
     }

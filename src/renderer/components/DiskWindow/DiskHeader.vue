@@ -35,8 +35,6 @@
 </template>
 
 <script>
-    import electron from 'electron';
-    let DiskWindow=electron.remote.getCurrentWindow();
     export default {
         name: "DiskHeader",
         props:{
@@ -84,19 +82,21 @@
                     {name:"网盘",flag:'disk'},
                     {name:"分享",flag:'share'},
                     {name:"传输",flag:'trans'},
-                ]
+                ],
+                DiskWindow:false
             }
         },
         beforeMount(){
-            DiskWindow.on('maximize',()=>{
+            this.DiskWindow=this.$electron.remote.getCurrentWindow();
+            this.DiskWindow.on('maximize',()=>{
                 this.ButtonState='sf-icon-window-restore';
             });
-            DiskWindow.on('unmaximize',()=>{
+            this.DiskWindow.on('unmaximize',()=>{
                 this.ButtonState='sf-icon-window-maximize';
             });
             window.onbeforeunload=()=>{
                 if(!this.QuitFlag&&process.env.NODE_ENV !== 'development') {
-                    DiskWindow.hide();
+                    this.DiskWindow.hide();
                     return false
                 }
             };
@@ -110,16 +110,16 @@
         },
         methods:{
             mini () {
-                DiskWindow.minimize();
+                this.DiskWindow.minimize();
             },
             close () {
-                DiskWindow.hide();
+                this.DiskWindow.hide();
             },
             restore () {
-                if (DiskWindow.isMaximized()) {
-                    DiskWindow.restore();
+                if (this.DiskWindow.isMaximized()) {
+                    this.DiskWindow.restore();
                 } else {
-                    DiskWindow.maximize();
+                    this.DiskWindow.maximize();
                 }
             },
             SystemDropDown (command) {
@@ -150,7 +150,7 @@
                                 type:'info',
                                 callback:()=> {
                                     this.QuitFlag=true;
-                                    DiskWindow.close();
+                                    this.DiskWindow.close();
                                 }
                             });
                             break;

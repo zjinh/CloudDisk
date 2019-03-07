@@ -83,8 +83,6 @@
     import DiskTransList from './DiskWindow/DiskTransList';//下载列表
     import loading from "./DiskWindow/loading";//加载
     import MouseMenu from "./DiskWindow/MouseMenu";//右键菜单
-    import electron from 'electron';
-    let DiskWindow=electron.remote.getCurrentWindow();
     export default {
         name: "DiskWindow",
         components: {
@@ -491,7 +489,7 @@
                         }
                         let tips=this.SelectDownLoadFiles.length>1?'所选' + this.SelectDownLoadFiles.length + '个项目':this.SelectDownLoadFiles[0].disk_name;
                         this.SelectDownLoadFiles.forEach((item) => {
-                            DiskWindow.webContents.downloadURL(item.disk_main);
+                            this.$electron.remote.getCurrentWindow().webContents.downloadURL(item.disk_main);
                         });
                         this.SelectDownLoadFiles=[];
                         break;

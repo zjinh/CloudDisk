@@ -99,8 +99,6 @@
 <script>
     import Logininput from './LoginPage/l-input';
     import VerifyInput from './LoginPage/Verify-Input';
-    import electron from 'electron';
-    let LoginWindow=electron.remote.getCurrentWindow();
     export default {
         name: "LoginPage",
         components:{Logininput,VerifyInput},
@@ -223,10 +221,13 @@
                 /*是否自动登录*/
                 AutoLogin:false,
                 /*配置对象*/
-                ConfigObject:{}
+                ConfigObject:{},
+                /*窗体对象*/
+                WindowObject:false,
             }
         },
         created:function () {
+            this.WindowObject=this.$electron.remote.getCurrentWindow();
             localStorage.server=this.ServerAddress;
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
@@ -291,8 +292,8 @@
                         }else{
                             localStorage.username=localStorage.password='';
                         }
-                        LoginWindow.setSize(800,300);
-                        LoginWindow.setAlwaysOnTop(false);
+                        this.WindowObject.setSize(800,300);
+                        this.WindowObject.setAlwaysOnTop(false);
                         this.CheckUserConf();
                         setTimeout(()=>{
                             this.LoadingText = '正在加载网盘数据';
@@ -543,10 +544,10 @@
                 });
             },
             mini:function () {
-                LoginWindow.minimize();
+                this.WindowObject.minimize();
             },
             close:function () {
-                LoginWindow.close();
+                this.WindowObject.close();
             }
         }
     }

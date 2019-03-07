@@ -19,8 +19,6 @@
 </template>
 
 <script>
-    import electron from 'electron';
-    let PictureShower=electron.remote.getCurrentWindow();
     import WindowsHeader from "./DiskWindow/WindowHeader";
     export default {
         name: "DiskPictureShower",
@@ -112,7 +110,6 @@
                 this.NowShow=item;
                 this.NowShow.count=index;
                 this.NowShow.URL=item.disk_main;
-                PictureShower.setTitle(item.disk_name+'-图片查看');
                 this.header.title=item.disk_name+'-图片查看';
             },
             orginz(){

@@ -34,8 +34,6 @@
     import Media from '../api/media';
     import MusicList from './DiskMusicPlayer/MusicList';
     import WindowsHeader from "./DiskWindow/WindowHeader";
-    import electron from 'electron';
-    let MusicPlayer=electron.remote.getCurrentWindow();
     export default {
         name: "DiskMusicPlayer",
         components:{MusicList,WindowsHeader},
@@ -144,7 +142,7 @@
                     this.PlayButtonState='sf-icon-play';
                     this.$ipc.send('player-control','audio','play')
                 }
-                MusicPlayer.setTitle(this.NowPlay.disk_name);
+                this.header.title=this.NowPlay.disk_name;
                 if(this.VisualState) {
                     this.Visual();
                 }

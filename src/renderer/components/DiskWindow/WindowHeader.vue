@@ -8,8 +8,6 @@
 </template>
 
 <script>
-    import electron from 'electron';
-    let win=electron.remote.getCurrentWindow();
     export default {
         name: "WindowHeader",
         props:{
@@ -17,12 +15,22 @@
                 type:Object
             }
         },
+        watch:{
+            data:{
+                handler() {
+                    this.win.setTitle(this.data.title)
+                },
+                deep:true
+            }
+        },
         data(){
             return{
-                ButtonState:'sf-icon-window-maximize'
+                ButtonState:'sf-icon-window-maximize',
+                win:false
             }
         },
         created(){
+            this.win=this.$electron.remote.getCurrentWindow();
             this.bind();
             this.data.resize=this.data.resize===undefined?true:this.data.resize;
             window.addEventListener( "dragenter", function (e) {
@@ -40,24 +48,24 @@
         },
         methods:{
             bind(){
-                win.on('maximize',()=>{
+                this.win.on('maximize',()=>{
                     this.ButtonState='sf-icon-window-restore';
                 });
-                win.on('unmaximize',()=>{
+                this.win.on('unmaximize',()=>{
                     this.ButtonState='sf-icon-window-maximize';
                 });
             },
             mini(){
-                win.minimize();
+                this.win.minimize();
             },
             close () {
-                win.close();
+                this.win.close();
             },
             restore () {
-                if (win.isMaximized()) {
-                    win.restore();
+                if (this.win.isMaximized()) {
+                    this.win.restore();
                 } else {
-                    win.maximize();
+                    this.win.maximize();
                 }
             },
         }

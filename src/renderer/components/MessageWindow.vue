@@ -13,7 +13,6 @@
 
 <script>
     import WindowHeader from "./DiskWindow/WindowHeader";
-    let MessageMain=require('electron').remote.getCurrentWindow();
     export default {
         name: "MessageWindow",
         components:{
@@ -50,7 +49,7 @@
                             clearTimeout(this.TimeOut);
                             clearTimeout(this.TimeOut2);
                             this.TimeOut2=setTimeout(()=>{
-                                MessageMain.hide();
+                                this.$electron.remote.getCurrentWindow().hide();
                                 clearTimeout(this.TimeOut2);
                             },500)
                         },5000)

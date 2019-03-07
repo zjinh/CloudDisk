@@ -16,8 +16,6 @@
 </template>
 
 <script>
-    import electron from 'electron';
-    let DiskFeedBack=electron.remote.getCurrentWindow();
     export default {
         name: "DiskFeedBack",
         data(){
@@ -66,9 +64,8 @@
                 })
             },
             close(){
-                DiskFeedBack.close();
+                this.$electron.remote.getCurrentWindow().close();
             },
-
         }
     }
 </script>
