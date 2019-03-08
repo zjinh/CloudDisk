@@ -260,9 +260,6 @@ font-size: 20px;
 
 
 
-
-
-
 /*文件属性窗口*/
 .CloudDiskInfoContainer{
 	width: 100%;
@@ -413,50 +410,6 @@ font-size: 20px;
 	background: #fcfcfc;
 }
 
-/*右键菜单*/
-.MouseMenu {
-	position:absolute;
-	z-index:22;
-	width:auto;
-	height:auto;
-	min-width:120pt;
-	background:#fff;
-	box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-	-moz-user-select:none;
-	-webkit-user-select:none;
-	-ms-user-select:none;
-	-khtml-user-select:none;
-	user-select:none;
-}
-.MouseMenu li {
-	width: auto;
-	height: 30px;
-	max-width: 400px;
-	margin-bottom: 2px;
-}
-.MouseMenu li button{
-	width: 100%;
-	color: #333;
-	text-align: left;
-	padding:6px 10px;
-	background: none;
-	font-size: 12px;
-	white-space: nowrap;
-}
-.MouseMenu li:last-child{
-	margin-bottom: 0;
-}
-.MouseMenu li span{
-	font-size: 12px;
-	color: #bfbfbf;
-	position: absolute;
-	right: 10px;
-}
-.MouseMenu li:hover {
-	background-color:#eee;
-	color:#000;
-	cursor:pointer;
-}
 /*传输列表*/
 .CloudDisTrans{
 	width: 100%;
@@ -519,14 +472,7 @@ font-size: 20px;
 .CloudDisTransList:hover{
 	background: rgba(0,0,0,.1);
 }
-/*拖选框*/
-.MouseSelect{
-	position: absolute;
-    background: #7dbcff;
-    opacity: .5;
-    border: 1px solid #007cff;
-	z-index: 1;
-}
+
 /*音乐播放器*/
 .AudioContainer{
 	background-color: #fff;

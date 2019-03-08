@@ -19,15 +19,15 @@
         <section class="cd-right">
             <DiskHeader :data="DiskData" :count="DownloadCount+UploadCount"  @callback="SwitchType"></DiskHeader>
             <DiskNavigation :data="DiskData" :loading="LoadCompany" :hide="NeedHide" @callback="NavigationControl" @feature="DiskFeatureControl"></DiskNavigation>
-            <DiskSortBar :show="DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
             <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
+            <DiskSortBar :show="DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
             <section class="cd-bottom" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain">
                 <div class="cd-upload-tips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">
                     松开鼠标开始上传文件
                 </div>
                 <DiskFile @SelectFiles="SelectFiles" @OpenFile="DiskFeatureControl" v-if="LoadCompany&&NoTransType" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
                 <loading :loading="IsLoadCompany" :length="UserDiskData.length" :IsNoDiskData="IsNoDiskData"></loading>
-                <div class="MouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
+                <div class="cd-mouse-select" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
                 <DiskTransList v-show="DiskData.Type==='trans'" :data="TransformData" @ControlTrans="ControlTrans"></DiskTransList>
             </section>
             <input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple">
@@ -1195,5 +1195,13 @@
         -webkit-animation-name: slideInDown;
         animation-name: slideInDown;
         color: #fff;
+    }
+    /*拖选框*/
+    .cd-mouse-select{
+        position: absolute;
+        background: #5b5bea;
+        opacity: .5;
+        border: 1px solid #5b5bea;
+        z-index: 1;
     }
 </style>

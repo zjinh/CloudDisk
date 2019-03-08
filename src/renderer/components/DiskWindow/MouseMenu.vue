@@ -1,5 +1,5 @@
 <template>
-    <ul class="MouseMenu" ref="MouseMenu" v-show="MouseMenuShow">
+    <ul class="cd-mouse-menu" ref="MouseMenu" v-show="MouseMenuShow">
         <li v-for="(item,index) in MenuData" @click="MenuClick(item.commend,item.data)" v-if="toBoolean(item.vif,'vif')">
             <button :disabled="toBoolean(item.disabled,'disabled')">{{item.name}}<span>{{item.key}}</span></button>
         </li>
@@ -129,5 +129,48 @@
 </script>
 
 <style scoped>
-
+    /*右键菜单*/
+    .cd-mouse-menu {
+        position:absolute;
+        z-index:22;
+        width:auto;
+        height:auto;
+        min-width:120pt;
+        background:#fff;
+        box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+        -moz-user-select:none;
+        -webkit-user-select:none;
+        -ms-user-select:none;
+        -khtml-user-select:none;
+        user-select:none;
+    }
+    .cd-mouse-menu li {
+        width: auto;
+        height: 30px;
+        max-width: 400px;
+        margin-bottom: 2px;
+    }
+    .cd-mouse-menu li button{
+        width: 100%;
+        color: #333;
+        text-align: left;
+        padding:6px 10px;
+        background: none;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .cd-mouse-menu li:last-child{
+        margin-bottom: 0;
+    }
+    .cd-mouse-menu li span{
+        font-size: 12px;
+        color: #bfbfbf;
+        position: absolute;
+        right: 10px;
+    }
+    .cd-mouse-menu li:hover {
+        background-color:#eee;
+        color:#000;
+        cursor:pointer;
+    }
 </style>

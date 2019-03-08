@@ -121,7 +121,7 @@
                                 type:'info',
                                 callback:()=> {
                                     this.QuitFlag=true;
-                                    this.DiskWindow.close();
+                                    //this.DiskWindow.close();
                                 }
                             });
                             break;
