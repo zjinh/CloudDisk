@@ -38,5 +38,18 @@
 </script>
 
 <style scoped>
-
+    /*pdf窗口*/
+    .PdfWindow{
+        width:100%;
+        height: 100%;
+        background: rgb(45, 140, 240);
+    }
+    .PDfContainer,.FileShowContainer{
+        width: 100%;
+        height: calc(100% - 32px);
+    }
+    .PDfContainer iframe{
+        width: 100%;
+        height: 100%;
+    }
 </style>

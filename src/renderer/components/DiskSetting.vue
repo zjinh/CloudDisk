@@ -101,7 +101,7 @@
         components:{SettingMenu},
         watch:{
             SettingData: {
-                handler(newValue, oldValue) {
+                handler() {
                     if(this.SettingData.AutoStartFlag===true){
                         StartOnBoot.enableAutoStart('CloudDisk',process.execPath)
                     }else{
@@ -415,5 +415,156 @@
 </script>
 
 <style scoped>
-
+    /*设置窗口*/
+    .CloudDiskSettingWindow{
+        width: 100%;
+        height: 100%;
+        background: #fff;
+    }
+    .CloudDiskSetting-head{
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        background: #2d8cf0;
+        -webkit-app-region: drag;
+    }
+    .CloudDiskSetting-head i{
+        float: left;
+        font-size: 30px;
+        color: #fff;
+        line-height: 50px;
+        margin: 0 15px;
+        margin-right: 10px;
+    }
+    .CloudDiskSetting-head p{
+        float: left;
+        line-height: 50px;
+        font-size: 16px;
+        color: #fff;
+    }
+    .CloudDiskSetting-head button{
+        float: right;
+        width: 40px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 15px;
+        -webkit-app-region: no-drag;
+        background: none;
+        color: #fff;
+    }
+    .CloudDiskSetting-head .sf-icon-window-minimize{
+        font-size: 12px;
+    }
+    .CloudDiskSetting-head button:hover{
+        background: rgba(255,255,255,0.2);
+    }
+    .CloudDiskSetting-head .sf-icon-times:hover{
+        background: #E83C3C;
+    }
+    .CloudDiskSetting-main{
+        width: 100%;
+        height:calc(100% - 50px);
+        padding: 10px;
+    }
+    .CloudSettingMenu{
+        width: 100px;
+        height: 100%;
+        float: left;
+        overflow: unset!important;
+    }
+    .CloudSettingMenu li{
+        width: 100%;
+        height: 35px;
+        background: #fff;
+        color: #6e6e6e;
+        border-radius: 5px 0 0 5px;
+        border: 1px solid #fff;
+    }
+    .CloudSettingMenu li *{
+        float: left;
+        line-height: 35px;
+    }
+    .CloudSettingMenu li.active{
+        width: calc(100% + 1px);
+        border: 1px solid #eee;
+        border-right: none;
+        color: #6e6e6e!important;
+        cursor: default!important;
+    }
+    .CloudSettingMenu li:hover{
+        color: #2d8cf0;
+        cursor: pointer;
+    }
+    .CloudSettingMenu li span{
+        width: 35px;
+        height: 35px;
+        text-align: center;
+    }
+    .CloudSettingMenu li p{
+        width: calc(100% - 60px);
+    }
+    .CloudDiskSettingContent{
+        width: calc(100% - 100px);
+        height: 100%;
+        border: 1px solid #eee;
+        padding-left: 20px;
+    }
+    .CloudDiskSettingContainer{
+        width: 100%;
+        height: 100%;
+    }
+    .SettingBigTitle{
+        width: 100%;
+        font-size: 16px;
+        line-height: 35px;
+        margin-bottom: 10px;
+        color: #2d8cf0;
+    }
+    .SettingSecTitle{
+        width: 100%;
+        font-size: 14px;
+        border-left: 2px solid #2d8cf0;
+        text-indent: 5px;
+        margin: 5px 0;
+    }
+    .SettingTips{
+        color: #E83C3C;
+        width: 100%;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    .ivu-input-number,.ivu-input-number-input,.ivu-input-number-input-wrap{
+        overflow: hidden!important;
+    }
+    .SettingInfo{
+        width: 100%;
+        font-size: 14px;
+        padding-left: 5px;
+        line-height: 30px;
+    }
+    .SettingInfo span{
+        background: #2d8cf0;
+        color: #fff;
+        border-radius: 5px;
+        padding: 3px 5px;
+        font-size: 12px;
+        margin-left: 10px;
+    }
+    .SettingInfo button{
+        background: none;
+        color: #2d8cf0;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+    .SettingForm{
+        margin: 8px 0;
+        width: 200px;
+    }
+    .SettingForm .ivu-input-wrapper,.SettingForm .ivu-input-number{
+        margin: 5px 0;
+    }
+    .SettingForm button{
+        float: right;
+        margin-top: 10px;
+    }
 </style>

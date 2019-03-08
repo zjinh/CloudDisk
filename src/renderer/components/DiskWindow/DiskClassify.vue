@@ -1,15 +1,15 @@
 <template>
     <section class="cd-left">
         <div class="cd-left-head">
-            <img draggable="false" :src="static+'/img/bar/disk.png'"><span>CloudDisk</span>
+            <img draggable="false" :src="static+'/img/bar/disk.png'" alt=""><span>CloudDisk</span>
         </div>
         <ul class="cd-left-menu">
             <li v-for="(item,index) in ClassifyMenuData" ripple :class="item.active" @click="change(index)">
                 <i :class="item.icon"></i>{{item.name}}<div v-show="item.count>0">{{item.count}}</div>
             </li>
-            <img :src="BottomSrc" draggable="false">
+            <img :src="BottomSrc" draggable="false" alt="">
+            <div class="cd-select-tips" v-show="show">{{DiskData.SelectTips}}</div>
         </ul>
-        <div class="CloudDiskSelectTips" v-show="show">{{DiskData.SelectTips}}</div>
         <div class="CloudDiskCapacity" v-show="show">
             <div class="CloudDiskSliderContainer">
                 <div class="CloudDiskSlider" :style="{'width':DiskData.DiskSize.Percent,background:DiskData.DiskSize.Background}"></div>
@@ -41,7 +41,7 @@
         },
         watch:{
             type: {
-                handler(newValue, oldValue) {
+                handler() {
                     this.UpdateData();
                 },
                 deep: true
@@ -126,12 +126,12 @@
     .cd-left-head img{
         width: 40px;
         height: 40px;
-        box-shadow: 0px 0px 15px 0px rgba(0,0,0,.1);
+        box-shadow: 0 0 15px 0 rgba(0,0,0,.1);
         border-radius: 100%;
     }
     .cd-left-head span{
         line-height: 40px;
-        padding: 0 10px 0px 0px;
+        padding: 0 10px 0 0;
         -webkit-app-region: drag;
         font-size: 16px;
         margin-left: 8px;
@@ -191,7 +191,7 @@
         margin-top: 3px;
         text-align: right;
         padding: 0 5px;
-        text-shadow: 0px 0px 0px
+        text-shadow: 0 0 0
 
     }
     .CloudDiskSliderContainer{
@@ -204,7 +204,7 @@
         -moz-border-radius: 10px;
     }
     .CloudDiskSliderContainer div{
-        width: 0px;
+        width: 0;
         background: #2682fc;
         height: 100%;
         float: left;
@@ -216,14 +216,16 @@
         -o-transition: all .35s
     }
     /*文件选择提示*/
-    .CloudDiskSelectTips{
+    .cd-select-tips{
         width: 100%;
         height: 25px;
         line-height: 25px;
         font-size: 12px;
         padding: 0 5px;
         color: #505050;
-        position: relative;
-        z-index: 2;
+        position: absolute;
+        bottom: 0;
+        text-align: right;
+        font-weight: normal;
     }
 </style>

@@ -51,7 +51,7 @@
         },
         watch:{
             percent: {
-                handler(newValue, oldValue) {
+                handler() {
                     this.StartDown=true;
                     this.ProcessText='正在下载';
                 },
@@ -102,5 +102,86 @@
 </script>
 
 <style scoped>
+    /*关于信息窗口*/
+    .CloudDiskAbout{
+        width: 100%;
+        height: 100%;
+    }
+    .CloudDisk-window-header-big{
+        width: 100%;
+        height: 50px;
+        /*background: url("@/static/img/login/right-bg.png");*/
+        background-size: cover;
+        background-position: -160px 58px;
+        background-repeat: repeat-y;
+        border-bottom: 2px solid #eee;
+        -webkit-app-region: drag;
+        background-color: #3b54a8;
+    }
+    .CloudDisk-window-header-big *{
+        float: left;
+    }
+    .CloudDisk-window-header-big img{
+        margin: 8px;
+        width: 32px;
+        height: 32px;
+    }
+    .CloudDisk-window-header-big p{
+        font-size: 14px;
+        line-height: 48px;
+        color: #fff;
+    }
+    .CloudDisk-window-header-big button{
+        float: right;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 15px;
+        -webkit-app-region: no-drag;
+        background: none;
+        color: #fff;
+        margin: 9px;
+        border-radius:5px;
+    }
+    .CloudDisk-window-header-big button:hover{
+        background: rgba(255,255,255,.1);
+    }
+    .CloudDiskAbout-main{
+        width: 100%;
+        height: calc(100% - 50px);
+        background: #fff;
+        padding:10px 20px;
+    }
+    .CloudDiskAbout-main p{
+        font-weight: bold;
+        padding: 5px 0;
+        font-size: 14px;
+    }
+    .CloudDiskAbout-main .title{
+        font-size: 16px;
+        border-bottom: 1px solid #eee;
+    }
+    .CloudDiskAbout-main .release{
+        float: left;
+        font-size: 12px;
+        color: #888888;
+    }
+    .CloudDiskAbout-main .tips{
 
+    }
+    .CloudDiskAbout-main p span{
+        padding-left: 10px;
+        color: #E83C3C;
+    }
+    .CloudDiskAbout-main .process{
+        padding-bottom: 10px;
+        height: 35px;
+    }
+    .CloudDiskAbout-main .bottom{
+        width: 100%;
+    }
+    .CloudDiskAbout-main button{
+        float: right;
+        overflow: hidden!important;
+    }
 </style>

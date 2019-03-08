@@ -37,5 +37,8 @@
 </script>
 
 <style scoped>
-
+    /*文件查看窗口*/
+    .FileShowContainer iframe{
+        overflow: auto;
+    }
 </style>

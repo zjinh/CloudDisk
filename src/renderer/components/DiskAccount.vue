@@ -122,5 +122,95 @@
 </script>
 
 <style scoped>
-
+    /*用户信息窗口*/
+    .CloudUserMain{
+        width: 100%;
+        height: 100%;
+        background: #fff;
+    }
+    .CloudUserLeft{
+        float: left;
+        width: 50%;
+        height: 100%;
+        /*background: url("../../../../static/img/login/right-bg.png");*/
+        background-position: -60px 0;
+        margin-top: -30px;
+        background-size: cover;
+        background-color: #4996ed;
+    }
+    .CloudUserLeftDown{
+        width: 100%;
+        height: 150px;
+        text-align: center;
+        margin-top: 135px;
+    }
+    .CloudUserRight {
+        float: left;
+        width: 50%;
+        height: 100%;
+        background: #fff;
+        padding: 0 20px 20px;
+    }
+    .CloudUserLeftDown img{
+        width: 100px;
+        height: 100px;
+        border-radius: 100px;
+        -webkit-border-radius: 100px;
+        -moz-border-radius: 100px;
+    }
+    .CloudUserLeftDown img:hover{
+        opacity: .5;
+        cursor: pointer;
+    }
+    .CloudUserName{
+        color: #fff;
+        font-size: 18px;
+        font-weight: lighter;
+    }
+    .CloudUserAge{
+        color: #a5a5a5;
+        font-size: 13px;
+    }
+    .CloudUserTitle{
+        width: 100%;
+        font-size: 18px;
+        border-bottom: 1px solid #d0d0d0;
+        color: #2f2f2f;
+    }
+    .CloudUserLine{
+        width: 100%;
+        height: 45px;
+        line-height: 45px;
+    }
+    .CloudUserLine label{
+        float: left;
+        width: 42px;
+        font-size: 14px;
+        height: 100%;
+    }
+    .CloudUserLine textarea{
+        width: calc(100% - 50px);
+        height: 55px;
+        margin-top: 8px;
+        resize: none;
+    }
+    .CloudUserRight button{
+        float: right;
+        margin-top: 10px;
+        margin-right: 8px;
+    }
+    .CloudUserUpload{
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        left: 118px;
+        top: 135px;
+        overflow: unset;
+    }
+    .CloudUserUpload input{
+        position: absolute;
+        top: -50px;
+        left: -11px;
+        display: none;
+    }
 </style>

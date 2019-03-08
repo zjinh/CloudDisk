@@ -71,5 +71,31 @@
 </script>
 
 <style scoped>
-
+    /*反馈窗口*/
+    .CloudDiskFeedBack-main{
+        height: calc(100% - 50px);
+        padding: 10px 15px;
+        background: #fff;
+    }
+    .CloudDiskFeedBack-main p{
+        font-size: 14px;
+        color: #4f4f4f;
+    }
+    .CloudDiskFeedBack-main .ivu-input-wrapper{
+        margin:10px 0;
+    }
+    .CloudDiskFeedBack-main textarea{
+        height: 125px!important;
+        resize: none;
+    }
+    .CloudDiskFeedBack-main .version{
+        float: left;
+        font-size: 14px;
+        color: #6e6e6e;
+        margin-top: 5px;
+        font-weight: bold;
+    }
+    .CloudDiskFeedBack-main button{
+        float: right;
+    }
 </style>

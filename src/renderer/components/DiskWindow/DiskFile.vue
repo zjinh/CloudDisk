@@ -39,7 +39,7 @@
         width: 90px;
         height: 80px;
         float: left;
-        margin: 10px 10px 0px 0px;
+        margin: 10px 10px 0 0;
         text-align: center;
         border-radius: 3px;
         cursor: pointer;
@@ -107,6 +107,6 @@
     }
     /*选中样式*/
     .active{
-        background: rgba(91, 91, 211, 0.28)!important
+        background: rgba(91, 91, 211, 0.18)!important
     }
 </style>

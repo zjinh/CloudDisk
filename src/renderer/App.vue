@@ -17,5 +17,5 @@
 
 <style>
   @import url("../../static/font/icon.css");
-  @import url("assets/css/disk.css");
+  @import url("assets/css/public.css");
 </style>

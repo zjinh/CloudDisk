@@ -1,24 +1,24 @@
 <template>
-    <div class="WindowContainer" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
+    <div class="cd-video-player-main" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
         <WindowsHeader :data=header></WindowsHeader>
-        <div class="VideoContainer">
+        <div class="cd-video-main">
             <video :style="{'height':VideoHeight}" crossorigin="*" @error="VideoError" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
             </video>
-            <div :class="'VideoFliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
-            <div :class="'VideoControl '+BarAnimation" @mouseover="ShowControl" @mouseout="HideControl">
-                <div :class="'VideoPlay '+PlayButtonState" @click="PlayControl"></div>
-                <div class="VideoSlider"  @mousedown="TimeChange" ref="slider">
-                    <div class="VideoSliderBar" :style="{'width':ProcessWidth}">
+            <div :class="'cd-video-fliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
+            <div :class="'cd-video-control '+BarAnimation" @mouseover="ShowControl" @mouseout="HideControl">
+                <div :class="'cd-video-play '+PlayButtonState" @click="PlayControl"></div>
+                <div class="cd-video-player-slider-container"  @mousedown="TimeChange" ref="slider">
+                    <div class="cd-player-process-bar" :style="{'width':ProcessWidth}">
                         <span></span>
                     </div>
                     <div class="VideoTempBar" :style="{'width':CacheWidth}"></div>
                 </div>
-                <div class="VideoTime">{{TimeText}}</div>
-                <div :class="'sf-icon-volume-up '+(VolumnState?'VideoVolumn-active':'')" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></div>
+                <div class="cd-video-player-time">{{TimeText}}</div>
+                <div :class="'sf-icon-volume-up '+(VolumnState?'cd-video-player-volumn-active':'')" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></div>
                 <div :class="FullButton" @click="FullScreen(FullButton)"></div>
-                <div class="VideoVolumn" v-show="VolumnState">
-                    <div class="VideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
-                        <div class="VideoVolumnSliderBar">
+                <div class="cd-video-player-volumn" v-show="VolumnState">
+                    <div class="cd-player-volumn-container" ref="volunm" @mousedown="ChangeVolumn">
+                        <div class="cd-player-volumn-slider">
                             <span></span>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
         components:{WindowsHeader},
         watch:{
             FullFlag:{
-                handler(newValue, oldValue) {
+                handler() {
                     if(this.FullFlag){
                         clearTimeout(this.TimeOutID);
                         this.TimeOutID=setTimeout(()=>{
@@ -245,5 +245,5 @@
 </script>
 
 <style scoped>
-
+    @import url("../assets/css/player.css");
 </style>

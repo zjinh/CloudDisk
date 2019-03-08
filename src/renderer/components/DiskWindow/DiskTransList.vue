@@ -49,5 +49,66 @@
 </script>
 
 <style scoped>
-
+    /*传输列表*/
+    .CloudDisTrans{
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+    .CloudDisTransList{
+        width: 100%;
+        height: 55px;
+        margin-top: 2px;
+        position: relative;
+        border-bottom: 1px solid #eee;
+    }
+    .CloudDisTransList img{
+        float: left;
+        margin: 10px;
+        width: 30px;
+    }
+    .CloudDisTransRight .trans-container{
+        float: left;
+        width: calc(100% - 100px);
+        height: 100%;
+    }
+    .CloudDisTransRight .trans-name,.CloudDisTransRight .trans-size{
+        font-size: 12px;
+        line-height: 22px;
+    }
+    .CloudDisTransRight .ivu-progress{
+        float: right;
+        width: 310px;
+    }
+    .CloudDisTransRight {
+        float: left;
+        width: calc(100% - 50px);
+        height: 100%;
+        padding: 4px;
+    }
+    .CloudDisTransRight button{
+        float: right;
+        margin: 10px;
+        width: 26px;
+        height: 26px;
+        background: white;
+        border-radius: 100%;
+        color: rgba(64, 158, 255, 0.87);
+        border: 1px solid rgba(64, 158, 255, 0.66);
+    }
+    .CloudDisTransRight button:hover{
+        color: #2d8cf0;
+        border: 1px solid  #2d8cf0;
+    }
+    .CloudDisTransRight button.sf-icon-times{
+        color: #E83C3C!important;
+        border:1px solid #E83C3C!important;
+    }
+    .CloudDisTransRight button.sf-icon-trash{
+        color: #19be6b!important;
+        border:1px solid #19be6b!important;
+    }
+    .CloudDisTransList:hover{
+        background: rgba(0,0,0,.1);
+    }
 </style>

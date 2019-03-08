@@ -59,7 +59,7 @@
         },
         watch:{
             type: {
-                handler(newValue, oldValue) {
+                handler() {
                     this.MouseMenuShow=false;
                 },
                 deep: true

@@ -46,7 +46,7 @@
         },
         watch:{
             PhotoList: {
-                handler(newValue, oldValue) {
+                handler() {
                     this.PhotoList.forEach((item, index) => {
                         if (item.now) {
                             item.now = 'PlayThis';
@@ -57,7 +57,7 @@
                 deep: true
             },
             ZoomSize:{
-                handler(newValue, oldValue) {
+                handler() {
                     this.ZoomPercent= (this.ZoomSize*100).toFixed(0) + '%';
                 },
                 deep: true
@@ -229,5 +229,105 @@
         height: 100px;
         position: relative;
         border: 1px solid #eee;
+    }
+    /*图片查看*/
+    .ImageShowContainer {
+        float:left;
+        width:100%;
+        height:100%;
+        background:#4f4f4f;
+        -moz-user-select:none;
+        -webkit-user-select:none;
+        -ms-user-select:none;
+        -khtml-user-select:none;
+        user-select:none;
+    }
+    .ImageShowContainer .ivu-spin-main{
+        float: right;
+        padding: 30px 10px;
+    }
+    .ImageShowZoom {
+        height: 30px;
+        color: #fff;
+        text-align: center;
+        font-size: 14px;
+        line-height: 30px;
+        opacity: 1;
+        -webkit-transition: all .35s;
+        -moz-transition: all .35s;
+        -o-transition: all .35s;
+        margin-right: 10px;
+    }
+    .ImgShow {
+        position:absolute;
+        top:0;
+        left:0;
+        bottom:0;
+        right:0;
+        z-index:1;
+        margin: auto;
+        min-width: 0!important;
+        max-width: none!important;
+        min-height: 0!important;
+        max-height: none!important;
+        cursor:-webkit-grab;
+        -webkit-transition:none!important;
+        -moz-transition:none!important;
+        -o-transition:none!important;
+    }
+    .ImgAnim{
+        -webkit-transition: all .3s ease-out!important;
+        -moz-transition:all .3s ease-out!important;
+        -o-transition: all .3s ease-out!important;
+        transition: all .3s ease-out!important;
+    }
+    .ImgControl {
+
+        bottom: 30px;
+        z-index: 3;
+        width: 100%;
+        height: 45px;
+    }
+    .ImageShowTips{
+        width: 100%;
+        text-align: right;
+        padding-right: 10px;
+        line-height: 30px;
+        font-size: 14px;
+        color: #fff;
+        position: absolute;
+        z-index: 2;
+        text-shadow:0 0 5px rgb(0, 0, 0);
+    }
+    .ImgControl{
+        position: absolute;
+        margin:0 auto;
+        bottom: 30px;
+        width:294px;
+        height:42px;
+        left: calc(50% - 147px);
+        border-radius:3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        background:rgba(103, 103, 103, 0.5);
+        text-align:center;
+        box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 0 1px rgba(0,0,0,.2);
+    }
+    .ImgControl li {
+        float:left;
+        width:42px;
+        height:42px;
+        font-size: 14px;
+        text-align:center;
+        line-height:42px;
+        cursor:pointer;
+        color:#fff;
+    }
+    .ImgControl .sf-icon-angle-left,.ImgControl .sf-icon-angle-right{
+        font-size: 22px;
+    }
+    .ImgControl li:hover {
+        background:rgba(125, 125, 125, 0.5);
+        color:#Fff;
     }
 </style>

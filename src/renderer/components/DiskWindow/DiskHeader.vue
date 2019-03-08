@@ -27,7 +27,6 @@
             <li :class="ButtonState" @click="restore"></li>
             <li class="sf-icon-times" style="font-size:16px" @click="close"></li>
         </ul>
-
     </div>
 </template>
 
@@ -121,7 +120,7 @@
                                 type:'info',
                                 callback:()=> {
                                     this.QuitFlag=true;
-                                    //this.DiskWindow.close();
+                                    this.DiskWindow.close();
                                 }
                             });
                             break;
@@ -178,7 +177,7 @@
         font-weight: bold;
         color: #fff;
         line-height: 40px;
-        padding: 0 10px 0px 0px;
+        padding: 0 10px 0 0;
         -webkit-app-region: drag;
         font-size: 14px;
     }
@@ -223,7 +222,7 @@
     }
     .user-actions .item{
         background: #f5f5f5;
-        padding: 3px;
+        padding:0 5px;
         max-width: 100px;
         text-overflow: ellipsis;
         cursor: pointer;
@@ -276,5 +275,4 @@
         -moz-transition: all .35s;
         -o-transition: all .35s
     }
-
 </style>

@@ -22,9 +22,7 @@
             <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
             <DiskSortBar :show="DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
             <section class="cd-bottom" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain">
-                <div class="cd-upload-tips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">
-                    松开鼠标开始上传文件
-                </div>
+                <div class="cd-upload-tips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">松开鼠标开始上传文件</div>
                 <DiskFile @SelectFiles="SelectFiles" @OpenFile="DiskFeatureControl" v-if="LoadCompany&&NoTransType" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
                 <loading :loading="IsLoadCompany" :length="UserDiskData.length" :IsNoDiskData="IsNoDiskData"></loading>
                 <div class="cd-mouse-select" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
@@ -168,7 +166,7 @@
                 }
             },
             UserDiskData: {
-                handler(newValue, oldValue) {
+                handler() {
                     this.NeedHide = true;
                     this.DiskData.SelectFiles = [];
                     this.UserDiskData.forEach((item, index) => {
@@ -186,17 +184,11 @@
                 deep: true
             },
             loadClassify: {
-                handler(newValue, oldValue) {
+                handler() {
                     if (this.DiskData.Type === 'trans') {
                         this.$nextTick(() => {
                             this.TransformData.forEach((item, index) => {
-                                if (item.trans_type === this.loadClassify && item.state !== 'completed') {
-                                    item.shows = true;
-                                } else if (this.loadClassify === 'completed' && item.state === 'completed') {
-                                    item.shows = true;
-                                } else {
-                                    item.shows = false;
-                                }
+                                item.shows=((item.trans_type === this.loadClassify && item.state !== 'completed')||(this.loadClassify === 'completed' && item.state === 'completed'));//条件为没有完成的任务||完成的任务
                             });
                         });
                     }
@@ -204,7 +196,7 @@
                 deep: true
             },
             TransformData: {
-                handler(newValue, oldValue) {
+                handler() {
                     this.$nextTick(() => {
                         this.UploadCount = 0;
                         this.DownloadCount = 0;
@@ -239,9 +231,6 @@
             isTrash() {
                 return this.loadClassify === 'trash' && this.DiskData.Type === 'disk'
             },
-            IsShare() {
-                return this.DiskData.Type === 'share';
-            },
             NoTransType() {
                 return this.DiskData.Type !== 'trans';
             },
@@ -259,7 +248,7 @@
         },
         methods: {
             /*初始化*/
-            Bind() {
+            Bind: function () {
                 window.addEventListener("dragenter", function (e) {
                     e.preventDefault();
                 }, false);
@@ -278,9 +267,9 @@
                 this.$Api.LocalFile.Read('transfer').then((data) => {
                     if (data.length) {
                         this.TransformData = data;
-                        this.TransformData.forEach((item)=>{
-                            if(item.trans_type==='download'&&item.state!=='completed'){
-                                item.state='cancelled';
+                        this.TransformData.forEach((item) => {
+                            if (item.trans_type === 'download' && item.state !== 'completed') {
+                                item.state = 'cancelled';
                             }
                         })
                     }
@@ -300,8 +289,8 @@
                         this.TransformData.push(file);
                     });
                 });
-                this.$ipc.on('win-data',(e,data)=>{//接收用户配置文件
-                    this.ConfigObject=data;
+                this.$ipc.on('win-data', (e, data) => {//接收用户配置文件
+                    this.ConfigObject = data;
                 });
             },
             /*导航栏函数*/
@@ -839,11 +828,7 @@
                 this.$refs.MouseMenu.MenuShow('file');
                 if (event.button === 0) {
                     if (this.DiskData.KeyFlag === 'Ctrl') {//Ctrl多选
-                        if (item.active) {
-                            item.active = false;
-                        } else {
-                            item.active = true;
-                        }
+                        item.active=!item.active;//反选
                     } else if (this.DiskData.KeyFlag === 'Shift') {//Shift多选
                         let Start = index, End;
                         item.active = true;
@@ -1199,9 +1184,123 @@
     /*拖选框*/
     .cd-mouse-select{
         position: absolute;
-        background: #5b5bea;
+        background: #e2e2e2;
         opacity: .5;
-        border: 1px solid #5b5bea;
+        border: 1px solid #eee;
         z-index: 1;
+    }
+
+    .CloudDiskTreesContainer{
+        width: 100%;
+        overflow-y: auto;
+    }
+    .childFolder{
+        padding-left: 10px;
+    }
+    .CloudDFoContainer{
+        width: 100%;
+        height: auto;
+    }
+    .CloudDFoContainer li{
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+    }
+    .CloudDFoContainer li:hover,.CloudDiskTreeActive{
+        background: #e1e1e1;
+        color: #000;
+    }
+    .CloudDFoContainer span,.CloudDFoContainer i{
+        float: left;
+        display: block;
+        line-height: 30px;
+        margin: 0 5px;
+        color: #5b5bea;;
+        font-size: 20px;
+    }
+    .CloudDiskTree{
+        width: 100%;
+        height: 30px;
+    }
+
+
+
+
+    /*分享窗口*/
+    .CloudDiskShareWindow{
+        width: 100%;
+        height: 100%;
+    }
+    .CloudDiskShareWindow ul{
+        width: 100%;
+        height: 35px;
+    }
+    .CloudDiskShareWindow ul>li{
+        width: 50%;
+        float: left;
+        height: 35px;
+        line-height: 33px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .CloudDiskShareTips{
+        font-size: 16px;
+        padding-bottom: 10px;
+    }
+    .CloudDiskShareTips span{
+        color: #409EFF;
+    }
+    .CloudDiskShareLine{
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        margin-bottom: 10px;
+    }
+    .CloudDiskShareLine *{
+        float: left;
+    }
+    .CloudDiskShareLine span{
+
+    }
+    .CloudDiskShareLine input{
+        border: 1px solid #eee;
+        height: 32px;
+        padding: 0 10px;
+        margin-top: 4px;
+        border-radius: 3px;
+    }
+    .CloudDiskShareLine input:focus{
+        border: 1px solid #409EFF;
+    }
+    .CloudDiskShareLine button{
+        float: right;
+        height: 32px;
+        background: #409EFF;
+        color: #fff;
+        margin-top: 4px;
+        line-height: 32px;
+        padding: 0 10px;
+        border: 1px solid #eee;
+        border-radius: 3px;
+    }
+    .CloudDiskShareActive{
+        border-bottom: 2px solid #5b5bea;
+    }
+    .CloudDiskShareWContent{
+        width: 100%;
+        height: 60px;
+        background: #eee;
+        margin-top: 10px;
+    }
+    .CloudDiskShareWindow p{
+        font-size: 14px;
+        line-height: 60px;
+        text-indent: 20px;
+    }
+    .CloudDiskViewContent{
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background: #fcfcfc;
     }
 </style>

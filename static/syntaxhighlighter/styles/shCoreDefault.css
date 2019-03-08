@@ -158,7 +158,7 @@
   line-height: 8px !important;
 }
 .syntaxhighlighter.ie .toolbar a {
-  padding-top: 0px !important;
+  padding-top: 0 !important;
 }
 .syntaxhighlighter.printing .line.alt1 .content,
 .syntaxhighlighter.printing .line.alt2 .content,

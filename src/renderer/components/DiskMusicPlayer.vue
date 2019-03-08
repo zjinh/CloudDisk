@@ -1,32 +1,32 @@
 <template>
-    <div class="AudioContainer" @mousedown="VolumnState=false" tabindex="-1" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
+    <div class="cd-music-player-main" @mousedown="VolumnState=false" tabindex="-1" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
         <WindowsHeader :data=header></WindowsHeader>
-        <div class="AudioPlayerContainer">
-            <div class="AudioPlayerTitle">{{NowPlay.disk_name}}</div>
+        <div class="cd-music-player-container">
+            <div class="cd-music-player-title">{{NowPlay.disk_name}}</div>
             <ul>
-                <li class="ABtnmidue"></li>
-                <li class="sf-icon-step-backward ABtnsmall" @click="Prev"></li>
-                <li :class="'ABtnbig '+PlayButtonState" @click="PlayControl"></li>
-                <li class="sf-icon-step-forward ABtnsmall" @click="Next"></li>
-                <li class="sf-icon-volume-up ABtnmidue" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></li>
+                <li class="cd-music-player-H-btn"></li>
+                <li class="sf-icon-step-backward cd-music-player-S-btn" @click="Prev"></li>
+                <li :class="'cd-music-player-B-btn '+PlayButtonState" @click="PlayControl"></li>
+                <li class="sf-icon-step-forward cd-music-player-S-btn" @click="Next"></li>
+                <li class="sf-icon-volume-up cd-music-player-H-btn" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></li>
             </ul>
-            <div class="AudioVolumn" v-show="VolumnState">
-                <div class="VideoVolumnSlider" ref="volunm" @mousedown="ChangeVolumn">
-                    <div class="VideoVolumnSliderBar">
+            <div class="cd-music-player-volumn" v-show="VolumnState">
+                <div class="cd-player-volumn-container" ref="volunm" @mousedown="ChangeVolumn">
+                    <div class="cd-player-volumn-slider">
                         <span></span>
                     </div>
                 </div>
             </div>
-            <div class="AudioTime"><div id="AudioLrcList"></div><span>{{TimeText}}</span></div>
-            <div class="AudioSliderContainer" @mousedown="TimeChange" ref="slider">
-                <div class="AudioSlider" :style="{'width':ProcessWidth}">
+            <div class="cd-music-player-time"><div id="AudioLrcList"></div><span>{{TimeText}}</span></div>
+            <div class="cd-player-slider-container" @mousedown="TimeChange" ref="slider">
+                <div class="cd-player-slider" :style="{'width':ProcessWidth}">
                     <span></span>
                 </div>
             </div>
             <canvas width="350" height="240" id="canvas"></canvas>
         </div>
-        <audio muted ref="audio" @ended="MusicEnded" @timeupdate="MusicProcess" @error="Next" @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl" id="audio"></audio>
-        <MusicList v-bind:PlayList="PlayList" v-on:play="playCallBack" ref="List"></MusicList>
+        <audio muted ref="audio" hidden @ended="MusicEnded" @timeupdate="MusicProcess" @error="Next" @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl" id="audio"></audio>
+        <MusicList v-bind:PlayList="PlayList" @play="playCallBack" ref="List"></MusicList>
     </div>
 </template>
 
@@ -39,10 +39,10 @@
         components:{MusicList,WindowsHeader},
         watch:{
             PlayList: {
-                handler(newValue, oldValue) {
+                handler() {
                     this.PlayList.forEach((item, index) => {
                         if (item.play) {
-                            item.play = 'AudioPlayThis';
+                            item.play = 'active';
                             this.playCallBack(item, index);
                             this.GetLyr();
                         }
@@ -101,7 +101,7 @@
                     data.forEach((item,index)=>{
                         item.play=false;
                         if(item.active){
-                            item.play='AudioPlayThis';
+                            item.play='active';
                             this.playCallBack(item,index);
                             this.PlayControl();
                         }
@@ -146,7 +146,7 @@
                 if(this.VisualState) {
                     this.Visual();
                 }
-                document.getElementsByClassName('AudioContainer')[0].focus();
+                document.getElementsByClassName('cd-music-player-main')[0].focus();
             },
             ChangeTime(state){
                 let media=this.$refs.audio;
@@ -166,7 +166,7 @@
                     this.PlayList.forEach((item,index)=>{
                         item.play=false;
                     });
-                    this.PlayList[NowCount+1].play='AudioPlayThis'
+                    this.PlayList[NowCount+1].play='active'
                 }else{
                     this.PlayControl();
                 }
@@ -180,7 +180,7 @@
                     this.PlayList.forEach((item,index)=>{
                         item.play=false;
                     });
-                    this.PlayList[NowCount-1].play='AudioPlayThis'
+                    this.PlayList[NowCount-1].play='active'
                 }
             },
             ChangeVolumn(){
@@ -216,13 +216,13 @@
                     cheight = canvas.height,
                     meterWidth = 10, //width of the meters in the spectrum
                     capHeight = 2,
-                    capStyle = '#409EFF',
+                    capStyle = '#5b5bea',
                     meterNum = 800 / (10 + 2), //count of the meters
                     capYPositionArray = []; ////store the vertical position of hte caps for the preivous frame
                     ctx = canvas.getContext('2d');
                     let gradient = ctx.createLinearGradient(0, 0, 0, 300);
                     gradient.addColorStop(1, '#8140ff');
-                    gradient.addColorStop(0.5, '#3b8cff');
+                    gradient.addColorStop(0.5, '#5b5bea');
                     gradient.addColorStop(0, '#fff');
                 function renderFrame() {
                     let array = new Uint8Array(analyser.frequencyBinCount);
@@ -354,5 +354,5 @@
 </script>
 
 <style scoped>
-
+    @import url("../assets/css/player.css");
 </style>

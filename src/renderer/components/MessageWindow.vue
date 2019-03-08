@@ -61,4 +61,29 @@
 </script>
 
 <style scoped>
+    /*消息弹窗*/
+    .MessageMain{
+        width: 100%;
+        height: 100%;
+        background: #fff;
+    }
+    .MessageContainer{
+        padding: 15px;
+    }
+    .MessageContainer i{
+        float: left;
+        font-size: 30px;
+    }
+    .MessageContainer p{
+        float: left;
+        font-size: 14.5px;
+        line-height: 1.6;
+        width: calc(100% - 30px);
+        word-break: break-all;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 4;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        padding-left: 10px;
+    }
 </style>

@@ -86,6 +86,7 @@ let WindowControl={
                 webSecurity:(process.env.NODE_ENV === 'development')?false:true
             }
         });
+        win.name=options.url;
         win.loadURL(WindowControl.CheckRouter(options.url));
         win.callback=(data)=>{
             win.webContents.send('win-data',data);
@@ -595,8 +596,8 @@ let FileViewer={
         DiskInfo=WindowControl.New({
             url:'info',
             data:data,
-            width: 350,
-            height: 500,
+            width: 600,
+            height: 390,
             title:'文件属性',
             maximizable:false,
             minimizable:false,

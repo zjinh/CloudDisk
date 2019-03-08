@@ -1,9 +1,11 @@
 <template>
     <div class="cd-disk-nav">
-        <button class="sf-icon-chevron-left" @click="NavControl('back')" :disabled="data.NavData.length===0"></button>
-        <button class="sf-icon-home" @click="NavControl('home')" style="font-size: 15px;" :disabled="data.Type==='trans'"></button>
-        <button :class="'sf-icon-redo'+(!loading?' sf-spin':'')" @click="NavControl('reload')" :disabled="data.Type==='trans'"></button>
-        <span class="line"></span>
+        <div v-show="data.Type !== 'trans'" style="float: left;">
+            <button class="sf-icon-chevron-left" @click="NavControl('back')" :disabled="data.NavData.length===0"></button>
+            <button class="sf-icon-home" @click="NavControl('home')" style="font-size: 15px;" ></button>
+            <button :class="'sf-icon-redo'+(!loading?' sf-spin':'')" @click="NavControl('reload')"></button>
+            <span class="line"></span>
+        </div>
         <div class="container">
             <div class="cd-disk-nav-item" @click="NavControl('home')">{{data.ClassifyName}}/</div>
             <div v-for="(item,index) in data.NavData" class="cd-disk-nav-item" @click="NavControl(item)">
@@ -11,11 +13,11 @@
                 <span>/</span>
             </div>
         </div>
-        <ul class="cd-right-head-actions">
+        <ul class="cd-right-head-actions" v-show="data.Type !== 'trans'">
             <input type="text" placeholder="搜索" v-model="SearchKey" @keyup.enter.native="SwitchSearch" :style="ShowSearch?{width:'170px',border:'1px solid #eee'}:''">
             <button class="sf-icon-search" @click="SwitchSearch" v-show="data.Type=== 'disk'"></button>
-            <button :class="'sf-icon-sort-amount-'+AmountSort" @click="ChangeSort('alpha','disk_name')" v-show="data.Type !== 'trans'"></button>
-            <button :class="DiskStateIcon" @click="ChangeState" v-show="data.Type !== 'trans'"></button>
+            <button :class="'sf-icon-sort-amount-'+AmountSort" @click="ChangeSort('alpha','disk_name')"></button>
+            <button :class="DiskStateIcon" @click="ChangeState"></button>
         </ul>
     </div>
 </template>
@@ -130,7 +132,7 @@
         float: right;
     }
     .cd-right-head-actions input{
-        width: 0px;
+        width: 0;
         height: 30px;
         position: absolute;
         top: 3px;

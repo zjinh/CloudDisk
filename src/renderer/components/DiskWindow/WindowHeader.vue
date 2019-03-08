@@ -1,15 +1,17 @@
 <template>
-    <div class="WindowHeader" :style="{'margin-top':(data.resize&&ButtonState==='sf-icon-window-maximize')?'2px':'0px','color':data.color?data.color:'#333','background':data.background?data.background:''}">
+    <div class="cd-drag-head" :style="{'margin-top':(data.resize&&ButtonState==='sf-icon-window-maximize')?'2px':'0','color':data.color?data.color:'#333','background':data.background?data.background:''}">
         <p>{{data.title}}</p>
-        <button class="sf-icon-times" @click="close" :style="{'color':data.color?data.color:'#333'}"></button>
-        <button :class="ButtonState" v-show="data.resize===undefined?true:data.resize" @click="restore" :style="{'color':data.color?data.color:'#333'}"></button>
-        <button class="sf-icon-window-minimize" v-show="data.mini===undefined?true:data.mini" @click="mini" :style="{'color':data.color?data.color:'#333'}"></button>
+        <ul class="window-actions">
+            <li class="sf-icon-minus" v-show="data.mini===undefined?true:data.mini" @click="mini"></li>
+            <li :class="ButtonState" v-show="data.resize===undefined?true:data.resize" @click="restore"></li>
+            <li class="sf-icon-times" style="font-size:16px" @click="close"></li>
+        </ul>
     </div>
 </template>
 
 <script>
     export default {
-        name: "WindowHeader",
+        name: "cd-drag-head",
         props:{
             data:{
                 type:Object
@@ -73,5 +75,54 @@
 </script>
 
 <style scoped>
-
+    /*统一拖拽头部*/
+    .cd-drag-head{
+        width: 100%;
+        height: 30px;
+        -webkit-app-region: drag;
+        position: relative;
+        z-index: 2;
+    }
+    .cd-drag-head p{
+        float: left;
+        font-size: 13px;
+        line-height: 30px;
+        text-indent: 5px;
+        max-width: calc(100% - 120px);
+        text-overflow: ellipsis;
+        word-wrap: normal;
+        word-break: break-all;
+    }
+    /*窗体操作*/
+    .window-actions{
+        float: right!important;
+        text-align: center;
+        padding: 0 5px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: #c3c3c3;
+        -webkit-transition: all .35s;
+        -moz-transition: all .35s;
+        -o-transition: all .35s
+    }
+    .window-actions li{
+        float: left;
+        width: 32px;
+        height: 28px;
+        margin-left: 5px;
+        line-height: 28px;
+        font-size: 12px;
+        -webkit-app-region: no-drag;
+        cursor: pointer;
+    }
+    .window-actions li:hover{
+        background: #eee;
+    }
+    .window-actions:hover{
+        color: #4d515a;
+        -webkit-transition: all .35s;
+        -moz-transition: all .35s;
+        -o-transition: all .35s
+    }
 </style>
