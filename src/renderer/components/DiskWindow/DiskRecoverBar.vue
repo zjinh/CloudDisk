@@ -1,7 +1,7 @@
 <template>
-    <div class="CloudDiskMainFunc" v-show="show">
-        <span class="sf-icon-info-circle TrashTips"> 回收站仍然占用网盘空间，文件保存10天后将被自动清除</span>
-        <button :disabled="disabled" @click="CleanRecover">清空回收站</button>
+    <div class="cd-trash-tip" v-show="show">
+        <p><i class="sf-icon-info-circle"></i> 回收站仍然占用网盘空间，文件保存10天后将被自动清除</p>
+        <button :disabled="disabled" @click="CleanRecover">清空</button>
     </div>
 </template>
 
@@ -44,5 +44,31 @@
 </script>
 
 <style scoped>
-
+    /*回收站提示*/
+    .cd-trash-tip{
+        width: 95%;
+        height:30px;
+        margin: 2px auto;
+    }
+    .cd-trash-tip *{
+        float: left;
+        line-height: 30px;
+    }
+    .cd-trash-tip p{
+        display: block;
+        font-size: 12px;
+        text-indent: 10px;
+        color: #848484;
+    }
+    .cd-trash-tip i{
+        font-size: 14px;
+    }
+    .cd-trash-tip button{
+        float: right;
+        padding: 0 15px;
+        height: 30px;
+        background: #f5491f;
+        color: #fff;
+        border-radius: 3px;
+    }
 </style>

@@ -1,15 +1,15 @@
 <template>
     <div class="CloudDiskAbout">
-        <div class="CloudDiskAbout-head">
+        <div class="CloudDisk-window-header-big">
             <img src="../../../static/img/bar/disk.png" draggable="false">
-            <p>CloudDisk</p>
+            <p>关于我们</p>
             <button class="sf-icon-times" @click="close"></button>
         </div>
         <div class="CloudDiskAbout-main">
             <p class="title">关于CloudDisk</p>
             <p>开发人员：ZJINH</p>
             <p>联系邮箱：2665229856@qq.com</p>
-            <p>当前版本：v{{version}} 正式版 ({{platform}})<span>{{NewVersion}}</span></p>
+            <p>当前版本：V{{version}} 正式版 ({{platform}})<span>{{NewVersion}}</span></p>
             <p class="tips">{{message}}&nbsp</p>
             <div class="process">
                 <Progress :percent="percent" v-show="StartDown"></Progress>

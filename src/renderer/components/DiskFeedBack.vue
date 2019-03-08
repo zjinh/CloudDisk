@@ -1,6 +1,6 @@
 <template>
     <div class="CloudDiskAbout">
-        <div class="CloudDiskAbout-head">
+        <div class="CloudDisk-window-header-big">
             <img src="../../../static/img/bar/disk.png" draggable="false">
             <p>问题反馈</p>
             <button class="sf-icon-times" @click="close"></button>
@@ -9,7 +9,7 @@
             <p>我们需要以下信息</p>
             <Input v-model="FeedBackTitle" placeholder="简单的描述下问题" clearable style="width:100%" />
             <Input v-model="FeedBackContent" type="textarea" :rows="4" placeholder="尽量详细的描述遇到的问题" />
-            <span class="version">当前版本号:v{{version}}</span>
+            <span class="version">当前版本号:V{{version}}</span>
             <button class="el-button el-button--default el-button--small el-button--primary " @click="FeedBack">提交</button>
         </div>
     </div>

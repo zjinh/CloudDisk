@@ -110,7 +110,6 @@
                     this.$Message.error({
                         content: '账号状态异常，请重新登录！',
                         onClose:()=> {
-                            /////弹出登录页
                             this.$ipc.send('system','error');
                         }
                     });

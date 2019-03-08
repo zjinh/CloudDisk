@@ -1,9 +1,9 @@
 <template>
-    <div class="CloudDiskMainFunc" v-show="show">
-        <div v-for="(item,index) in SortData" :class="'CloudDiskFuncBlock sf-icon-sort-'+item.value+'-'+item.type" @click="DiskSort(item)" ripple :style="{width:item.width||''}">
+    <ul class="cd-sort-bar" v-show="show">
+        <li v-for="(item,index) in SortData" :class="'item sf-icon-sort-'+item.value+'-'+item.type" @click="DiskSort(item)" ripple :style="{width:item.width||''}">
             {{item.name}}
-        </div>
-    </div>
+        </li>
+    </ul>
 </template>
 
 <script>
@@ -61,5 +61,22 @@
 </script>
 
 <style scoped>
-
+    /*顶部排序*/
+    .cd-sort-bar{
+        width: 95%;
+        height: 32px;
+        margin: 2px auto;
+    }
+    .cd-sort-bar .item{
+        height: 32px;
+        line-height:32px;
+        color: #424e67;
+        width: calc(23% - 10px);
+        text-align: left;
+        cursor: pointer;
+        text-indent: 10px;
+    }
+    .cd-sort-bar .item:active{
+        background: #e6e3e3;
+    }
 </style>

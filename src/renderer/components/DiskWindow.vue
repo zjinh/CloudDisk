@@ -1,5 +1,5 @@
 <template>
-    <div class="CloudDiskMain"
+    <section class="cd-main"
          @keydown.stop.ctrl.67="isDisk?DiskFeatureControl('Copy'):''"
          @keydown.stop.ctrl.88="isDisk? DiskFeatureControl('Cut'):''"
          @keydown.stop.ctrl.86="isDisk? DiskFeatureControl('paste'):''"
@@ -15,35 +15,32 @@
          @keydown.stop.shift="DiskData.KeyFlag = 'Shift'"
          @keyup="DiskData.KeyFlag =null"
          tabindex="1" ref="CloudDiskMain">
-        <DiskHeader :HeadSrc="HeadSrc" :hide="NeedHide" :data="DiskData" :count="DownloadCount+UploadCount" @callback="SwitchType"></DiskHeader>
-        <div class="CloudDiskFuncMain">
-            <div class="CloudDiskHead">
-                <DiskNavigation :data="DiskData" :loading="LoadCompany" @callback="NavigationControl"></DiskNavigation>
-                <DiskBarFeature :show="NoTransType" :hide="NeedHide" :disabled="IsShare" @callback="DiskFeatureControl"></DiskBarFeature>
-            </div>
-            <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" :BottomSrc="BottomSrc" @callback="SwitchClassify" @change="SwitchClassify" ref="DiskClassify"></DiskClassify>
-            <div class="CloudDiskRight">
-                <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
-                <DiskSortBar :show="DiskData.DiskShowState!=='CloudDiskMFile'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
-                <div class="CloudDiskMain1" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain">
-                    <div class="CloudDiskUploadTips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">
-                        松开鼠标开始上传文件
-                    </div>
-                    <DiskFile @SelectFiles="SelectFiles" @OpenFile="DiskFeatureControl" v-if="LoadCompany&&NoTransType" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
-                    <loading :loading="IsLoadCompany" :length="UserDiskData.length" :IsNoDiskData="IsNoDiskData"></loading>
-                    <div class="MouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
-                    <DiskTransList v-show="DiskData.Type==='trans'" :data="TransformData" @ControlTrans="ControlTrans"></DiskTransList>
+        <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" :BottomSrc="BottomSrc" @callback="SwitchClassify" @change="SwitchClassify" ref="DiskClassify"></DiskClassify>
+        <section class="cd-right">
+            <DiskHeader :data="DiskData" :count="DownloadCount+UploadCount"  @callback="SwitchType"></DiskHeader>
+            <DiskNavigation :data="DiskData" :loading="LoadCompany" :hide="NeedHide" @callback="NavigationControl" @feature="DiskFeatureControl"></DiskNavigation>
+            <DiskSortBar :show="DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
+            <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
+            <section class="cd-bottom" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain">
+                <div class="cd-upload-tips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">
+                    松开鼠标开始上传文件
                 </div>
-            </div>
-        </div>
+                <DiskFile @SelectFiles="SelectFiles" @OpenFile="DiskFeatureControl" v-if="LoadCompany&&NoTransType" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
+                <loading :loading="IsLoadCompany" :length="UserDiskData.length" :IsNoDiskData="IsNoDiskData"></loading>
+                <div class="MouseSelect" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
+                <DiskTransList v-show="DiskData.Type==='trans'" :data="TransformData" @ControlTrans="ControlTrans"></DiskTransList>
+            </section>
+            <input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple">
+            <audio :src="NoticeSrc" ref="NoticeAudio"></audio>
+        </section>
         <MouseMenu :type="loadClassify" :node="$refs.CloudDiskMain" :DiskData="DiskData" @callback="DiskFeatureControl" ref="MouseMenu"></MouseMenu>
         <el-dialog title="选择目标文件夹" :visible.sync="showTree" width="350px">
             <div style="height: 200px; overflow: auto">
                 <DiskTree @SelectDiskTree="SelectDiskTree" ref="DiskTree"></DiskTree>
             </div>
             <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button--default el-button--small" @click="showTree = false">取 消</button>
-                <button class="el-button el-button--default el-button--small el-button--primary" @click="DiskMoveUp">确 定</button>
+                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small" @click="showTree = false">取 消</button>
+                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small el-button&#45;&#45;primary" @click="DiskMoveUp">确 定</button>
             </span>
         </el-dialog>
         <el-dialog title="解压到" :visible.sync="ShowUnZip" width="350px">
@@ -51,8 +48,8 @@
                 <DiskTree @SelectDiskTree="SelectDiskTree" ref="DiskTree"></DiskTree>
             </div>
             <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button--default el-button--small" @click="ShowUnZip = false">取 消</button>
-                <button class="el-button el-button--default el-button--small el-button--primary" @click="DiskUnZip">确 定</button>
+                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small" @click="ShowUnZip = false">取 消</button>
+                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small el-button&#45;&#45;primary" @click="DiskUnZip">确 定</button>
             </span>
         </el-dialog>
         <el-dialog title="分享方式" :visible.sync="showShare" width="350px" top="150px">
@@ -61,19 +58,16 @@
                 <DiskShare ref="DiskShareModel" @close="showShare=false" @updateShare="updateShare"></DiskShare>
             </div>
             <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button--default el-button--small" @click="showShare = false">取 消</button>
-                <button class="el-button el-button--default el-button--small el-button--primary" @click="DiskFeatureControl('post-share')">确 定</button>
+                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small" @click="showShare = false">取 消</button>
+                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small el-button&#45;&#45;primary" @click="DiskFeatureControl('post-share')">确 定</button>
             </span>
         </el-dialog>
-        <input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple">
-        <audio :src="NoticeSrc" ref="NoticeAudio"></audio>
-    </div>
+    </section>
 </template>
 
 <script>
     import DiskHeader from"./DiskWindow/DiskHeader";//拖拽头部
     import DiskNavigation from './DiskWindow/DiskNavigation';//网盘导航栏
-    import DiskBarFeature from './DiskWindow/DiskBarFeature';//网盘右侧工具栏
     import DiskClassify from './DiskWindow/DiskClassify';//网盘左侧导航栏
     import DiskRecoverBar from './DiskWindow/DiskRecoverBar';//回收站提示栏
     import DiskSortBar from './DiskWindow/DiskSortBar';//排序工具栏
@@ -88,7 +82,6 @@
         components: {
             DiskHeader,
             DiskNavigation,
-            DiskBarFeature,
             DiskClassify,
             DiskRecoverBar,
             DiskSortBar,
@@ -108,7 +101,7 @@
                     NavData: [],//记录导航栏数据
                     KeyFlag: false,//全局键盘记录
                     NowSelect: {},//记录一个选择的文件
-                    DiskShowState: 'CloudDiskMFile',//文件显示类型，默认图标,
+                    DiskShowState: 'cd-disk-block-file',//文件显示类型，默认图标,
                     SelectTips: '0个项目',//选择文件提示
                     Type: 'disk',//头部分类标签,
                     ClassifyName: '网盘',//地址栏左侧分类显示文本,
@@ -157,7 +150,6 @@
                 FinishCount: 0,//完成计数
                 NoticeSrc: '',
                 /*自动切换背景*/
-                HeadSrc: 'url(' + require('../../../static/img/bg/Autumn-1.png') + ')',
                 BottomSrc: this.$path.join(__static, '/img/bg/Autumn-bottom-1.png'),
                 ConfigObject:{
                     NoticeFlag:true,
@@ -395,7 +387,6 @@
                         } else if (hHour > 18 && hHour <= 24) {
                             tag = 3
                         }
-                        this.HeadSrc = 'url(' + require('../../../static/img/bg/' + season + '-' + tag + '.png') + ')';
                         this.BottomSrc = this.$path.join(__static, '/img/bg/' + season + '-bottom-' + tag + '.png');
                         break;
                     case 'popup':
@@ -1126,7 +1117,7 @@
                     };
                     this.MouseSelectData = {
                         left: Math.min(start.x, end.x) + "px",
-                        top: this.DiskData.DiskShowState === 'CloudDiskMList' ? Math.min(start.y, end.y) - 35 + "px" : Math.min(start.y, end.y) + "px",
+                        top: this.DiskData.DiskShowState === 'cd-disk-list-file' ? Math.min(start.y, end.y) - 35 + "px" : Math.min(start.y, end.y) + "px",
                         width: Math.abs(end.x - start.x) + "px",
                         height: Math.abs(end.y - start.y) + "px"
                     };
@@ -1170,5 +1161,39 @@
 </script>
 
 <style scoped>
-
+    .cd-main{
+        width: 100%;
+        height: 100%;
+    }
+    .cd-right{
+        float: left;
+        width: calc(100% - 200px);
+        height: 100%;
+    }
+    .cd-bottom{
+        width: calc(100% - 30px);
+        margin: 2px auto;
+        margin: 0 15px;
+        height: calc(100% - 120px);
+        overflow-y: auto;
+        position: relative;
+    }
+    /*上传提示*/
+    .cd-upload-tips{
+        width: 100%;
+        height: 35px;
+        line-height: 35px;
+        background: rgba(91,91,234,.71);
+        position: relative;
+        text-indent: 20px;
+        top: -2px;
+        z-index: 3;
+        -webkit-animation-duration: .35s;
+        animation-duration: .35s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+        -webkit-animation-name: slideInDown;
+        animation-name: slideInDown;
+        color: #fff;
+    }
 </style>

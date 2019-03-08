@@ -1,20 +1,18 @@
 <template>
-    <div class="CloudDiskHeaderDrag" :style="{background: HeadSrc}">
-        <ul class="CloudDiskFuncMenu">
-            <img draggable="false" :src="static+'/img/bar/disk.png'"><span>CloudDisk</span>
+    <div class="cd-right-head">
+        <ul class="cd-right-menu">
             <li v-for="(item,index) in HeaderClassify" @click="HeaderType(item.flag)">
                 <p> {{item.name}}</p>
-                <div class="CloudDiskFuncLine" v-if="data.Type===item.flag"></div>
+                <div class="active" :style="{width:data.Type===item.flag?'100%':0}"></div>
             </li>
         </ul>
-        <div class="CloudDiskHeaderControl">
-            <span></span>
-            <button type="button" class="sf-icon-chevron-down" @click="DropMenuShow?DropMenuShow=false:DropMenuShow=true"></button>
-            <Dropdown placement="bottom-start" trigger="custom" :visible.sync="DropMenuShow" @on-click="SystemDropDown">
+        <ul class="user-actions" >
+            <Dropdown placement="bottom-start" @on-click="SystemDropDown">
+                <li class="item">{{UserInfo.username}}</li>
                 <DropdownMenu slot="list">
                     <DropdownItem name="account">
                         <img draggable="false" :src="UserInfo.userhead">
-                        <p>我的账号</p>
+                        <span>我</span>
                     </DropdownItem>
                     <DropdownItem name="setting">系统设置</DropdownItem>
                     <DropdownItem name="about">关于</DropdownItem>
@@ -23,14 +21,13 @@
                     <DropdownItem name="exit">退出</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-            <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
-            <button type="button" :class="ButtonState" @click="restore"></button>
-            <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
-        </div>
-        <div class="CloudDiskUser" @click="SystemDropDown('account')">
-            <span>{{UserInfo.username}}</span>
-            <img draggable="false" :src="UserInfo.userhead?UserInfo.userhead+now:''">
-        </div>
+        </ul>
+        <ul class="window-actions">
+            <li class="sf-icon-minus" @click="mini"></li>
+            <li :class="ButtonState" @click="restore"></li>
+            <li class="sf-icon-times" style="font-size:16px" @click="close"></li>
+        </ul>
+
     </div>
 </template>
 
@@ -38,35 +35,11 @@
     export default {
         name: "DiskHeader",
         props:{
-            HeadSrc:{
-                type:String
-            },
             data:{
                 type:Object
             },
-            hide:{
-                type:Boolean
-            },
             count:{
                 type:Number
-            }
-        },
-        computed:{
-            now(){
-                return '?'+Date.now();
-            },
-            static(){
-                return this.$path.join(__static)
-            },
-        },
-        watch:{
-            hide:{
-                handler(){
-                    if(this.hide){
-                        this.DropMenuShow=!this.hide;
-                    }
-                },
-                deep:true
             }
         },
         data(){
@@ -77,7 +50,6 @@
                 },//用户信息
                 QuitFlag:false,//是否允许退出
                 ButtonState:"sf-icon-window-maximize",//右上角窗口按钮状态,
-                DropMenuShow:false,//用户下拉菜单,
                 HeaderClassify:[
                     {name:"网盘",flag:'disk'},
                     {name:"分享",flag:'share'},
@@ -123,7 +95,6 @@
                 }
             },
             SystemDropDown (command) {
-                this.DropMenuShow=false;
                 if(command!=='switch'&&command!=='exit') {
                     this.$ipc.send('system', command,command==='account'?this.UserInfo:"");
                 }else{
@@ -177,11 +148,134 @@
             },//获取用户信息,
             HeaderType(commend){
                 this.$emit('callback',commend);
-            }
+            },
         }
     }
 </script>
 
 <style scoped>
+    .cd-right-head{
+        float: left;
+        width: 100%;
+        color: #4d515a;
+        padding: 20px 0 10px;
+        -webkit-app-region: drag;
+    }
+    /*顶部导航*/
+    .cd-right-menu{
+        float: left;
+        height: 35px;
+        margin-left: 10px;
+        -webkit-app-region: no-drag;
+    }
+    .cd-right-menu img{
+        float: left;
+        width: 35px;
+        margin: 0 15px;
+        -webkit-app-region: drag;
+    }
+    .cd-right-menu span{
+        float: left;
+        font-weight: bold;
+        color: #fff;
+        line-height: 40px;
+        padding: 0 10px 0px 0px;
+        -webkit-app-region: drag;
+        font-size: 14px;
+    }
+    .cd-right-menu li {
+        float: left;
+        margin-left: 15px;
+        cursor: pointer;
+    }
+    .cd-right-menu li p {
+        font-weight: bold;
+        padding: 0 15px;
+        text-align: center;
+        font-size: 14px;
+        line-height: 32px;
+    }
+    .cd-right-menu li>.sf-icon-* {
+        display: block
+    }
+    .active {
+        width: 100%;
+        height: 3px;
+        background: #5b5bea;
+    }
+    .active,.cd-right-menu li:hover .active {
+        -webkit-transition: all .35s;
+        -moz-transition: all .35s;
+        -o-transition: all .35s
+    }
+    .cd-right-menu li:hover .active {
+        width: 100%!important
+    }
+    /*用户*/
+    .user-actions{
+        position: absolute;
+        right: 150px;
+        top: 0;
+        -webkit-app-region: no-drag;
+        overflow: unset;
+    }
+    .user-actions *{
+        -webkit-app-region: no-drag;
+    }
+    .user-actions .item{
+        background: #f5f5f5;
+        padding: 3px;
+        max-width: 100px;
+        text-overflow: ellipsis;
+        cursor: pointer;
+    }
+    .user-actions .item:hover{
+        background: #eee;
+    }
+    .ivu-dropdown-item img{
+        float: left;
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+    }
+    .ivu-dropdown-item span{
+        margin-left: 10px;
+        font-size: 14px;
+        width: unset!important;
+        background: none;
+        line-height: 30px;
+    }
+    /*窗体操作*/
+    .window-actions{
+        float: right!important;
+        text-align: center;
+        padding: 0 5px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: #c3c3c3;
+        -webkit-transition: all .35s;
+        -moz-transition: all .35s;
+        -o-transition: all .35s
+    }
+    .window-actions li{
+        float: left;
+        width: 32px;
+        height: 28px;
+        margin-left: 5px;
+        line-height: 28px;
+        font-size: 12px;
+        -webkit-app-region: no-drag;
+        cursor: pointer;
+    }
+    .window-actions li:hover{
+        background: #eee;
+    }
+    .window-actions:hover{
+        color: #4d515a;
+        -webkit-transition: all .35s;
+        -moz-transition: all .35s;
+        -o-transition: all .35s
+    }
 
 </style>
