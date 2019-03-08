@@ -165,7 +165,6 @@
     .cd-right-menu{
         float: left;
         height: 35px;
-        margin-left: 10px;
         -webkit-app-region: no-drag;
     }
     .cd-right-menu img{
