@@ -3,6 +3,7 @@ import { autoUpdater } from 'electron-updater'
 const path = require('path');
 let TransDownFolder=process.env.USERPROFILE;
 let DownloadList={};
+let DownLoadName=null;
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
@@ -124,7 +125,10 @@ let WindowControl={
 function FileObject(item,state){
     return {
         id:Math.round(item.getStartTime()),
-        name:item.getFilename(),
+        url:item.getURLChain(),
+        time:item.getStartTime(),
+        name:item.fileName,
+        path:item.path,
         chunk:item.getReceivedBytes(),
         size:item.getTotalBytes(),
         trans_type: 'download',
@@ -476,7 +480,10 @@ function BindIpc() {
     });
     session.defaultSession.removeAllListeners('will-download');
     session.defaultSession.on('will-download', (event, item, webContents) => {
-        item.setSavePath(TransDownFolder+'/'+item.getFilename()); // 设置保存路径,使Electron不提示保存对话框。
+        let name=decodeURI(item.getURLChain().toString().split('?disk_name=')[1])||item.getFilename();
+        item.fileName=name;
+        item.path=TransDownFolder+'/'+name;
+        item.setSavePath(TransDownFolder+'/'+name); // 设置保存路径,使Electron不提示保存对话框。
         item.on('updated', (event, state) => {
             DownloadList[Math.round(item.getStartTime())]=item;
             let file=FileObject(item,item.isPaused()?'interrupted':false);
@@ -625,6 +632,7 @@ if (!gotTheLock) {
         }
     });
     app.on('ready', function (){
+        app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
         DiskSystem.LoginWindow(true);
         BindIpc();
     });

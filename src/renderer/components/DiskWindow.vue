@@ -15,7 +15,7 @@
          @keydown.stop.shift="DiskData.KeyFlag = 'Shift'"
          @keyup="DiskData.KeyFlag =null"
          tabindex="1" ref="CloudDiskMain">
-        <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" :BottomSrc="BottomSrc" @callback="SwitchClassify" @change="SwitchClassify" ref="DiskClassify"></DiskClassify>
+        <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" @callback="SwitchClassify" @change="SwitchClassify" ref="DiskClassify"></DiskClassify>
         <section class="cd-right">
             <DiskHeader :data="DiskData" :count="DownloadCount+UploadCount"  @callback="SwitchType"></DiskHeader>
             <DiskNavigation :data="DiskData" :loading="LoadCompany" :hide="NeedHide" @callback="NavigationControl" @feature="DiskFeatureControl"></DiskNavigation>
@@ -30,36 +30,28 @@
             </section>
             <input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple">
             <audio :src="NoticeSrc" ref="NoticeAudio"></audio>
+            <MouseMenu :type="loadClassify" :node="$refs.CloudDiskMain" :DiskData="DiskData" @callback="DiskFeatureControl" ref="MouseMenu"></MouseMenu>
+            <el-dialog title="选择目标文件夹" :visible.sync="showTree" width="350px">
+                <div style="height: 200px; overflow: auto">
+                    <DiskTree v-if="showTree" @SelectDiskTree="SelectDiskTree"></DiskTree>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                <button class="cd-button cd-cancel-button" @click="showTree=false">取 消</button>
+                <button class="cd-button" @click="DiskMoveUp" v-if="!ShowUnZip">确 定</button>
+                <button class="cd-button" @click="DiskUnZip" v-if="ShowUnZip">解 压</button>
+            </span>
+            </el-dialog>
+            <el-dialog title="分享方式" :visible.sync="showShare" width="350px" top="150px">
+                <div style="height: 150px;">
+                    <p class="cd-share-select">准备分享<span>{{DiskData.NowSelect.disk_name}}</span></p>
+                    <DiskShare v-if="showShare" @close="showShare=false" @callback="DiskFeatureControl" ref="DiskShareModel"></DiskShare>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                <button class="cd-button cd-cancel-button" @click="showShare=false">取 消</button>
+                <button class="cd-button" @click="DiskFeatureControl('post-share')">确 定</button>
+            </span>
+            </el-dialog>
         </section>
-        <MouseMenu :type="loadClassify" :node="$refs.CloudDiskMain" :DiskData="DiskData" @callback="DiskFeatureControl" ref="MouseMenu"></MouseMenu>
-        <el-dialog title="选择目标文件夹" :visible.sync="showTree" width="350px">
-            <div style="height: 200px; overflow: auto">
-                <DiskTree @SelectDiskTree="SelectDiskTree" ref="DiskTree"></DiskTree>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small" @click="showTree = false">取 消</button>
-                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small el-button&#45;&#45;primary" @click="DiskMoveUp">确 定</button>
-            </span>
-        </el-dialog>
-        <el-dialog title="解压到" :visible.sync="ShowUnZip" width="350px">
-            <div style="height: 200px; overflow: auto">
-                <DiskTree @SelectDiskTree="SelectDiskTree" ref="DiskTree"></DiskTree>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small" @click="ShowUnZip = false">取 消</button>
-                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small el-button&#45;&#45;primary" @click="DiskUnZip">确 定</button>
-            </span>
-        </el-dialog>
-        <el-dialog title="分享方式" :visible.sync="showShare" width="350px" top="150px">
-            <div style="height: 150px;">
-                <p class="CloudDiskShareTips">准备分享<span>{{DiskData.NowSelect.disk_name}}</span></p>
-                <DiskShare ref="DiskShareModel" @close="showShare=false" @updateShare="updateShare"></DiskShare>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small" @click="showShare = false">取 消</button>
-                <button class="el-button el-button&#45;&#45;default el-button&#45;&#45;small el-button&#45;&#45;primary" @click="DiskFeatureControl('post-share')">确 定</button>
-            </span>
-        </el-dialog>
     </section>
 </template>
 
@@ -147,8 +139,7 @@
                 DownloadCount: 0,//下载计数
                 FinishCount: 0,//完成计数
                 NoticeSrc: '',
-                /*自动切换背景*/
-                BottomSrc: this.$path.join(__static, '/img/bg/Autumn-bottom-1.png'),
+
                 ConfigObject:{
                     NoticeFlag:true,
                     NoticeBubble:true,
@@ -188,7 +179,13 @@
                     if (this.DiskData.Type === 'trans') {
                         this.$nextTick(() => {
                             this.TransformData.forEach((item, index) => {
-                                item.shows=((item.trans_type === this.loadClassify && item.state !== 'completed')||(this.loadClassify === 'completed' && item.state === 'completed'));//条件为没有完成的任务||完成的任务
+                                if (item.trans_type === this.loadClassify && item.state !== 'completed') {
+                                    item.shows = true;
+                                } else if (this.loadClassify === 'completed' && item.state === 'completed') {
+                                    item.shows = true;
+                                } else {
+                                    item.shows = false;
+                                }
                             });
                         });
                     }
@@ -261,15 +258,12 @@
                 window.addEventListener("drop", function (e) {
                     e.preventDefault();
                 }, false);
-                setInterval(() => {
-                    this.SystemControl('background');
-                }, 1000);
                 this.$Api.LocalFile.Read('transfer').then((data) => {
                     if (data.length) {
                         this.TransformData = data;
                         this.TransformData.forEach((item) => {
                             if (item.trans_type === 'download' && item.state !== 'completed') {
-                                item.state = 'cancelled';
+                                this.$electron.remote.getCurrentWindow().webContents.downloadURL(item.disk_main+'?disk_name='+item.disk_name);
                             }
                         })
                     }
@@ -349,49 +343,6 @@
                 }
                 this.SwitchType(type);
             },
-            /*系统消息通知等函数*/
-            SystemControl(commend, data) {
-                switch (commend) {
-                    case 'background':
-                        let season = 'Spring';
-                        let tag = 0;
-                        let D = new Date();
-                        let month = D.getMonth();
-                        let hHour = D.getHours();
-                        if (month > 2 && month < 6) {
-                            season = 'Spring'
-                        } else if (month > 5 && month < 9) {
-                            season = 'Summer';
-                        } else if (month > 8 && month < 12) {
-                            season = 'Autumn'
-                        } else if (month === 12 || month === 1 || month === 2) {
-                            season = 'Winter'
-                        }
-                        if (hHour >= 1 && hHour <= 8) {
-                            tag = 0;
-                        } else if (hHour > 8 && hHour <= 16) {
-                            tag = 1
-                        } else if (hHour > 16 && hHour <= 18) {
-                            tag = 2
-                        } else if (hHour > 18 && hHour <= 24) {
-                            tag = 3
-                        }
-                        this.BottomSrc = this.$path.join(__static, '/img/bg/' + season + '-bottom-' + tag + '.png');
-                        break;
-                    case 'popup':
-                        if (this.ConfigObject.NoticeFlag) {
-                            this.NoticeSrc = localStorage.NoticeVoice;
-                            let a = setTimeout(() => {
-                                clearTimeout(a);
-                                this.$refs.NoticeAudio.play();
-                            }, 200)
-                        }
-                        if (this.ConfigObject.NoticeBubble) {
-                            this.$ipc.send('system', 'popup', data);
-                        }
-                        break;
-                }
-            },
             /*网盘功能控制*/
             DiskFeatureControl(commend, datas, flag) {
                 let data = null;
@@ -428,10 +379,8 @@
                         } else {
                             let OpenType = this.DiskData.NowSelect.OpenType;
                             if (OpenType === 'zip') {
+                                this.showTree=true;
                                 this.ShowUnZip = true;
-                                this.$nextTick(() => {
-                                    this.$refs.DiskTree.init();
-                                });
                             } else if (OpenType !== null) {
                                 let data = [];
                                 if (OpenType === 'image' || OpenType === 'video' || OpenType === 'audio') {
@@ -469,7 +418,7 @@
                         }
                         let tips=this.SelectDownLoadFiles.length>1?'所选' + this.SelectDownLoadFiles.length + '个项目':this.SelectDownLoadFiles[0].disk_name;
                         this.SelectDownLoadFiles.forEach((item) => {
-                            this.$electron.remote.getCurrentWindow().webContents.downloadURL(item.disk_main);
+                            this.$electron.remote.getCurrentWindow().webContents.downloadURL(item.disk_main+'?disk_name='+item.disk_name);
                         });
                         this.SelectDownLoadFiles=[];
                         break;
@@ -525,13 +474,6 @@
                         break;
                     case 'MoveTo':
                         this.showTree = true;
-                        this.$nextTick(() => {
-                            //第一次打开会报错
-                            try {
-                                this.$refs.DiskTree.init();
-                            } catch (e) {
-                            }
-                        });
                         break;
                     case 'paste'://粘贴
                         let CutFlag = true;
@@ -686,14 +628,17 @@
                                 }
                             })
                         } else {
-                            this.$nextTick(() => {
-                                this.$refs.DiskShareModel.init();
-                            });
                             this.showShare = true;
                         }
                         break;
                     case 'post-share'://查看分享
                         this.$refs.DiskShareModel.ShareFile(this.DiskData.NowSelect);
+                        break;
+                    case 'update-share'://更新文件分享状态
+                        this.FindInDisk(this.DiskData.NowSelect, (item) => {
+                            item.share = datas;
+                            item.shareAddress=localStorage.server+'/s/'+datas
+                        });
                         break;
                     case 'cancel-share'://取消分享
                         this.Confrim({
@@ -726,6 +671,18 @@
                         break;
                     case 'reload':
                         this.NavigationControl(commend);
+                        break;
+                    case 'popup':
+                        if (this.ConfigObject.NoticeFlag) {
+                            this.NoticeSrc = localStorage.NoticeVoice;
+                            let a = setTimeout(() => {
+                                clearTimeout(a);
+                                this.$refs.NoticeAudio.play();
+                            }, 200)
+                        }
+                        if (this.ConfigObject.NoticeBubble) {
+                            this.$ipc.send('system', 'popup', datas);
+                        }
                         break;
                 }
             },
@@ -886,6 +843,7 @@
                     for (let i = 0; i < fileArea.length; i++) {
                         file = fileArea[i];
                         OneFile = {
+                            time:new Date().getTime()/1000,
                             name: file.name,
                             chunk: 0,
                             size: file.size,
@@ -979,7 +937,7 @@
                                     this.UserDiskData.push(rs.data);
                                 }
                             });
-                            this.SystemControl('popup', item.name + '上传完成');/*消息提醒*/
+                            this.DiskFeatureControl('popup', item.name + '上传完成');/*消息提醒*/
                         } else {
                             item.chunk = ++chunk;
                             // 这样设置可以暂停，但点击后动态的设置就暂停不了..
@@ -994,18 +952,14 @@
                     }
                 });
             },
-            updateShare(address) {
-                this.FindInDisk(this.DiskData.NowSelect, (item) => {
-                    item.share = address;
-                });
-            },//更新文件分享状态
             DiskUnZip() {
                 if (!this.SelectTrees) {
                     return this.$Message.warning('请选择一个解压目录');
                 }
+                this.showTree=false;
                 this.ShowUnZip = false;
                 if (this.DiskData.NowSelect.disk_size > 209715200) {
-                    return this.$Message.warning('为了更好的性能，目前只能解压小于200M的压缩包');
+                    return this.$Message.warning('目前只能解压小于200M的压缩包');
                 }
                 this.$Message.info('开始解压，这可能需要一点时间');
                 this.$Api.Disk.UnZip({
@@ -1021,11 +975,10 @@
                         this.$nextTick(() => {
                             this.UserDiskData.push(rs.data);
                         });
-                        this.ShowUnZip = false;
-                        this.SelectTrees = false;
                     } else {
                         this.$Message.error('解压失败')
                     }
+                    this.SelectTrees = false;
                 })
             },
             /*树目录操作方法*/
@@ -1181,126 +1134,21 @@
         animation-name: slideInDown;
         color: #fff;
     }
+    /*分享提示*/
+    .cd-share-select{
+        font-size: 16px;
+        padding-bottom: 5px;
+        height: 25px;
+    }
+    .cd-share-select span{
+        color: #5b5bea;
+    }
     /*拖选框*/
     .cd-mouse-select{
         position: absolute;
-        background: #e2e2e2;
-        opacity: .5;
-        border: 1px solid #eee;
+        background: #f4f5f7;
+        opacity: .7;
+        border: 2px solid #eee;
         z-index: 1;
-    }
-
-    .CloudDiskTreesContainer{
-        width: 100%;
-        overflow-y: auto;
-    }
-    .childFolder{
-        padding-left: 10px;
-    }
-    .CloudDFoContainer{
-        width: 100%;
-        height: auto;
-    }
-    .CloudDFoContainer li{
-        width: 100%;
-        height: 30px;
-        line-height: 30px;
-    }
-    .CloudDFoContainer li:hover,.CloudDiskTreeActive{
-        background: #e1e1e1;
-        color: #000;
-    }
-    .CloudDFoContainer span,.CloudDFoContainer i{
-        float: left;
-        display: block;
-        line-height: 30px;
-        margin: 0 5px;
-        color: #5b5bea;;
-        font-size: 20px;
-    }
-    .CloudDiskTree{
-        width: 100%;
-        height: 30px;
-    }
-
-
-
-
-    /*分享窗口*/
-    .CloudDiskShareWindow{
-        width: 100%;
-        height: 100%;
-    }
-    .CloudDiskShareWindow ul{
-        width: 100%;
-        height: 35px;
-    }
-    .CloudDiskShareWindow ul>li{
-        width: 50%;
-        float: left;
-        height: 35px;
-        line-height: 33px;
-        text-align: center;
-        cursor: pointer;
-    }
-    .CloudDiskShareTips{
-        font-size: 16px;
-        padding-bottom: 10px;
-    }
-    .CloudDiskShareTips span{
-        color: #409EFF;
-    }
-    .CloudDiskShareLine{
-        width: 100%;
-        height: 40px;
-        line-height: 40px;
-        margin-bottom: 10px;
-    }
-    .CloudDiskShareLine *{
-        float: left;
-    }
-    .CloudDiskShareLine span{
-
-    }
-    .CloudDiskShareLine input{
-        border: 1px solid #eee;
-        height: 32px;
-        padding: 0 10px;
-        margin-top: 4px;
-        border-radius: 3px;
-    }
-    .CloudDiskShareLine input:focus{
-        border: 1px solid #409EFF;
-    }
-    .CloudDiskShareLine button{
-        float: right;
-        height: 32px;
-        background: #409EFF;
-        color: #fff;
-        margin-top: 4px;
-        line-height: 32px;
-        padding: 0 10px;
-        border: 1px solid #eee;
-        border-radius: 3px;
-    }
-    .CloudDiskShareActive{
-        border-bottom: 2px solid #5b5bea;
-    }
-    .CloudDiskShareWContent{
-        width: 100%;
-        height: 60px;
-        background: #eee;
-        margin-top: 10px;
-    }
-    .CloudDiskShareWindow p{
-        font-size: 14px;
-        line-height: 60px;
-        text-indent: 20px;
-    }
-    .CloudDiskViewContent{
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background: #fcfcfc;
     }
 </style>

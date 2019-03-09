@@ -138,6 +138,23 @@ button[disabled="disabled"]{
 	background: none!important;
 	cursor: no-drop!important;
 }
+/*按钮*/
+.cd-button{
+	padding: 0 12px;
+	height: 32px;
+	border-radius: 3px;
+	color: #5b5bea;
+	background-color: #EAECF0;
+	border: 1px solid rgba(0,0,0,0);
+	margin-left: 5px;
+	font-size: 13px;
+}
+.cd-cancel-button{
+	background: none;
+}
+.cd-button:hover{
+	border: 1px solid #5b5bea;
+}
 /*滚动条*/
 *::-webkit-scrollbar{
 	width:7px;

@@ -119,6 +119,7 @@
         max-width: 80px;
         font-size: 14px;
         text-overflow: ellipsis;
+        cursor: pointer;
     }
     .line{
         float: left;

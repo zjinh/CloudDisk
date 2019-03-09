@@ -103,10 +103,10 @@
         text-indent: 10px;
     }
     .cd-disk-block-file:hover,.cd-disk-list-file:hover{
-        background: #ececec;
+        background: #f4f5f7;
     }
     /*选中样式*/
     .active{
-        background: rgba(91, 91, 211, 0.18)!important
+        background: #ececec!important
     }
 </style>

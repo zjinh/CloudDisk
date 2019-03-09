@@ -1,8 +1,8 @@
 <template>
     <div>
-        <ul class="CloudDiskTreesContainer" v-for="(item,index) in DiskTreeData?DiskTreeData:UserDiskTreeData">
-            <div :class="item.disk_name==='全部文件'?'CloudDFoContainer':'CloudDFoContainer childFolder'">
-                <li class="CloudDiskTree" @dblclick.stop="ToggleDiskTree(item,index)" @mousedown="SelectTree(item)">
+        <ul class="cd-tree-container" v-for="(item,index) in DiskTreeData?DiskTreeData:UserDiskTreeData">
+            <div :class="item.disk_name==='全部文件'?'cd-tree-folder-container':'cd-tree-folder-container cd-tree-child-f'">
+                <li class="cd-tree" @dblclick.stop="ToggleDiskTree(item,index)" @mousedown="SelectTree(item)">
                     <Icon v-if="!item.show&&item.load!=='loading'" type="ios-folder"></Icon>
                     <Icon v-if="item.load==='loading'" type="ios-loading sf-spin"></Icon>
                     <Icon v-if="item.show&&item.load!=='loading'" type="ios-folder-open"></Icon>
@@ -29,6 +29,9 @@
                   {"disk_name":"全部文件","disk_id":"null","parent_id":"","show":false,"load":false,"child":[]}
               ],
           }
+        },
+        mounted(){
+            this.init();
         },
         methods:{
            /* ...mapMutations([
@@ -69,14 +72,14 @@
                 }
             },
             SelectTree (item) {
-                let CloudDiskTree=document.getElementsByClassName('CloudDiskTree');
-                for (let i = 0; i < CloudDiskTree.length; i++) {
-                    CloudDiskTree[i].className = 'CloudDiskTree';
+                let tree=document.getElementsByClassName('cd-tree');
+                for (let i = 0; i < tree.length; i++) {
+                    tree[i].className = 'cd-tree';
                 }
                 let path=event.path;
                 for(let j=0;j<path.length;j++){
                     if(path[j].nodeName==='LI'){
-                        path[j].className='CloudDiskTree CloudDiskTreeActive'
+                        path[j].className='cd-tree active'
                     }
                 }
                 // this.set_SelectTree(item);//这是vuex的方法
@@ -87,5 +90,39 @@
 </script>
 
 <style scoped>
-
+    .cd-tree-container{
+        width: 100%;
+        overflow-y: auto;
+    }
+    .cd-tree-child-f{
+        padding-left: 10px;
+    }
+    .cd-tree-folder-container{
+        width: 100%;
+        height: auto;
+    }
+    .cd-tree-folder-container li{
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        cursor: pointer;
+        margin-bottom:2px;
+        border-radius: 3px;
+    }
+    .cd-tree-folder-container li:hover,.active{
+        background: #ececec;
+        color: #5b5bea!important;
+    }
+    .cd-tree-folder-container span,.cd-tree-folder-container i{
+        float: left;
+        display: block;
+        line-height: 30px;
+        margin: 0 5px;
+        color: #5b5bea;;
+        font-size: 20px;
+    }
+    .cd-tree{
+        width: 100%;
+        height: 30px;
+    }
 </style>

@@ -1,13 +1,13 @@
 <template>
-    <div class="cd-music-player-main" @mousedown="VolumnState=false" tabindex="-1" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
+    <div class="cd-music-player-main" @mousedown="VolumnState=false" tabindex="-1" @keydown.space="PlayerCommend('play')" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
         <WindowsHeader :data=header></WindowsHeader>
         <div class="cd-music-player-container">
             <div class="cd-music-player-title">{{NowPlay.disk_name}}</div>
             <ul>
                 <li class="cd-music-player-H-btn"></li>
-                <li class="sf-icon-step-backward cd-music-player-S-btn" @click="Prev"></li>
-                <li :class="'cd-music-player-B-btn '+PlayButtonState" @click="PlayControl"></li>
-                <li class="sf-icon-step-forward cd-music-player-S-btn" @click="Next"></li>
+                <li class="sf-icon-step-backward cd-music-player-S-btn" @click="PlayerCommend('prev')"></li>
+                <li :class="'cd-music-player-B-btn '+PlayButtonState" @click="PlayerCommend('play')"></li>
+                <li class="sf-icon-step-forward cd-music-player-S-btn" @click="PlayerCommend('next')"></li>
                 <li class="sf-icon-volume-up cd-music-player-H-btn" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></li>
             </ul>
             <div class="cd-music-player-volumn" v-show="VolumnState">
@@ -25,7 +25,7 @@
             </div>
             <canvas width="350" height="240" id="canvas"></canvas>
         </div>
-        <audio muted ref="audio" hidden @ended="MusicEnded" @timeupdate="MusicProcess" @error="Next" @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl" id="audio"></audio>
+        <audio muted preload="auto" ref="audio"  @ended="PlayerCommend('next')" @timeupdate="MusicProcess" @error="PlayerCommend('next')" @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayerCommend('play')" :src="NowPlay.PlayUrl" id="audio"></audio>
         <MusicList v-bind:PlayList="PlayList" @play="playCallBack" ref="List"></MusicList>
     </div>
 </template>
@@ -89,6 +89,7 @@
                 /* 歌曲回调函数设置的进度时间 */
                 __duration: -1,
                 header:{
+                    color:"#fff",
                     title:"",
                     resize:false,
                     mini:true
@@ -103,7 +104,7 @@
                         if(item.active){
                             item.play='active';
                             this.playCallBack(item,index);
-                            this.PlayControl();
+                            this.PlayerCommend('play');
                         }
                     });
                     this.PlayList=data;
@@ -114,39 +115,19 @@
         methods:{
             bind(){
                 this.$ipc.on('Next',()=>{
-                    this.Next();
+                    this.PlayerCommend('prev');
                 });
                 this.$ipc.on('Prev',()=>{
-                    this.Prev();
+                    this.PlayerCommend('next');
                 });
                 this.$ipc.on('Play',()=>{
-                    this.PlayControl();
+                    this.PlayerCommend('play');
                 });
             },
             playCallBack(item,index){
                 this.NowPlay=item;
                 this.NowPlay.count=index;
                 this.NowPlay.PlayUrl=item.disk_main;
-            },
-            PlayControl(){
-                if(!this.PlayList.length){
-                    return
-                }
-                let media=this.$refs.audio;
-                if(media.paused){
-                    media.play();
-                    this.PlayButtonState='sf-icon-pause';
-                    this.$ipc.send('player-control','audio','pause')
-                }else{
-                    media.pause();
-                    this.PlayButtonState='sf-icon-play';
-                    this.$ipc.send('player-control','audio','play')
-                }
-                this.header.title=this.NowPlay.disk_name;
-                if(this.VisualState) {
-                    this.Visual();
-                }
-                document.getElementsByClassName('cd-music-player-main')[0].focus();
             },
             ChangeTime(state){
                 let media=this.$refs.audio;
@@ -156,31 +137,51 @@
                     media.currentTime=media.currentTime+5
                 }
             },
-            Next(){
+            PlayerCommend(commend){
                 if(!this.PlayList.length){
                     return
                 }
                 let NowCount=this.NowPlay.count;
                 let AllCount=this.PlayList.length;
-                if(NowCount!==AllCount-1){
-                    this.PlayList.forEach((item,index)=>{
-                        item.play=false;
-                    });
-                    this.PlayList[NowCount+1].play='active'
-                }else{
-                    this.PlayControl();
-                }
-            },
-            Prev(){
-                if(!this.PlayList.length){
-                    return
-                }
-                let NowCount=this.NowPlay.count;
-                if(this.NowPlay.count!==0){
-                    this.PlayList.forEach((item,index)=>{
-                        item.play=false;
-                    });
-                    this.PlayList[NowCount-1].play='active'
+                switch (commend) {
+                    case 'prev':
+                        if(NowCount!==0){
+                            this.PlayList.forEach((item)=>{
+                                item.play=false;
+                            });
+                            this.PlayList[NowCount-1].play='active'
+                        }
+                        break;
+                    case 'next':
+                        if(NowCount!==AllCount-1){
+                            this.PlayList.forEach((item)=>{
+                                item.play=false;
+                            });
+                            this.PlayList[NowCount+1].play='active'
+                        }else{
+                            this.PlayerCommend('play');
+                        }
+                        break;
+                    case 'play':
+                        let media=this.$refs.audio;
+                        if(media.readyState !== 4){
+                            media.load();
+                        }
+                        if(media.paused){
+                            media.play();
+                            this.PlayButtonState='sf-icon-pause';
+                            this.$ipc.send('player-control','audio','pause')
+                        }else{
+                            media.pause();
+                            this.PlayButtonState='sf-icon-play';
+                            this.$ipc.send('player-control','audio','play')
+                        }
+                        this.header.title=this.NowPlay.disk_name;
+                        if(this.VisualState) {
+                            this.Visual();
+                        }
+                        document.getElementsByClassName('cd-music-player-main')[0].focus();
+                        break;
                 }
             },
             ChangeVolumn(){
@@ -188,14 +189,11 @@
                 let volunm=this.$refs.volunm;
                 Media.MediaControl(media,'volunm','y',volunm,event)
             },
-            MusicEnded(){
-                this.Next();
-            },
             TimeChange(){
                 let media=this.$refs.audio;
                 let slider=this.$refs.slider;
-                Media.MediaControl(media,'play','x',slider,event)
-                this.PlayControl()
+                Media.MediaControl(media,'play','x',slider,event);
+                this.PlayerCommend('play')
             },
             MusicProcess(){
                 let media=this.$refs.audio;

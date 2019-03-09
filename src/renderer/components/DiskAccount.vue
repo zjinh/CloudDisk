@@ -132,7 +132,7 @@
         float: left;
         width: 50%;
         height: 100%;
-        /*background: url("../../../../static/img/login/right-bg.png");*/
+        background: url("../../../static/img/login/right-bg.png");
         background-position: -60px 0;
         margin-top: -30px;
         background-size: cover;

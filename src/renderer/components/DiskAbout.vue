@@ -16,10 +16,10 @@
             </div>
             <div class="bottom">
                 <p class="release">Copyright ©2014-2018 ZJINH All rights reserved.</p>
-                <Button type="primary" :loading="loading" @click="checkUpdate">
+                <button :loading="loading" @click="checkUpdate">
                     <span v-if="!loading">{{CheckText}}</span>
                     <span v-else>{{ProcessText}}</span>
-                </Button>
+                </button>
             </div>
         </div>
     </div>
@@ -110,7 +110,7 @@
     .CloudDisk-window-header-big{
         width: 100%;
         height: 50px;
-        /*background: url("@/static/img/login/right-bg.png");*/
+        background: url("../../../static/img/login/right-bg.png");
         background-size: cover;
         background-position: -160px 58px;
         background-repeat: repeat-y;

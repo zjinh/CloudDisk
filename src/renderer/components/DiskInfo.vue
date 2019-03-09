@@ -39,7 +39,7 @@
         </div>
         <div class="cd-disk-info-line"></div>
         <div class="cd-disk-info-item" style="position: absolute;bottom: 15px;right:-30px;">
-            <button class="cancel" @click="close">关闭</button>
+            <button class="cd-cancel-button" @click="close">关闭</button>
         </div>
     </div>
 </template>
@@ -182,11 +182,6 @@
         padding: 0 10px;
         -webkit-app-region: no-drag;
         color: #5b5bea;
-    }
-    .cd-disk-info-item .cancel{
-        background:#5b5bea;
-        color: #fff;
-        border-radius: 3px;
     }
     .cd-disk-info-line{
         width: calc(100% - 88px);

@@ -1,12 +1,12 @@
 <template>
-    <div class="cd-video-player-main" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="PlayControl" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
+    <div class="cd-video-player-main" ref="VideoPlayer" @mousedown="VolumnState=false" tabindex="-1" @keydown.esc="FullScreen(true)" @keydown.space="VideoPlayerCommend('play')" @keydown.left="ChangeTime('-')" @keydown.right="ChangeTime('+')">
         <WindowsHeader :data=header></WindowsHeader>
         <div class="cd-video-main">
-            <video :style="{'height':VideoHeight}" crossorigin="*" @error="VideoError" @ended="VideoEnded" @dblclick="FullScreen" @click="PlayControl" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="PlayControl" :src="NowPlay.PlayUrl">
+            <video :style="{'height':VideoHeight}" crossorigin="*" @error="VideoError" @ended="VideoEnded" @dblclick="FullScreen" @click="VideoPlayerCommend('play')" @progress="VideoCache" @timeupdate="VideoProcess" ref="video"  @durationchange="PlayButtonState='sf-icon-pause'" @seeking="PlayButtonState='sf-icon-circle-notch sf-spin'" @canplay="VideoPlayerCommend('play')" :src="NowPlay.PlayUrl">
             </video>
-            <div :class="'cd-video-fliter '+PlayButtonState+' '+animation" @click="PlayControl"></div>
+            <div :class="'cd-video-fliter '+PlayButtonState+' '+animation" @click="VideoPlayerCommend('play')"></div>
             <div :class="'cd-video-control '+BarAnimation" @mouseover="ShowControl" @mouseout="HideControl">
-                <div :class="'cd-video-play '+PlayButtonState" @click="PlayControl"></div>
+                <div :class="'cd-video-play '+PlayButtonState" @click="VideoPlayerCommend('play')"></div>
                 <div class="cd-video-player-slider-container"  @mousedown="TimeChange" ref="slider">
                     <div class="cd-player-process-bar" :style="{'width':ProcessWidth}">
                         <span></span>
@@ -82,9 +82,9 @@
                     data.forEach((item,index)=>{
                         item.play=false;
                         if(item.active){
-                            item.play='AudioPlayThis';
+                            item.play='active';
                             this.playCallBack(item,index);
-                            this.PlayControl();
+                            this.VideoPlayerCommend('play');
                         }
                     });
                     this.PlayList=data;
@@ -94,39 +94,20 @@
         },
         methods:{
             bind(){
-                this.$ipc.on('video-Prev',()=>{
-                    this.Prev()
+                this.$ipc.on('video-prev',()=>{
+                    this.VideoPlayerCommend('prev');
                 });
                 this.$ipc.on('video-Play',()=>{
-                    this.PlayControl();
+                    this.VideoPlayerCommend('play');
                 });
-                this.$ipc.on('video-Next',()=>{
-                    this.Next();
+                this.$ipc.on('video-next',()=>{
+                    this.VideoPlayerCommend('next');
                 });
             },
             playCallBack(item,index){
                 this.NowPlay=item;
                 this.NowPlay.count=index;
                 this.NowPlay.PlayUrl=item.disk_main;
-            },
-            PlayControl(){
-                if(!this.PlayList.length){
-                    return
-                }
-                let media=this.$refs.video;
-                if(media.paused){
-                    media.play();
-                    this.PlayButtonState='sf-icon-pause';
-                    this.animation='animated zoomOut';
-                    this.$ipc.send('player-control','video','pause')
-                }else{
-                    media.pause();
-                    this.PlayButtonState='sf-icon-play';
-                    this.animation='animated zoomIn';
-                    this.$ipc.send('player-control','video','play')
-                }
-                this.header.title=this.NowPlay.disk_name;
-                this.$refs.VideoPlayer.focus();
             },
             ChangeTime(state){
                 let media=this.$refs.video;
@@ -136,29 +117,47 @@
                     media.currentTime=media.currentTime+5
                 }
             },
-            Next(){
+            VideoPlayerCommend(commend){
                 if(!this.PlayList.length){
                     return
                 }
                 let NowCount=this.NowPlay.count;
                 let AllCount=this.PlayList.length;
-                if(NowCount!==AllCount-1){
-                    this.PlayList.forEach((item,index)=>{
-                        item.play=false;
-                    });
-                    this.PlayList[NowCount+1].play='AudioPlayThis'
-                }
-            },
-            Prev(){
-                if(!this.PlayList.length){
-                    return
-                }
-                let NowCount=this.NowPlay.count;
-                if(this.NowPlay.count!==0){
-                    this.PlayList.forEach((item,index)=>{
-                        item.play=false;
-                    });
-                    this.PlayList[NowCount-1].play='AudioPlayThis'
+                switch (commend) {
+                    case 'prev':
+                        if(NowCount!==0){
+                            this.PlayList.forEach((item)=>{
+                                item.play=false;
+                            });
+                            this.PlayList[NowCount-1].play='active'
+                        }
+                        break;
+                    case 'next':
+                        if(NowCount!==AllCount-1){
+                            this.PlayList.forEach((item)=>{
+                                item.play=false;
+                            });
+                            this.PlayList[NowCount+1].play='active'
+                        }else{
+                            this.VideoPlayerCommend('play');
+                        }
+                        break;
+                    case 'play':
+                        let media=this.$refs.video;
+                        if(media.paused){
+                            media.play();
+                            this.PlayButtonState='sf-icon-pause';
+                            this.animation='animated zoomOut';
+                            this.$ipc.send('player-control','video','pause')
+                        }else{
+                            media.pause();
+                            this.PlayButtonState='sf-icon-play';
+                            this.animation='animated zoomIn';
+                            this.$ipc.send('player-control','video','play')
+                        }
+                        this.header.title=this.NowPlay.disk_name;
+                        this.$refs.VideoPlayer.focus();
+                        break;
                 }
             },
             ChangeVolumn(){
@@ -169,13 +168,13 @@
             VideoEnded(){
                 let media=this.$refs.video;
                 media.currentTime=0;
-                this.PlayControl();
+                this.VideoPlayerCommend('play');
             },
             TimeChange(){
                 let media=this.$refs.video;
                 let slider=this.$refs.slider;
                 Media.MediaControl(media,'play','x',slider,event);
-                this.PlayControl()
+                this.VideoPlayerCommend('play');
             },
             VideoProcess(){
                 let media=this.$refs.video;
@@ -238,7 +237,7 @@
                 }
             },
             VideoError(e){
-                console.log(e)
+                this.$Message.error(e);
             },
         }
     }

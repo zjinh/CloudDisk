@@ -29,15 +29,15 @@
             DiskData:{
                 type:Object
             },
-            BottomSrc:{
-                type:String
-            },
             show:{
                 type:Boolean
             }
         },
         beforeMount(){
             this.ClassifyMenuData=this.TypeData;
+            setInterval(() => {
+                this.background();
+            }, 1000);
         },
         watch:{
             type: {
@@ -73,10 +73,38 @@
                     {"name":"正在上传","icon":"sf-icon-upload","count":0,"data":"upload","active":""},
                     {"name":"传输完成","icon":"sf-icon-check-circle","count":0,"data":"completed","active":""},
                 ],//传输分类参数,
-                ClassifyMenuData:[]
+                ClassifyMenuData:[],
+                /*自动切换背景*/
+                BottomSrc: this.$path.join(__static, '/img/bg/Autumn-bottom-1.png'),
             }
         },
         methods:{
+            background(){
+                let season = 'Spring';
+                let tag = 0;
+                let D = new Date();
+                let month = D.getMonth();
+                let hHour = D.getHours();
+                if (month > 2 && month < 6) {
+                    season = 'Spring'
+                } else if (month > 5 && month < 9) {
+                    season = 'Summer';
+                } else if (month > 8 && month < 12) {
+                    season = 'Autumn'
+                } else if (month === 12 || month === 1 || month === 2) {
+                    season = 'Winter'
+                }
+                if (hHour >= 1 && hHour <= 8) {
+                    tag = 0;
+                } else if (hHour > 8 && hHour <= 16) {
+                    tag = 1
+                } else if (hHour > 16 && hHour <= 18) {
+                    tag = 2
+                } else if (hHour > 18 && hHour <= 24) {
+                    tag = 3
+                }
+                this.BottomSrc = this.$path.join(__static, '/img/bg/' + season + '-bottom-' + tag + '.png');
+            },
             UpdateData(){
                 switch (this.type) {
                     case 'disk':

@@ -1,24 +1,29 @@
 <template>
-    <ul class="CloudDisTrans">
-        <li class="CloudDisTransList" v-for="(item,index) in data" v-show="item.shows">
-            <img :src="$Api.IconGet(item)" draggable="false">
-            <div class="CloudDisTransRight">
-                <div class="trans-container">
-                    <p class="trans-name">
-                        {{item.trans_type==='upload' ? (item.state ==='completed' ? '上传完成':'正在上传') :  (item.state ==='completed' ? '下载完成':'正在下载')}}
-                        {{item.name}}
-                    </p>
-                    <span class="trans-size">{{$Api.FileSize(item.chunk)}}/{{$Api.FileSize(item.size)}}</span>
-                    <Progress :percent="PercentCount(item)"></Progress>
-                </div>
-                <button class="sf-icon-times" v-show="item.state!=='completed'" @click="ControlTrans(item,index)"></button>
-                <button v-show="ControlButton(item.state).length" :class="ControlButton(item.state)" @click="ControlTrans(item,index)"></button>
+    <ul class="cd-task-container">
+        <li class="task-item" v-for="(item,index) in data" v-show="item.shows">
+            <div class="task-name">
+                <span>{{taskTips(item)}}&nbsp&nbsp{{item.name}}</span>
+            </div>
+            <div class="task-actions">
+                <i :class="ControlButton(item.state)" v-show="item.state!=='completed'" @click="ControlTrans(item,index)" style="font-size: 14px"></i>
+                <i class="sf-icon-times" v-show="item.state!=='completed'" @click="ControlTrans(item,index)"></i>
+                <i class="sf-icon-trash-alt" v-show="item.state==='completed'"  @click="ControlTrans(item,index)"></i>
+                <i class="sf-icon-folder" v-show="item.trans_type==='download'" @click="OpenDownPath(item)"></i>
+                <i class="sf-icon-link" v-show="item.trans_type==='download'"></i>
+            </div>
+            <div class="task-progress">
+                <Progress :percent="PercentCount(item)" :status="item.state==='progressing'?'active':'normal'" :stroke-width="6"></Progress>
+            </div>
+            <div class="task-speed">
+                {{$Api.FileSize(item.chunk)}}/{{$Api.FileSize(item.size)}}
+                <span v-show="item.state==='progressing'">{{MathSpeend(item)}}</span>
             </div>
         </li>
     </ul>
 </template>
 
 <script>
+    const shell = require('electron').shell;
     export default {
         name: "DiskTransList",
         props:{
@@ -33,12 +38,60 @@
             PercentCount(item){
                 return parseFloat(((item.chunk/item.size)*100).toFixed(1));
             },
+            OpenDownPath(item){
+                shell.showItemInFolder(item.path);
+            },
+            taskTips(item){
+                let tips='正在开始';
+                if(item.state==='progressing'){
+                    tips='正在'+(item.trans_type==='upload'?'上传':'下载');
+                }else if(item.state==='completed'){
+                    tips=(item.trans_type==='upload'?'上传':'下载')+'完成'
+                }else if(item.state==='interrupted'){
+                    tips='已暂停'
+                }
+                return tips
+            },
+            formatSeconds(value) {
+                let secondTime = parseInt(value);// 秒
+                let minuteTime = 0;// 分
+                let hourTime = 0;// 小时
+                if(secondTime > 60) {//如果秒数大于60，将秒数转换成整数
+                    //获取分钟，除以60取整数，得到整数分钟
+                    minuteTime = parseInt(secondTime / 60);
+                    //获取秒数，秒数取佘，得到整数秒数
+                    secondTime = parseInt(secondTime % 60);
+                    //如果分钟大于60，将分钟转换成小时
+                    if(minuteTime > 60) {
+                        //获取小时，获取分钟除以60，得到整数小时
+                        hourTime = parseInt(minuteTime / 60);
+                        //获取小时后取佘的分，获取分钟除以60取佘的分
+                        minuteTime = parseInt(minuteTime % 60);
+                    }
+                }
+                let result = "" + parseInt(secondTime) + "秒";
+                if(minuteTime > 0) {
+                    result = "" + parseInt(minuteTime) + "分" + result;
+                }
+                if(hourTime > 0) {
+                    result = "" + parseInt(hourTime) + "小时" + result;
+                }
+                return result;
+            },
+            MathSpeend(item){
+                let NowTime=(new Date().getTime()/1000);
+                let time=NowTime-item.time;
+                let speed=parseFloat(item.chunk/time).toFixed(1);
+                let remaining_chunk=item.size-item.chunk;
+                let remaining_time=remaining_chunk/speed;
+                return this.$Api.FileSize(speed)+'/s  剩余时间：'+this.formatSeconds(remaining_time);
+            },
             ControlButton(state){
                 let btn='';
                 if(state==='interrupted'){
-                    btn='sf-icon-play';
+                    btn='ivu-icon ivu-icon-ios-play';
                 }else if(state==='progressing'){
-                    btn='sf-icon-pause';
+                    btn='ivu-icon ivu-icon-ios-pause';
                 }else if(state==='completed'){
                     btn='sf-icon-trash';
                 }
@@ -50,65 +103,78 @@
 
 <style scoped>
     /*传输列表*/
-    .CloudDisTrans{
+    .cd-task-container{
         width: 100%;
-        height: 100%;
+        height: calc(100% - 20px);
+        margin-top: 20px;
         overflow: auto;
     }
-    .CloudDisTransList{
-        width: 100%;
-        height: 55px;
-        margin-top: 2px;
+    .task-item{
         position: relative;
-        border-bottom: 1px solid #eee;
+        padding: 16px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        transition: border-color .25s cubic-bezier(.645,.045,.355,1);
     }
-    .CloudDisTransList img{
+    .task-item:hover{
+        border-color: #5b5bea;
+    }
+    .task-item .task-name{
+        color: #505753;
+        margin-bottom: 20px;
+        margin-right: 240px;
+        word-break: break-all;
+    }
+    .task-item .task-name span{
+        font-size: 14px;
+        line-height: 26px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    .task-item .task-actions{
+        position: absolute;
+        top: 16px;
+        right: 12px;
+        height: 24px;
+        padding: 0 10px;
+        overflow: hidden;
+        user-select: none;
+        cursor: default;
+        text-align: right;
+        direction: rtl;
+        border: 1px solid #f5f5f5;
+        color: #9b9b9b;
+        background-color: #fff;
+        border-radius: 14px;
+        transition: all .25s cubic-bezier(.645,.045,.355,1);
+    }
+    .task-item .task-actions:hover {
+        border-color: #5b5bea;
+        color: #fff;
+        background-color: #5b5bea;
+        width: auto;
+    }
+    .task-item .task-actions>i{
         float: left;
-        margin: 10px;
-        width: 30px;
-    }
-    .CloudDisTransRight .trans-container{
-        float: left;
-        width: calc(100% - 100px);
-        height: 100%;
-    }
-    .CloudDisTransRight .trans-name,.CloudDisTransRight .trans-size{
+        display: inline-block;
+        padding: 5px;
+        margin: 0 4px;
         font-size: 12px;
-        line-height: 22px;
+        cursor: pointer;
+        line-height: 15px;
     }
-    .CloudDisTransRight .ivu-progress{
+    .task-item .task-speed{
+        font-size: 12px;
+        line-height: 14px;
+        min-height: 14px;
+        color: #9b9b9b;
+        margin-top: 8px;
+    }
+    .task-item .task-speed>span {
         float: right;
-        width: 310px;
-    }
-    .CloudDisTransRight {
-        float: left;
-        width: calc(100% - 50px);
-        height: 100%;
-        padding: 4px;
-    }
-    .CloudDisTransRight button{
-        float: right;
-        margin: 10px;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 100%;
-        color: rgba(64, 158, 255, 0.87);
-        border: 1px solid rgba(64, 158, 255, 0.66);
-    }
-    .CloudDisTransRight button:hover{
-        color: #2d8cf0;
-        border: 1px solid  #2d8cf0;
-    }
-    .CloudDisTransRight button.sf-icon-times{
-        color: #E83C3C!important;
-        border:1px solid #E83C3C!important;
-    }
-    .CloudDisTransRight button.sf-icon-trash{
-        color: #19be6b!important;
-        border:1px solid #19be6b!important;
-    }
-    .CloudDisTransList:hover{
-        background: rgba(0,0,0,.1);
     }
 </style>

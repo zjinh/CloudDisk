@@ -5,8 +5,10 @@ import App from './App'
 import router from './router'
 import store from './store'
 //引入iview组件
-import {Checkbox,Tooltip,Dropdown,DropdownMenu,DropdownItem,Input,InputNumber,RadioGroup,Radio,Time,Select,Option,DatePicker,Message,Notice,Icon,Spin,Progress,Button} from 'iview';
+import {Checkbox,Tooltip,Dropdown,DropdownMenu,DropdownItem,Input,InputNumber,RadioGroup,Radio,Time,Select,Option,DatePicker,Message,Notice,Icon,Spin,Progress} from 'iview';
 import 'iview/dist/styles/iview.css';
+import '../../src/renderer/assets/css/iview.css';//定制样式
+
 Vue.component('Checkbox', Checkbox);
 Vue.component('Tooltip', Tooltip);
 Vue.component('Dropdown', Dropdown);
@@ -27,7 +29,6 @@ Vue.prototype.$Notice=Notice;
 Vue.component('Icon',Icon);
 Vue.component('Spin',Spin);
 Vue.component('Progress',Progress);
-Vue.component('Button',Button);
 Vue.prototype.$IVIEW = {};
 axios.interceptors.response.use(function (response) {
 // 对响应数据做点什么
