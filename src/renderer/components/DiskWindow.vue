@@ -139,7 +139,6 @@
                 DownloadCount: 0,//下载计数
                 FinishCount: 0,//完成计数
                 NoticeSrc: '',
-
                 ConfigObject:{
                     NoticeFlag:true,
                     NoticeBubble:true,
