@@ -20,7 +20,7 @@
                 src:null,
                 header:{
                     title:"",
-                    background: '#2d8cf0',
+                    background: '#4f4f4f',
                     color:'#fff'
                 }
             }
@@ -42,7 +42,7 @@
     .PdfWindow{
         width:100%;
         height: 100%;
-        background: rgb(45, 140, 240);
+        background: #4f4f4f;
     }
     .PDfContainer,.FileShowContainer{
         width: 100%;

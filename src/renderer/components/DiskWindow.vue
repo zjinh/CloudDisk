@@ -37,8 +37,8 @@
                 </div>
                 <span slot="footer" class="dialog-footer">
                 <button class="cd-button cd-cancel-button" @click="showTree=false">取 消</button>
-                <button class="cd-button" @click="DiskMoveUp" v-if="!ShowUnZip">确 定</button>
-                <button class="cd-button" @click="DiskUnZip" v-if="ShowUnZip">解 压</button>
+                <button class="cd-purple-button" @click="DiskMoveUp" v-if="!ShowUnZip">确 定</button>
+                <button class="cd-purple-button" @click="DiskUnZip" v-if="ShowUnZip">解 压</button>
             </span>
             </el-dialog>
             <el-dialog title="分享方式" :visible.sync="showShare" width="350px" top="150px">
@@ -48,7 +48,7 @@
                 </div>
                 <span slot="footer" class="dialog-footer">
                 <button class="cd-button cd-cancel-button" @click="showShare=false">取 消</button>
-                <button class="cd-button" @click="DiskFeatureControl('post-share')">确 定</button>
+                <button class="cd-purple-button" @click="DiskFeatureControl('post-share')">确 定</button>
             </span>
             </el-dialog>
         </section>
@@ -473,6 +473,7 @@
                         this.DiskData.Clipboard=[];
                         break;
                     case 'MoveTo':
+                        this.ShowUnZip=false;
                         this.showTree = true;
                         break;
                     case 'paste'://粘贴
@@ -624,7 +625,10 @@
                                 title: '分享信息',
                                 tips: message,
                                 type: 'info',
+                                confirmButtonText:"复制",
                                 callback: () => {
+                                    this.$Message.info('链接已复制');
+                                    this.$electron.clipboard.writeText(this.DiskData.NowSelect.shareAddress);
                                 }
                             })
                         } else {
@@ -864,11 +868,7 @@
                         this.TransformData.push(OneFile);
                         this.PostUpload(OneFile, 'first');
                     }
-                    this.$Notice.info({
-                        title: '开始上传',
-                        desc: fileArea.length + '个文件已加入上传列队'
-                    });
-
+                    this.$Message.info(fileArea.length + '个文件已加入上传列队');
                 });
             },//处理上传
             FindTheFile(fileName) {
@@ -1099,23 +1099,6 @@
 </script>
 
 <style scoped>
-    .cd-main{
-        width: 100%;
-        height: 100%;
-    }
-    .cd-right{
-        float: left;
-        width: calc(100% - 200px);
-        height: 100%;
-    }
-    .cd-bottom{
-        width: calc(100% - 30px);
-        margin: 2px auto;
-        margin: 0 15px;
-        height: calc(100% - 120px);
-        overflow-y: auto;
-        position: relative;
-    }
     /*上传提示*/
     .cd-upload-tips{
         width: 100%;

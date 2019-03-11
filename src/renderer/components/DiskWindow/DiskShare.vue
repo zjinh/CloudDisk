@@ -159,7 +159,6 @@
         margin-top: 4px;
         line-height: 32px;
         padding: 0 10px;
-        border: 1px solid #eee;
         border-radius: 3px;
     }
     .active{

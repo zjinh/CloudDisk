@@ -89,8 +89,9 @@
                 /* 歌曲回调函数设置的进度时间 */
                 __duration: -1,
                 header:{
-                    color:"#fff",
+                    color:"#4f4f4",
                     title:"",
+                    head:false,
                     resize:false,
                     mini:true
                 }

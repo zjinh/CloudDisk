@@ -39,7 +39,7 @@
                     <Logininput :data="RegisterUserInput"></Logininput>
                     <Logininput :data="RegisterMailInput"></Logininput>
                     <Logininput :data="RegisterPassInput"></Logininput>
-                    <VerifyInput :data="RegisterCodeInput" @keyup.enter.native="register"></VerifyInput>
+                    <Logininput :data="RegisterCodeInput" @keyup.enter.native="register"></Logininput>
                     <div class="CloudIndex-postBut">
                         <button @click="register" :class="PostState">创建</button>
                     </div>
@@ -50,7 +50,7 @@
                 <div class="CloudIndexForm"  v-show="ShowState.forget.state">
                     <Logininput :data="ForgetUserInput"></Logininput>
                     <Logininput :data="ForgetMailInput"></Logininput>
-                    <VerifyInput :data="ForgetCodeInput"  @keyup.enter.native="forget"></VerifyInput>
+                    <Logininput :data="ForgetCodeInput"  @keyup.enter.native="forget"></Logininput>
                     <div class="CloudIndex-LineContainer">
                         <p>填写以上信息开始吧</p>
                     </div>
@@ -98,10 +98,9 @@
 
 <script>
     import Logininput from './LoginPage/l-input';
-    import VerifyInput from './LoginPage/Verify-Input';
     export default {
         name: "LoginPage",
-        components:{Logininput,VerifyInput},
+        components:{Logininput},
         computed:{
             now(){
                 return '?'+Date.now();
@@ -146,6 +145,8 @@
                     value:""
                 },
                 RegisterCodeInput:{
+                    icon:"sf-icon-keyboard",
+                    state:"verify",
                     text:"验证码",
                     value:""
                 },
@@ -161,6 +162,8 @@
                     value:""
                 },
                 ForgetCodeInput:{
+                    icon:'sf-icon-keyboard',
+                    state:"verify",
                     text:"验证码",
                     value:""
                 },
@@ -179,6 +182,7 @@
                 },
                 VerifyCodeInput:{
                     icon:"sf-icon-keyboard",
+                    state:"verify",
                     text:"邮箱激活码",
                     value:""
                 },

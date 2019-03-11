@@ -1,40 +1,40 @@
 <template>
-    <div class="CloudUserMain">
+    <div class="cd-user-main">
         <WindowsHeader :data="header"></WindowsHeader>
-        <div class="CloudUserLeft">
-            <div class="CloudUserLeftDown">
+        <div class="cd-user-left">
+            <div class="cd-user-right-info">
                 <img draggable="false" :src="UploadSrc?UploadSrc:User.userhead">
-                <p class="CloudUserName">{{User.username}}</p>
-                <p class="CloudUserAge">{{User.sex}},{{User.birth}}岁</p>
+                <p class="name">{{User.username}}</p>
+                <p class="age">{{User.sex}},{{User.birth}}岁</p>
             </div>
         </div>
-        <div class="CloudUserRight">
-            <p class="CloudUserTitle">个人信息</p>
+        <div class="cd-user-right">
+            <p class="cd-user-title">个人信息</p>
             <form  @submit.prevent="onSubmit" ref="form">
-                <div class="CloudUserLine"><label>名称：</label><p>{{User.username}}</p></div>
-                <div class="CloudUserLine"><label>邮箱：</label><p>{{User.email}}</p></div>
-                <div class="CloudUserLine">
+                <div class="cd-user-line"><label>名称：</label><p>{{User.username}}</p></div>
+                <div class="cd-user-line"><label>邮箱：</label><p>{{User.email}}</p></div>
+                <div class="cd-user-line">
                     <label>手机：</label>
                     <Input :value=User.phone clearable style="width: calc(100% - 50px)" name="phone" :number=true :maxlength=11></Input>
                 </div>
-                <div class="CloudUserLine">
+                <div class="cd-user-line">
                     <label>生日：</label>
                     <DatePicker type="date" style="width: calc(100% - 50px)" :value=User.birthday name="birth"></DatePicker>
                 </div>
-                <div class="CloudUserLine"><label>性别：</label>
+                <div class="cd-user-line"><label>性别：</label>
                     <Select style="width: calc(100% - 50px)" :value="User.sex" name="sex">
                         <Option v-for="item in sexs" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
                 </div>
-                <div class="CloudUserUpload" onclick="this.childNodes[0].click()">
+                <div class="cd-user-head" onclick="this.childNodes[0].click()">
                     <input type="file" name="userhead"  @change="preview()" ref="file">
                 </div>
-                <div class="CloudUserLine" style="height: 72px;">
+                <div class="cd-user-line" style="height: 72px;">
                     <label>签名:</label>
                     <textarea class="ivu-input" name="underwrite" :value="User.underwrite" :maxlength=50></textarea>
                 </div>
-                <button class="el-button el-button--default el-button--small el-button--primary " @click="update">更新</button>
-                <button v-if="UploadSrc" class="el-button el-button--default el-button--small el-button--primary " @click="clear">清空头像文件</button>
+                <button class="cd-purple-button" @click="update">更新</button>
+                <button v-if="UploadSrc" class="cd-button cd-cancel-button" @click="clear">清空头像文件</button>
             </form>
         </div>
     </div>
@@ -123,12 +123,12 @@
 
 <style scoped>
     /*用户信息窗口*/
-    .CloudUserMain{
+    .cd-user-main{
         width: 100%;
         height: 100%;
         background: #fff;
     }
-    .CloudUserLeft{
+    .cd-user-left{
         float: left;
         width: 50%;
         height: 100%;
@@ -138,76 +138,87 @@
         background-size: cover;
         background-color: #4996ed;
     }
-    .CloudUserLeftDown{
+    .cd-user-right-info{
         width: 100%;
         height: 150px;
         text-align: center;
         margin-top: 135px;
     }
-    .CloudUserRight {
+    .cd-user-right {
         float: left;
         width: 50%;
         height: 100%;
         background: #fff;
         padding: 0 20px 20px;
     }
-    .CloudUserLeftDown img{
+    .cd-user-right-info img{
         width: 100px;
         height: 100px;
         border-radius: 100px;
         -webkit-border-radius: 100px;
         -moz-border-radius: 100px;
     }
-    .CloudUserLeftDown img:hover{
+    .cd-user-right-info img:hover{
         opacity: .5;
         cursor: pointer;
     }
-    .CloudUserName{
+    .cd-user-right name{
         color: #fff;
         font-size: 18px;
         font-weight: lighter;
     }
-    .CloudUserAge{
+    .cd-user-right age{
         color: #a5a5a5;
         font-size: 13px;
     }
-    .CloudUserTitle{
+    .cd-user-title{
         width: 100%;
         font-size: 18px;
         border-bottom: 1px solid #d0d0d0;
         color: #2f2f2f;
     }
-    .CloudUserLine{
+    .cd-user-line{
         width: 100%;
         height: 45px;
         line-height: 45px;
     }
-    .CloudUserLine label{
+    .cd-user-line label{
         float: left;
         width: 42px;
         font-size: 14px;
         height: 100%;
     }
-    .CloudUserLine textarea{
+    .cd-user-line textarea{
         width: calc(100% - 50px);
         height: 55px;
         margin-top: 8px;
         resize: none;
     }
-    .CloudUserRight button{
+    .cd-user-right button{
         float: right;
         margin-top: 10px;
         margin-right: 8px;
     }
-    .CloudUserUpload{
+    .cd-user-head{
         width: 100px;
         height: 100px;
         position: absolute;
         left: 118px;
         top: 135px;
         overflow: unset;
+        border-radius: 100%;
+        -webkit-transition:all .35s;
+        -moz-transition:all .35s;
+        -o-transition:all .35s;
     }
-    .CloudUserUpload input{
+    .cd-user-head:hover{
+        box-shadow: 0px 0px 29px -2px #a7a7a7;
+        cursor: pointer;
+        -webkit-transition:all .35s;
+        -moz-transition:all .35s;
+        -o-transition:all .35s;
+    }
+    .cd-user-head input{
         position: absolute;
         top: -50px;
         left: -11px;

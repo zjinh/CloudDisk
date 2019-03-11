@@ -3,7 +3,6 @@ import { autoUpdater } from 'electron-updater'
 const path = require('path');
 let TransDownFolder=process.env.USERPROFILE;
 let DownloadList={};
-let DownLoadName=null;
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
@@ -241,8 +240,8 @@ let DiskSystem= {
         AboutWindow=WindowControl.New({
             url:'disk-about/'+version,
             title:'关于CloudDisk',
-            width: 470,
-            height: 300,
+            width: 600,
+            height: 330,
             maximizable:false,
             minimizable:false,
             resizable:false,

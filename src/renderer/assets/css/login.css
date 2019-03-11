@@ -72,7 +72,7 @@ input[type="text"]:disabled{
 	height: 80px;
 }
 .CloudIndexHead h1{
-	color: #81bffa;
+	color: #5b5bea;
 	font-weight: lighter;
 	font-size: 25px;
 }
@@ -133,7 +133,7 @@ input[type="text"]:disabled{
 }
 .Input-Focus label{
 	top: -10px!important;
-	color: #4f93f4!important;
+	color: #5b5bea!important;
 	font-size: 12px!important;
 }
 .CloudIndex-LineContainer{
@@ -170,7 +170,7 @@ input[type="text"]:disabled{
 	-moz-transition: background 0.1s ease-in-out;
 	-o-transition: background 0.1s ease-in-out;
 	transition: background 0.1s ease-in-out;
-	box-shadow: 0 3px 10px #4f93f4;
+	box-shadow:0 3px 10px #7c7cee;
 	background-size: 400%;
 	background-position:-280%, 50%;
 }
@@ -228,7 +228,7 @@ input[type="text"]:disabled{
 	color: #b8b7b7;
 }
 .CloudIndex-Tips span{
-	color: #4f93f4;
+	color: #5b5bea;
 	cursor: pointer;
 }
 /*加载*/

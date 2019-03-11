@@ -1,6 +1,6 @@
 <template>
     <div class="cd-drag-head" :style="{'margin-top':(data.resize&&ButtonState==='sf-icon-window-maximize')?'2px':'0','color':data.color?data.color:'#333','background':data.background?data.background:''}">
-        <p>{{data.title}}</p>
+        <p v-show="data.head!==undefined?data.head:true">{{data.title}}</p>
         <ul class="window-actions">
             <li class="sf-icon-minus" v-show="data.mini===undefined?true:data.mini" @click="mini"></li>
             <li :class="ButtonState" v-show="data.resize===undefined?true:data.resize" @click="restore"></li>
@@ -101,7 +101,6 @@
         position: absolute;
         top: 0;
         right: 0;
-        color: #c3c3c3;
         -webkit-transition: all .35s;
         -moz-transition: all .35s;
         -o-transition: all .35s
@@ -117,12 +116,6 @@
         cursor: pointer;
     }
     .window-actions li:hover{
-        background: #eee;
-    }
-    .window-actions:hover{
-        color: #4d515a;
-        -webkit-transition: all .35s;
-        -moz-transition: all .35s;
-        -o-transition: all .35s
+        background: rgba(0,0,0,.1);
     }
 </style>

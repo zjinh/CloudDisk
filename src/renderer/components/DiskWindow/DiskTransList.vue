@@ -9,7 +9,7 @@
                 <i class="sf-icon-times" v-show="item.state!=='completed'" @click="ControlTrans(item,index)"></i>
                 <i class="sf-icon-trash-alt" v-show="item.state==='completed'"  @click="ControlTrans(item,index)"></i>
                 <i class="sf-icon-folder" v-show="item.trans_type==='download'" @click="OpenDownPath(item)"></i>
-                <i class="sf-icon-link" v-show="item.trans_type==='download'"></i>
+                <i class="sf-icon-link" v-show="item.trans_type==='download'" @click="CopyLink(item)"></i>
             </div>
             <div class="task-progress">
                 <Progress :percent="PercentCount(item)" :status="item.state==='progressing'?'active':'normal'" :stroke-width="6"></Progress>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-    const shell = require('electron').shell;
     export default {
         name: "DiskTransList",
         props:{
@@ -39,7 +38,7 @@
                 return parseFloat(((item.chunk/item.size)*100).toFixed(1));
             },
             OpenDownPath(item){
-                shell.showItemInFolder(item.path);
+                this.$electron.shell.showItemInFolder(item.path);
             },
             taskTips(item){
                 let tips='正在开始';
@@ -96,6 +95,10 @@
                     btn='sf-icon-trash';
                 }
                 return btn;
+            },
+            CopyLink(item){
+                this.$electron.clipboard.writeText(item.url[0]);
+                this.$Message.info('链接已复制')
             }
         }
     }

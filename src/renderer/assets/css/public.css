@@ -155,6 +155,34 @@ button[disabled="disabled"]{
 .cd-button:hover{
 	border: 1px solid #5b5bea;
 }
+.cd-purple-button{
+	padding: 0 12px;
+	height: 32px;
+	border-radius: 3px;
+	color: #EAECF0;
+	background-color: #5b5bea;
+	border: 1px solid rgba(0,0,0,0);
+	margin-left: 5px;
+	font-size: 13px;
+}
+/*通用*/
+.cd-main{
+	width: 100%;
+	height: 100%;
+}
+.cd-right{
+	float: left;
+	width: calc(100% - 200px);
+	height: 100%;
+}
+.cd-bottom{
+	width: calc(100% - 30px);
+	margin: 2px auto;
+	margin: 0 15px;
+	height: calc(100% - 120px);
+	overflow-y: auto;
+	position: relative;
+}
 /*滚动条*/
 *::-webkit-scrollbar{
 	width:7px;
@@ -320,4 +348,76 @@ button[disabled="disabled"]{
 }
 .el-dialog__footer{
 	padding: 10px 14px 18px;
+}
+.el-input.is-active .el-input__inner, .el-input__inner:focus{
+	border-color: #5b5bea;
+}
+.el-button{
+	border: none;
+	background: none!important;
+}
+.el-button:focus, .el-button:hover {
+	color: #5b5bea;
+	border-color: #c6e2ff;
+	background-color: #ecf5ff;
+}
+.el-button--primary{
+	background: #5b5bea!important;
+	border-color: #5b5bea!important;
+}
+.el-button--primary:focus, .el-button--primary:hover {
+	background: #5b5bea!important;
+	border-color: #5b5bea!important;
+	color: #FFF;
+}
+/*头部*/
+.cd-drag-head-big{
+	width: 100%;
+	height: 50px;
+	background: url("../../../../static/img/login/right-bg.png");
+	background-size: cover;
+	background-position: -160px 58px;
+	background-repeat: repeat-y;
+	-webkit-app-region: drag;
+	background-color: #3b54a8;
+}
+.cd-drag-head-big *{
+	float: left;
+}
+.cd-drag-head-big img{
+	margin: 8px;
+	width: 32px;
+	height: 32px;
+	border-radius: 100%;
+}
+.cd-drag-head-big i{
+	float: left;
+	font-size: 30px;
+	color: #fff;
+	line-height: 50px;
+	margin: 0 15px;
+	margin-right: 10px;
+}
+.cd-drag-head-big p{
+	font-size: 14px;
+	line-height: 50px;
+	color: #fff;
+}
+.cd-drag-head-big .sf-icon-minus{
+	font-size: 12px;
+}
+.cd-drag-head-big button{
+	float: right;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 15px;
+	-webkit-app-region: no-drag;
+	background: none;
+	color: #fff;
+	margin: 9px 6px 9px 0;
+	border-radius:5px;
+}
+.cd-drag-head-big button:hover{
+	background: rgba(255,255,255,.1);
 }

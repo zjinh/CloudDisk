@@ -1,72 +1,72 @@
 <template>
-    <div class="CloudDiskSettingWindow">
-        <div class="CloudDiskSetting-head">
+    <div class="cd-setting-win">
+        <div class="cd-drag-head-big">
             <Icon :type="'md-settings '+this.loading"></Icon>
             <p>设置</p>
             <button class="sf-icon-times" @click="close"></button>
-            <button class="sf-icon-window-minimize" @click="mini"></button>
+            <button class="sf-icon-minus" @click="mini"></button>
         </div>
-        <div class="CloudDiskSetting-main">
+        <div class="cd-setting-main">
             <SettingMenu :data="SettingMenuData" @change="change"></SettingMenu>
-            <div class="CloudDiskSettingContent">
-                <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Account.active">
-                    <p class="SettingBigTitle">用户设置</p>
-                    <p class="SettingSecTitle">账号当前状态</p>
-                    <p class="SettingInfo">最近登录时间：{{LoginTime}}<Time :time="LoginTime" :interval="1" /></p>
-                    <p class="SettingSecTitle">修改账号密码</p>
-                    <div class="SettingForm">
+            <div class="cd-setting-content">
+                <div class="cd-setting-container" v-show="SettingMenuData.Account.active">
+                    <p class="cd-setting-title">用户设置</p>
+                    <p class="cd-setting-sec-title">账号当前状态</p>
+                    <p class="cd-setting-info">最近登录时间：{{LoginTime}}<Time :time="LoginTime" :interval="1" /></p>
+                    <p class="cd-setting-sec-title">修改账号密码</p>
+                    <div class="cd-setting-form">
                         <Input type="password" v-model="ChangePass.oldpass" placeholder="当前账号密码" clearable style="width: 100%" />
                         <Input type="password" v-model="ChangePass.newpass" placeholder="新密码" clearable style="width: 100%" />
                         <Input type="password" v-model="ChangePass.againPass" placeholder="再次输入密码" clearable style="width: 100%" />
-                        <button class="el-button el-button--default el-button--small el-button--primary " @click="ChangePassword">修改</button>
+                        <button class="cd-purple-button" @click="ChangePassword">修改</button>
                     </div>
                 </div>
-                <div class="CloudDiskSettingContainer" v-show="SettingMenuData.System.active">
-                    <p class="SettingBigTitle">系统设置</p>
-                    <p class="SettingSecTitle">开机自启动</p>
-                    <div class="SettingForm">
+                <div class="cd-setting-container" v-show="SettingMenuData.System.active">
+                    <p class="cd-setting-title">系统设置</p>
+                    <p class="cd-setting-sec-title">开机自启动</p>
+                    <div class="cd-setting-form">
                         <Checkbox v-model="SettingData.AutoStartFlag">系统启动后自动运行CloudDisk</Checkbox>
                     </div>
-                    <p class="SettingSecTitle">自动登录</p>
-                    <div class="SettingForm" style="width: 100%">
+                    <p class="cd-setting-sec-title">自动登录</p>
+                    <div class="cd-setting-form" style="width: 100%">
                         <Checkbox v-model="SettingData.AutoLogin">打开CloudDisk后自动登录(需勾选记住密码)</Checkbox>
                     </div>
                 </div>
-                <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Safety.active">
-                    <p class="SettingBigTitle">绑定设置</p>
-                    <p class="SettingSecTitle">修改安全邮箱</p>
-                    <p class="SettingInfo">当前绑定邮箱：{{SettingData.Email}}<button @click="OpenChangeEmailDialog">[修改]</button></p>
-                    <p class="SettingSecTitle">更换手机</p>
-                    <p class="SettingInfo">当前绑定手机号：{{SettingData.Phone}}<button @click="ChangePhone">[修改]</button></p>
+                <div class="cd-setting-container" v-show="SettingMenuData.Safety.active">
+                    <p class="cd-setting-title">绑定设置</p>
+                    <p class="cd-setting-sec-title">修改安全邮箱</p>
+                    <p class="cd-setting-info">当前绑定邮箱：{{SettingData.Email}}<button @click="OpenChangeEmailDialog">[修改]</button></p>
+                    <p class="cd-setting-sec-title">更换手机</p>
+                    <p class="cd-setting-info">当前绑定手机号：{{SettingData.Phone}}<button @click="ChangePhone">[修改]</button></p>
                 </div>
-                <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Trans.active">
-                    <p class="SettingBigTitle">传输设置</p>
-                    <p class="SettingSecTitle">下载目录设置</p>
-                    <div class="SettingInfo">
+                <div class="cd-setting-container" v-show="SettingMenuData.Trans.active">
+                    <p class="cd-setting-title">传输设置</p>
+                    <p class="cd-setting-sec-title">下载目录设置</p>
+                    <div class="cd-setting-info">
                         当前目录：{{SettingData.TransDownFolder}}
                         <button @click="ChangeTransAddress">[修改]</button>
                     </div>
-                    <p class="SettingSecTitle">同时上传数</p>
-                    <div class="SettingForm">
+                    <p class="cd-setting-sec-title">同时上传数</p>
+                    <div class="cd-setting-form">
                         <InputNumber :max="5"  :min="1" v-model="SettingData.MaxUpTrans"></InputNumber>
                     </div>
-                    <p class="SettingSecTitle">同时下载数</p>
-                    <div class="SettingForm" style="margin-bottom: 0">
+                    <p class="cd-setting-sec-title">同时下载数</p>
+                    <div class="cd-setting-form" style="margin-bottom: 0">
                         <InputNumber :max="5" :min="1" v-model="SettingData.MaxDownTrans"></InputNumber>
                     </div>
-                    <p class="SettingTips">*请不要在正在下载文件的情况下修改下载目录</p>
-                    <p class="SettingTips">*下次登录生效</p>
+                    <p class="cd-setting-tips">*请不要在正在下载文件的情况下修改下载目录</p>
+                    <p class="cd-setting-tips">*修改目录在下次登录生效</p>
                 </div>
-                <div class="CloudDiskSettingContainer" v-show="SettingMenuData.Notice.active">
-                    <p class="SettingBigTitle">提醒设置</p>
-                    <p class="SettingSecTitle">弹窗提醒</p>
-                    <div class="SettingForm">
+                <div class="cd-setting-container" v-show="SettingMenuData.Notice.active">
+                    <p class="cd-setting-title">提醒设置</p>
+                    <p class="cd-setting-sec-title">弹窗提醒</p>
+                    <div class="cd-setting-form">
                         <Checkbox v-model="SettingData.NoticeBubble">传输完成后气泡提示</Checkbox>
                     </div>
-                    <p class="SettingSecTitle">声音提醒</p>
-                    <div class="SettingForm" style="width: 100%">
+                    <p class="cd-setting-sec-title">声音提醒</p>
+                    <div class="cd-setting-form" style="width: 100%">
                         <Checkbox v-model="SettingData.NoticeFlag">传输完成后声音提醒</Checkbox>
-                        <div class="SettingForm" style="width: 100%">
+                        <div class="cd-setting-form" style="width: 100%">
                             <RadioGroup v-model="SettingData.NoticeVoice" @on-change="VoiceChange">
                                 <Radio label="音效一" :disabled="!SettingData.NoticeFlag"></Radio>
                                 <Radio label="音效二" :disabled="!SettingData.NoticeFlag"></Radio>
@@ -81,13 +81,13 @@
         </div>
         <el-dialog title="更换邮箱" :visible.sync="ShowEmailDialog" width="300px" top="70px">
             <div style="height: 120px;">
-                <p class="SettingSecTitle">我们需要以下信息</p>
+                <p class="cd-setting-sec-title">我们需要以下信息</p>
                 <Input type="password" v-model="ChangeEmailData.pass" placeholder="当前账号密码" clearable style="width: 100%" />
                 <Input type="text" v-model="ChangeEmailData.email" placeholder="您的新邮箱地址" clearable style="width: 100%" />
             </div>
             <span slot="footer" class="dialog-footer">
-                <button class="el-button el-button--default el-button--small" @click="ShowEmailDialog = false">取 消</button>
-                <button class="el-button el-button--default el-button--small el-button--primary" @click="ChangeEmail">确 定</button>
+                <button class="cd-button cd-cancel-button" @click="ShowEmailDialog=false">取 消</button>
+                <button class="cd-purple-button" @click="ChangeEmail">确 定</button>
             </span>
         </el-dialog>
     </div>
@@ -416,118 +416,41 @@
 
 <style scoped>
     /*设置窗口*/
-    .CloudDiskSettingWindow{
+    .cd-setting-win{
         width: 100%;
         height: 100%;
         background: #fff;
     }
-    .CloudDiskSetting-head{
-        width: 100%;
-        height: 50px;
-        line-height: 50px;
-        background: #2d8cf0;
-        -webkit-app-region: drag;
-    }
-    .CloudDiskSetting-head i{
-        float: left;
-        font-size: 30px;
-        color: #fff;
-        line-height: 50px;
-        margin: 0 15px;
-        margin-right: 10px;
-    }
-    .CloudDiskSetting-head p{
-        float: left;
-        line-height: 50px;
-        font-size: 16px;
-        color: #fff;
-    }
-    .CloudDiskSetting-head button{
-        float: right;
-        width: 40px;
-        height: 30px;
-        line-height: 30px;
-        font-size: 15px;
-        -webkit-app-region: no-drag;
-        background: none;
-        color: #fff;
-    }
-    .CloudDiskSetting-head .sf-icon-window-minimize{
-        font-size: 12px;
-    }
-    .CloudDiskSetting-head button:hover{
-        background: rgba(255,255,255,0.2);
-    }
-    .CloudDiskSetting-head .sf-icon-times:hover{
-        background: #E83C3C;
-    }
-    .CloudDiskSetting-main{
+    .cd-setting-main{
         width: 100%;
         height:calc(100% - 50px);
         padding: 10px;
     }
-    .CloudSettingMenu{
-        width: 100px;
-        height: 100%;
-        float: left;
-        overflow: unset!important;
-    }
-    .CloudSettingMenu li{
-        width: 100%;
-        height: 35px;
-        background: #fff;
-        color: #6e6e6e;
-        border-radius: 5px 0 0 5px;
-        border: 1px solid #fff;
-    }
-    .CloudSettingMenu li *{
-        float: left;
-        line-height: 35px;
-    }
-    .CloudSettingMenu li.active{
-        width: calc(100% + 1px);
-        border: 1px solid #eee;
-        border-right: none;
-        color: #6e6e6e!important;
-        cursor: default!important;
-    }
-    .CloudSettingMenu li:hover{
-        color: #2d8cf0;
-        cursor: pointer;
-    }
-    .CloudSettingMenu li span{
-        width: 35px;
-        height: 35px;
-        text-align: center;
-    }
-    .CloudSettingMenu li p{
-        width: calc(100% - 60px);
-    }
-    .CloudDiskSettingContent{
+    .cd-setting-content{
         width: calc(100% - 100px);
         height: 100%;
         border: 1px solid #eee;
         padding-left: 20px;
     }
-    .CloudDiskSettingContainer{
+    .cd-setting-container{
         width: 100%;
         height: 100%;
     }
-    .SettingBigTitle{
+    .cd-setting-title{
         width: 100%;
         font-size: 16px;
         line-height: 35px;
         margin-bottom: 10px;
-        color: #2d8cf0;
+        color: #5b5bea;
     }
-    .SettingSecTitle{
+    .cd-setting-sec-title{
         width: 100%;
         font-size: 14px;
-        border-left: 2px solid #2d8cf0;
+        border-left: 2px solid #5b5bea;
         text-indent: 5px;
         margin: 5px 0;
     }
-    .SettingTips{
+    .cd-setting-tips{
         color: #E83C3C;
         width: 100%;
         font-size: 12px;
@@ -536,34 +459,34 @@
     .ivu-input-number,.ivu-input-number-input,.ivu-input-number-input-wrap{
         overflow: hidden!important;
     }
-    .SettingInfo{
+    .cd-setting-info{
         width: 100%;
         font-size: 14px;
         padding-left: 5px;
         line-height: 30px;
     }
-    .SettingInfo span{
-        background: #2d8cf0;
+    .cd-setting-info span{
+        background: #5b5bea;
         color: #fff;
         border-radius: 5px;
         padding: 3px 5px;
         font-size: 12px;
         margin-left: 10px;
     }
-    .SettingInfo button{
+    .cd-setting-info button{
         background: none;
-        color: #2d8cf0;
+        color: #5b5bea;
         font-size: 14px;
         margin-left: 10px;
     }
-    .SettingForm{
+    .cd-setting-form{
         margin: 8px 0;
         width: 200px;
     }
-    .SettingForm .ivu-input-wrapper,.SettingForm .ivu-input-number{
+    .cd-setting-form .ivu-input-wrapper,.cd-setting-form .ivu-input-number{
         margin: 5px 0;
     }
-    .SettingForm button{
+    .cd-setting-form button{
         float: right;
         margin-top: 10px;
     }

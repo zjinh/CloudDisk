@@ -33,7 +33,7 @@
         </div>
         <div class="cd-disk-info-item">
             <span>文件分享:</span>
-            <input v-show="DiskData.share.length" @focus="copy" ref="share" type="text" >
+            <input v-show="DiskData.share.length" @focus="copy" type="text" >
             <button v-show="DiskData.share" @click="copy">复制</button>
             <div v-if="!DiskData.share">未分享</div>
         </div>
@@ -83,7 +83,6 @@
                 this.DiskData=data;
                 this.header.title=data.disk_name+' 属性';
                 this.window.setTitle(data.disk_name+' 属性');
-                this.$refs.share.value=localStorage.server+'/s/'+data.share;
                 this.$Api.Disk.Address(data.disk_id,(rs)=>{
                     this.$refs.address.innerHTML='我的网盘'+rs;
                     this.$nextTick(()=>{
@@ -94,8 +93,7 @@
         },
         methods:{
             copy(){
-                this.$refs.share.select();
-                document.execCommand('copy');
+                this.$electron.clipboard.writeText(localStorage.server+'/s/'+this.DiskData.share);
             },
             close(){
                 this.window.close();

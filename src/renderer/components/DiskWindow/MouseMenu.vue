@@ -114,7 +114,7 @@
                     menu.style.left = createNode.getBoundingClientRect().width - menu.getBoundingClientRect().width + 'px';
                 }
                 if ((menu.getBoundingClientRect().top + menu.offsetHeight) - createNode.getBoundingClientRect().top > createNode.offsetHeight) {
-                    menu.style.top = menu.style.top.split('px')[0] - menu.offsetHeight + 'px';
+                    menu.style.top = createNode.getBoundingClientRect().height - menu.getBoundingClientRect().height + 'px';
                 }
                 createNode.onmouseup = () => {
                     if (event.button === 2) {

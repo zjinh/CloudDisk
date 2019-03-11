@@ -1,7 +1,7 @@
 <template>
-    <div class="WindowContainer FileContent">
+    <div class="cd-main FileContent">
         <WindowsHeader :data=header style="border-bottom: 2px solid #6ce26c;"></WindowsHeader>
-        <div class="PDfContainer">
+        <div class="FileShowContainer">
             <iframe :src="LoadUrl"></iframe>
         </div>
     </div>
@@ -38,6 +38,10 @@
 
 <style scoped>
     /*文件查看窗口*/
+    .FileShowContainer {
+        width: 100%;
+        height: calc(100% - 30px);
+    }
     .FileShowContainer iframe{
         overflow: auto;
     }
