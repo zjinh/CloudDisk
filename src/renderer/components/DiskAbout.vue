@@ -48,7 +48,7 @@
                 percent:0,
 
                 header:{
-                    color:"#fff",
+                    color:"#666",
                     title:"",
                     resize:false,
                     mini:false

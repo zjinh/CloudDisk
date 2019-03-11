@@ -165,9 +165,6 @@
                         break;
                     case 'play':
                         let media=this.$refs.audio;
-                        if(media.readyState !== 4){
-                            media.load();
-                        }
                         if(media.paused){
                             media.play();
                             this.PlayButtonState='sf-icon-pause';
