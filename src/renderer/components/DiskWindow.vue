@@ -21,11 +21,11 @@
             <DiskNavigation :data="DiskData" :loading="LoadCompany" :hide="NeedHide" @callback="NavigationControl" @feature="DiskFeatureControl"></DiskNavigation>
             <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
             <DiskSortBar :show="DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
-            <section class="cd-bottom" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain">
+            <section class="cd-bottom" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain" :style="{height:'calc(100% - 120px - '+(isTrash?'32ppx':'0')+(DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType?'32px':'0px')+')'}">
                 <div class="cd-upload-tips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">松开鼠标开始上传文件</div>
                 <DiskFile @SelectFiles="SelectFiles" @OpenFile="DiskFeatureControl" v-if="LoadCompany&&NoTransType" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
                 <loading :loading="IsLoadCompany" :length="UserDiskData.length" :IsNoDiskData="IsNoDiskData"></loading>
-                <div class="cd-mouse-select" v-show="MouseSelectData.width" :style="{'width':MouseSelectData.width,'height':MouseSelectData.height,'left':MouseSelectData.left,'top':MouseSelectData.top}"></div>
+                <div class="cd-mouse-select" v-show="MouseSelectData.width" :style="MouseSelectData"></div>
                 <DiskTransList v-show="DiskData.Type==='trans'" :data="TransformData" @ControlTrans="ControlTrans"></DiskTransList>
             </section>
             <input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple">
@@ -1054,13 +1054,13 @@
                     };
                     this.MouseSelectData = {
                         left: Math.min(start.x, end.x) + "px",
-                        top: this.DiskData.DiskShowState === 'cd-disk-list-file' ? Math.min(start.y, end.y) - 35 + "px" : Math.min(start.y, end.y) + "px",
+                        top: Math.min(start.y, end.y) + "px",
                         width: Math.abs(end.x - start.x) + "px",
                         height: Math.abs(end.y - start.y) + "px"
                     };
                     let area_data = {
                         left: Math.min(start.x, end.x),
-                        top: this.DiskData.DiskShowState === 'CloudDiskMList' ? Math.min(start.y, end.y) - 35 : Math.min(start.y, end.y),
+                        top: Math.min(start.y, end.y),
                         width: Math.abs(end.x - start.x),
                         height: Math.abs(end.y - start.y)
                     };

@@ -19,10 +19,10 @@
                 </div>
                 <div class="cd-user-line">
                     <label>生日：</label>
-                    <DatePicker type="date" style="width: calc(100% - 50px)" :value=User.birthday name="birth"></DatePicker>
+                    <DatePicker type="date" style="width: calc(100% - 50px)" v-model="User.birthday" name="birth"></DatePicker>
                 </div>
                 <div class="cd-user-line"><label>性别：</label>
-                    <Select style="width: calc(100% - 50px)" :value="User.sex" name="sex">
+                    <Select style="width: calc(100% - 50px)" v-model="User.sex" name="sex">
                         <Option v-for="item in sexs" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
                 </div>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="cd-user-line" style="height: 72px;">
                     <label>签名:</label>
-                    <textarea class="ivu-input" name="underwrite" :value="User.underwrite" :maxlength=50></textarea>
+                    <textarea class="ivu-input" name="underwrite" v-model="User.underwrite" :maxlength=50></textarea>
                 </div>
                 <button class="cd-purple-button" @click="update">更新</button>
                 <button v-if="UploadSrc" class="cd-button cd-cancel-button" @click="clear">清空头像文件</button>
@@ -99,6 +99,7 @@
             update(){
                 let formdata = new FormData(this.$refs.form);
                 this.$Api.User.Update(formdata,(r)=>{
+
                     if (r[0].state==='success') {
                         this.$Message.success('信息已更新');
                         this.$ipc.send('system','user-update');

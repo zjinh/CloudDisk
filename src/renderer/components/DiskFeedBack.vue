@@ -1,27 +1,40 @@
 <template>
-    <div class="cd-main">
-        <div class="cd-drag-head-big">
-            <img src="../../../static/img/bar/disk.png" draggable="false">
-            <p>问题反馈</p>
-            <button class="sf-icon-times" @click="close"></button>
-        </div>
-        <div class="CloudDiskFeedBack-main">
-            <p>我们需要以下信息</p>
-            <Input v-model="FeedBackTitle" placeholder="简单的描述下问题" clearable style="width:100%" />
-            <Input v-model="FeedBackContent" type="textarea" :rows="4" placeholder="尽量详细的描述遇到的问题" />
-            <span class="version">当前版本号:V{{version}}</span>
-            <button class="cd-purple-button" @click="FeedBack">提交</button>
+    <div class="cd-feedback-win">
+        <WindowsHeader :data=header></WindowsHeader>
+        <div class="cd-about-main">
+            <div class="app-version">
+                <div class="logo"></div>
+                <span>Version&nbsp&nbsp{{version}}</span>
+            </div>
+            <div class="cd-feedback-main">
+                <p>我们需要以下信息进行问题反馈</p>
+                <input v-model="FeedBackTitle"  placeholder="简单的描述下问题">
+                <textarea v-model="FeedBackContent" placeholder="尽量详细的描述遇到的问题"></textarea>
+            </div>
+            <div class="bottom">
+                <p class="release">©2019 CloudDisk ZJINH </p>
+                <button class="cd-cancel-button" :disabled="loading" @click="FeedBack">提交</button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+    import WindowsHeader from "./DiskWindow/WindowHeader";
     export default {
         name: "DiskFeedBack",
+        components:{WindowsHeader},
         data(){
             return{
+                loading:false,
                 FeedBackTitle:'',
                 FeedBackContent:'',
+                header:{
+                    color:"#666",
+                    title:"",
+                    resize:false,
+                    mini:false
+                },
             }
         },
         computed: {
@@ -39,10 +52,12 @@
                     this.$Message.warning('详细描述问题不能是空的');
                     return
                 }
+                this.loading=true;
                 this.$Api.User.FeedBack({
                     report_title: this.FeedBackTitle,
                     report_content: this.FeedBackContent
                 },(rs)=>{
+                    this.loading=false;
                     rs=rs[0];
                     if(!rs){
                         this.$Message.error('服务器错误');
@@ -72,30 +87,83 @@
 
 <style scoped>
     /*反馈窗口*/
-    .CloudDiskFeedBack-main{
+    .cd-feedback-win{
+        width: 100%;
+        height: 100%;
+        -webkit-app-region: drag;
+    }
+    .cd-about-main{
+        width: 100%;
         height: calc(100% - 50px);
-        padding: 10px 15px;
+        background: #fff;
+        padding:0 30px 20px;
+        position: relative;
+    }
+    .app-version .logo{
+        width: 140px;
+        height: 45px;
+        float: left;
+        display: inline-block;
+        vertical-align: bottom;
+        font-size: 30px;
+        color: #4c4c4c;
+        font-family: "Mistral";
+        font-weight: bold;
+        background: url(../../../static/img/logo/c-disk.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+    .app-version span{
+        display: inline-block;
+        vertical-align: bottom;
+        font-size: 14px;
+        margin:0 10px;
+        color: #4c4c4c;
+        line-height: 45px;
+    }
+    .cd-feedback-main{
+        height: calc(100% - 50px);
+        padding:0 10px;
         background: #fff;
     }
-    .CloudDiskFeedBack-main p{
+    .cd-feedback-main p{
         font-size: 14px;
         color: #4f4f4f;
+        margin-bottom: 10px;
     }
-    .CloudDiskFeedBack-main .ivu-input-wrapper{
-        margin:10px 0;
+    .cd-feedback-main input,.cd-feedback-main textarea{
+        width: 100%;
+        -webkit-app-region: no-drag;
+        height: 32px;
+        border-radius: 3px;
+        border: 1px solid #eee;
+        padding: 0 5px;
+        margin-bottom: 15px;
     }
-    .CloudDiskFeedBack-main textarea{
-        height: 125px!important;
+    .cd-feedback-main textarea{
+        padding: 5px;
+        height: 110px;
         resize: none;
     }
-    .CloudDiskFeedBack-main .version{
-        float: left;
-        font-size: 14px;
-        color: #6e6e6e;
-        margin-top: 5px;
-        font-weight: bold;
+    .cd-feedback-main input:focus,.cd-feedback-main textarea:focus{
+        border-color: #7c7cee;
+        outline: 0;
+        box-shadow: 0 0 0 2px rgba(91,91,234,.2);
     }
-    .CloudDiskFeedBack-main button{
+    .cd-about-main .bottom{
+        width: calc(100% - 60px);
+        position: absolute;
+        bottom: 0;
+    }
+    .cd-about-main .release{
+        float: left;
+        font-size: 12px;
+        color: #4c4c4c;
+    }
+    .cd-about-main button{
         float: right;
+        margin-left: 20px;
+        overflow: hidden!important;
+        -webkit-app-region: no-drag;
     }
 </style>

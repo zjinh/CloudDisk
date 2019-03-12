@@ -1,5 +1,5 @@
 <template>
-    <div v-if="data.length">
+    <div>
         <div v-for="(item,index) in data" :class="DiskData.DiskShowState+(item.active?' active':'')" ripple @mousedown="select(item,index)" @dblclick="OpenFile(item)">
             <span class="icon">
                 <img :src="item.$icon" draggable="false">

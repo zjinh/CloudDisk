@@ -1,20 +1,23 @@
 <template>
     <section class="cd-left">
         <div class="cd-left-head">
-            <img draggable="false" :src="static+'/img/bar/disk.png'" alt=""><span>CloudDisk</span>
+            <img draggable="false" :src="static+'/img/bar/disk.png'" alt="">
+            <span>CloudDisk</span>
         </div>
         <ul class="cd-left-menu">
             <li v-for="(item,index) in ClassifyMenuData" ripple :class="item.active" @click="change(index)">
                 <i :class="item.icon"></i>{{item.name}}<div v-show="item.count>0">{{item.count}}</div>
             </li>
-            <img :src="BottomSrc" draggable="false" alt="">
-            <div class="cd-select-tips" v-show="show">{{DiskData.SelectTips}}</div>
         </ul>
-        <div class="CloudDiskCapacity" v-show="show">
-            <div class="CloudDiskSliderContainer">
-                <div class="CloudDiskSlider" :style="{'width':DiskData.DiskSize.Percent,background:DiskData.DiskSize.Background}"></div>
-            </div>
-            <p>{{DiskData.DiskSize.text}}</p>
+        <div class="cd-left-bottom">
+            <img :src="BottomSrc" draggable="false" alt="">
+            <section v-show="show">
+                <div class="cd-select-tips">{{DiskData.SelectTips}}</div>
+                <p>{{DiskData.DiskSize.text}}</p>
+            </section>
+        </div>
+        <div class="CloudDiskSliderContainer">
+            <div class="CloudDiskSlider" :style="{'width':DiskData.DiskSize.Percent,background:DiskData.DiskSize.Background}"></div>
         </div>
     </section>
 </template>
@@ -200,28 +203,35 @@
         float: right;
         padding: 0 6px;
     }
-    .cd-left-menu img{
-        width: 100px;
+    /*底部*/
+    .cd-left-bottom{
+        width: 200px;
+        height: 120px;
         position: absolute;
         bottom: 0;
+        font-weight: normal;
+    }
+    .cd-left-bottom img{
+        width: 100px;
+    }
+    .cd-left-bottom p{
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+    }
+    /*文件选择提示*/
+    .cd-select-tips{
+        width: 100%;
+        height: 25px;
+        line-height: 25px;
+        font-size: 12px;
+        padding: 0 5px;
+        color: #505050;
+        position: absolute;
+        bottom: 20px;
+        text-align: right;
     }
     /*网盘使用条*/
-    .CloudDiskCapacity{
-        width: 100%;
-        height: 35px;
-        position: relative;
-        z-index: 2;
-    }
-    .CloudDiskCapacity p{
-        font-size: 12px;
-        text-indent: 6px;
-        color: #505050;
-        margin-top: 3px;
-        text-align: right;
-        padding: 0 5px;
-        text-shadow: 0 0 0
-
-    }
     .CloudDiskSliderContainer{
         width: 95%;
         height: 10px;
@@ -242,18 +252,5 @@
         -webkit-transition: all .35s;
         -moz-transition: all .35s;
         -o-transition: all .35s
-    }
-    /*文件选择提示*/
-    .cd-select-tips{
-        width: 100%;
-        height: 25px;
-        line-height: 25px;
-        font-size: 12px;
-        padding: 0 5px;
-        color: #505050;
-        position: absolute;
-        bottom: 0;
-        text-align: right;
-        font-weight: normal;
     }
 </style>

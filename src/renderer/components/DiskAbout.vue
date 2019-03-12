@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="bottom">
-                <p class="release">©2018 CloudDisk ZJINH </p>
+                <p class="release">©2019 CloudDisk ZJINH </p>
                 <button class="cd-cancel-button" @click="checkUpdate">
                     <span v-if="!loading">{{CheckText}}</span>
                     <span v-else>{{ProcessText}}</span>
