@@ -74,7 +74,7 @@ function IconGet (item) {
     else if (type==='pdf') {
         return prefix+'PdfType.png';
     }
-    else if (StringExist(type, 'ini,txt,md')) {
+    else if (StringExist(type, 'ini,txt')) {
         return prefix+'TxtType.png';
     }
     else if (StringExist(type, 'xml,aspx,php,phtml,js,c')) {

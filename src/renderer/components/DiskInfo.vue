@@ -33,7 +33,7 @@
         </div>
         <div class="cd-disk-info-item">
             <span>文件分享:</span>
-            <input v-show="DiskData.share.length" @focus="copy" type="text" >
+            <input v-show="DiskData.share.length" :value="DiskData.shareAddress" @focus="copy" type="text" >
             <button v-show="DiskData.share" @click="copy">复制</button>
             <div v-if="!DiskData.share">未分享</div>
         </div>

@@ -1,8 +1,9 @@
 <template>
     <section class="cd-left">
         <div class="cd-left-head">
-            <img draggable="false" :src="static+'/img/bar/disk.png'" alt="">
-            <span>CloudDisk</span>
+            <img draggable="false" class="logo" :src="static+'/img/bar/disk.png'" alt="">
+            <span><img class="logo-text" :src="static+'/img/logo/c-disk.png'" alt=""></span>
+            <p>{{DiskData.DiskSize.text}}</p>
         </div>
         <ul class="cd-left-menu">
             <li v-for="(item,index) in ClassifyMenuData" ripple :class="item.active" @click="change(index)">
@@ -13,11 +14,10 @@
             <img :src="BottomSrc" draggable="false" alt="">
             <section v-show="show">
                 <div class="cd-select-tips">{{DiskData.SelectTips}}</div>
-                <p>{{DiskData.DiskSize.text}}</p>
+                <!--<div class="CloudDiskSliderContainer">
+                    <div class="CloudDiskSlider" :style="{'width':DiskData.DiskSize.Percent,background:DiskData.DiskSize.Background}"></div>
+                </div>-->
             </section>
-        </div>
-        <div class="CloudDiskSliderContainer">
-            <div class="CloudDiskSlider" :style="{'width':DiskData.DiskSize.Percent,background:DiskData.DiskSize.Background}"></div>
         </div>
     </section>
 </template>
@@ -149,12 +149,12 @@
     }
     .cd-left-head{
         width: 100%;
-        padding: 20px 30px;
+        padding:20px 0 30px 20px;
     }
     .cd-left-head *{
         float: left;
     }
-    .cd-left-head img{
+    .cd-left-head .logo{
         width: 40px;
         height: 40px;
         box-shadow: 0 0 15px 0 rgba(0,0,0,.1);
@@ -165,7 +165,15 @@
         padding: 0 10px 0 0;
         -webkit-app-region: drag;
         font-size: 16px;
-        margin-left: 8px;
+        margin-left: 5px;
+    }
+    .cd-left-head .logo-text{
+        width: 110px;
+    }
+    .cd-left-head p{
+        margin-left: 11px;
+        font-size: 10px;
+        color: #4f4f4f;
     }
     /*左侧菜单*/
     .cd-left-menu{
@@ -214,11 +222,6 @@
     .cd-left-bottom img{
         width: 100px;
     }
-    .cd-left-bottom p{
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-    }
     /*文件选择提示*/
     .cd-select-tips{
         width: 100%;
@@ -228,29 +231,32 @@
         padding: 0 5px;
         color: #505050;
         position: absolute;
-        bottom: 20px;
+        bottom:1px;
         text-align: right;
     }
-    /*网盘使用条*/
+    /*!*网盘使用条*!
     .CloudDiskSliderContainer{
-        width: 95%;
-        height: 10px;
-        margin: 2px auto;
-        background: #d2d2d2;
-        border-radius: 10px;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
+        width: 100px;
+        height: 15px;
+        background: #f4f5f7;
+        border-radius: 10px 0 0 0;
+        position: absolute;
+        bottom: 0;
+        right: 0;
     }
     .CloudDiskSliderContainer div{
-        width: 0;
-        background: #2682fc;
-        height: 100%;
         float: left;
-        border-radius: 10px;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
+        height: 100%;
+        width: 0;
+        background: #7c7cee;
         -webkit-transition: all .35s;
         -moz-transition: all .35s;
         -o-transition: all .35s
     }
+    .CloudDiskSliderContainer p{
+        width: 100%;
+        position: absolute;
+        text-align: center;
+        font-size: 10px;
+    }*/
 </style>

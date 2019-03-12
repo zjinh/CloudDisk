@@ -44,13 +44,16 @@
         border-radius: 3px;
         cursor: pointer;
     }
-    .cd-disk-block-file>.icon{
+    .cd-disk-block-file .icon{
         font-size: 30px;
         width: 100%;
         height: 40px;
         line-height: 40px;
         margin-top: 5px;
         display: block;
+    }
+    .cd-disk-block-file .icon>img{
+        height: 40px;
     }
     .cd-disk-block-file>p{
         color: #333333;

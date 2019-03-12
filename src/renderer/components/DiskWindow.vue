@@ -21,7 +21,7 @@
             <DiskNavigation :data="DiskData" :loading="LoadCompany" :hide="NeedHide" @callback="NavigationControl" @feature="DiskFeatureControl"></DiskNavigation>
             <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
             <DiskSortBar :show="DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType" :DiskData="UserDiskData" @callback="DiskFeatureControl" ref="DiskSortBar"></DiskSortBar>
-            <section class="cd-bottom" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain" :style="{height:'calc(100% - 120px - '+(isTrash?'32ppx':'0')+(DiskData.DiskShowState!=='cd-disk-block-file'&&NoTransType?'32px':'0px')+')'}">
+            <section class="cd-bottom" @scroll="LoadMore" @mousedown="MainMouseFunc" @dragover.prevent.stop="ShowUploadTips=true" @dragleave.prevent.stop="ShowUploadTips=false" @drop.prevent.stop="UploadDrop" ref="CloudDiskMain" :style="{height:AutoHeight}">
                 <div class="cd-upload-tips" v-show="ShowUploadTips&&DiskData.Type==='disk'&&loadClassify==='normal'">松开鼠标开始上传文件</div>
                 <DiskFile @SelectFiles="SelectFiles" @OpenFile="DiskFeatureControl" v-if="LoadCompany&&NoTransType" :data="UserDiskData" :DiskData="DiskData"></DiskFile>
                 <loading :loading="IsLoadCompany" :length="UserDiskData.length" :IsNoDiskData="IsNoDiskData"></loading>
@@ -222,10 +222,10 @@
         },
         computed: {
             isDisk() {
-                return this.loadClassify !== 'trash' && this.DiskData.Type === 'disk';
+                return this.loadClassify !== 'trash' && this.DiskData.Type === 'disk'&&(this.DiskData.SelectFiles.length>1||this.DiskData.NowSelect.disk_id!==undefined);
             },
             isTrash() {
-                return this.loadClassify === 'trash' && this.DiskData.Type === 'disk'
+                return this.loadClassify === 'trash' && this.DiskData.Type === 'disk'&&(this.DiskData.SelectFiles.length>1||this.DiskData.NowSelect.disk_id!==undefined);
             },
             NoTransType() {
                 return this.DiskData.Type !== 'trans';
@@ -235,6 +235,9 @@
             },
             IsNoDiskData() {
                 return this.LoadCompany && this.NoTransType;
+            },
+            AutoHeight(){
+                return 'calc(100% - 120px - '+(this.isTrash?'32ppx':'0')+(this.DiskData.DiskShowState!=='cd-disk-block-file'&&this.NoTransType?'32px':'0px')+')';
             }
         },
         created() {
@@ -478,6 +481,9 @@
                     case 'paste'://粘贴
                         let CutFlag = true;
                         let CopySize = 0;
+                        if(this.DiskData.Clipboard.length===0){
+                            return
+                        }
                         this.DiskData.Clipboard.forEach((item) => {
                             CopySize = CopySize + parseInt(item.disk_size);
                             if (this.NowDiskID === item.disk_id) {
@@ -729,16 +735,16 @@
                         if (data.length) {
                             this.DiskData.DiskSize.total = data[0].max_size;
                             this.DiskData.DiskSize.use = data[0].use_size;
-                            let Percent = (this.DiskData.DiskSize.use / this.DiskData.DiskSize.total) * 100;
+                            this.DiskData.DiskSize.text = '可用:'+this.$Api.FileSize(this.DiskData.DiskSize.total-this.DiskData.DiskSize.use);
+                            /*let Percent = (this.DiskData.DiskSize.use / this.DiskData.DiskSize.total) * 100;
                             this.DiskData.DiskSize.Percent = Percent + '%';
-                            this.DiskData.DiskSize.text = this.$Api.FileSize(this.DiskData.DiskSize.use) + '/' + this.$Api.FileSize(this.DiskData.DiskSize.total);
                             if (65 < Percent && Percent < 85) {
                                 this.DiskData.DiskSize.Background = '#f7ab21';
                             } else if (Percent >= 85) {
                                 this.DiskData.DiskSize.Background = '#e83c3c';
                             } else {
-                                this.DiskData.DiskSize.Background = '#2682fc';
-                            }
+                                this.DiskData.DiskSize.Background = '#7c7cee';
+                            }*/
                             this.DiskAllCount = data[0].all_count;
                             this.DiskLoadCount = this.DiskLoadCount + data.length;
                         }

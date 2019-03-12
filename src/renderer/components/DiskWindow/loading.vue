@@ -37,7 +37,8 @@
     /*加载动画*/
     .CloudDiskLoading{
         text-align: center;
-        color: #2682fc;
+        color: #5b5bea;
+        font-size: 16px;
         padding-top: calc(25% - 35px);
     }
     .CloudDiskLoading .sf-icon-hdd{
@@ -79,7 +80,7 @@
     }
     .CloudDiskLoading-beat > div {
         float: right;
-        background-color: #2682fc;
+        background-color: #5b5bea;
         width: 4px;
         height: 4px;
         margin-top: 3px;
