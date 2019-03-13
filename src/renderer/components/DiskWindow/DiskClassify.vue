@@ -174,6 +174,7 @@
         margin-left: 11px;
         font-size: 10px;
         color: #4f4f4f;
+        font-weight: normal;
     }
     /*左侧菜单*/
     .cd-left-menu{
@@ -214,13 +215,13 @@
     /*底部*/
     .cd-left-bottom{
         width: 200px;
-        height: 120px;
+        height: 137px;
         position: absolute;
         bottom: 0;
         font-weight: normal;
     }
     .cd-left-bottom img{
-        width: 100px;
+        width: 110px;
     }
     /*文件选择提示*/
     .cd-select-tips{

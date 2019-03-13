@@ -177,14 +177,8 @@
                 handler() {
                     if (this.DiskData.Type === 'trans') {
                         this.$nextTick(() => {
-                            this.TransformData.forEach((item, index) => {
-                                if (item.trans_type === this.loadClassify && item.state !== 'completed') {
-                                    item.shows = true;
-                                } else if (this.loadClassify === 'completed' && item.state === 'completed') {
-                                    item.shows = true;
-                                } else {
-                                    item.shows = false;
-                                }
+                            this.TransformData.forEach((item) => {
+                                item.shows=(this.loadClassify === item.state)||(item.trans_type === this.loadClassify && item.state !== 'completed')
                             });
                         });
                     }
@@ -210,6 +204,7 @@
                             if (item.state === 'completed') {
                                 this.FinishCount++;
                             }
+                            item.shows=(this.loadClassify === item.state)||(item.trans_type === this.loadClassify && item.state !== 'completed')
                         });
                         this.$refs.DiskClassify.TransData[0].count = this.DownloadCount;
                         this.$refs.DiskClassify.TransData[1].count = this.UploadCount;

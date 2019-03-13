@@ -2,6 +2,7 @@ import axios from 'axios'
 const path =require("path");
 const fs= require('fs');
 let address=process.env.HOMEDRIVE+process.env.HOMEPATH+'/CloudDisk\/';//用户文件地址
+let prefix=path.join(__static, '/img/disk/');
 function Ajax(options) {
     let params = new URLSearchParams();
     let method= options.method?options.method:'POST';
@@ -27,8 +28,14 @@ function Ajax(options) {
 function StringExist (str, substr) {
     if(typeof str !== "string"){ return; }
     if(substr==='|*|'){return true}
-    for(let i=0;i<substr.split(',').length;i++){
-        if(str.indexOf(substr.split(',')[i]) >= 0 === true ){ return true; }
+    if(substr.split(',').length>1) {
+        for (let i = 0; i < substr.split(',').length; i++) {
+            if (str.indexOf(substr.split(',')[i]) >= 0 === true) {
+                return true;
+            }
+        }
+    }else {
+        return (str===substr);
     }
     return false;
 }
@@ -43,67 +50,81 @@ function FileSize (bytes) {
         i = Math.floor(Math.log(bytes) / Math.log(k));
     return (bytes / Math.pow(k, i)).toPrecision(3) + sizes[i];
 }
-function IconGet (item) {
-    let prefix=path.join(__static, '/img/disk/');
-    let type = StringBefore(item.disk_realname||item.disk_main, ".").toLowerCase();
-    item.type=type;
-    if(!item.disk_main){
-        return prefix+'FolderType.png'
+//ini未写入
+let FileType={
+    android:{
+        TypeArray:'apk',
+        FileIcon:prefix+'ApkType.png'
+    },
+    pdf:{
+        TypeArray:'pdf',
+        FileIcon:prefix+'PdfType.png'
+    },
+    torrent:{
+        TypeArray:'torrent',
+        FileIcon:prefix+'BtType.png'
+    },
+    vcf:{
+        TypeArray:'vcf',
+        FileIcon:prefix+'VcfType.png'
+    },
+    txt:{
+        TypeArray:'txt',
+        FileIcon:prefix+'TxtType.png'
+    },
+    html:{
+        TypeArray:'htm,html',
+        FileIcon:prefix+'html.png'
+    },
+    exe:{
+        TypeArray:'exe,msi',
+        FileIcon:prefix+'exe.png'
+    },
+    word:{
+        TypeArray:'doc,docx',
+        FileIcon:prefix+'DocType.png'
+    },
+    PowerPoint:{
+        TypeArray:'ppt,pptx',
+        FileIcon:prefix+'PptType.png'
+    },
+    excel:{
+        TypeArray:'xls,xlsx',
+        FileIcon:prefix+'ExcelType.png'
+    },
+    video:{
+        TypeArray:'mp4,rmvb,mkv',
+        FileIcon:prefix+'ExcelType.png'
+    },
+    image:{
+        TypeArray:'apng,png,jpg,jpeg,bmp,gif',
+        FileIcon:prefix+'ImageType.png'
+    },
+    music:{
+        TypeArray:'m4a,mp3,ogg,flac,f4a,wav,ape,ncm',
+        FileIcon:prefix+'MusicType.png'
+    },
+    compress:{
+        TypeArray:'7z,zip,rar,tar.gz',
+        FileIcon:prefix+'RarType.png'
     }
-    if (StringExist(type, '7z,zip,rar,tar.gz')) {
-        return prefix+'RarType.png';
-    }
-    else if (StringExist(type, 'apng,png,jpg,jpeg,bmp,gif')) {
-        return prefix+'ImageType.png';
-    }
-    else if (StringExist(type, 'mp4,rmvb,mkv')) {
-        return prefix+'VideoType.png';
-    }
-    else if (StringExist(type, 'm4a,mp3,ogg,flac,f4a,wav,ape,ncm')) {
-        return prefix+'MusicType.png';
-    }
-    else if (StringExist(type, 'doc,docx')) {
-        return prefix+'DocType.png';
-    }
-    else if (StringExist(type, 'ppt,pptx')) {
-        return prefix+'PptType.png';
-    }
-    else if (StringExist(type, 'xls,xlsx')) {
-        return prefix+'ExcelType.png';
-    }
-    else if (type==='pdf') {
-        return prefix+'PdfType.png';
-    }
-    else if (StringExist(type, 'ini,txt')) {
-        return prefix+'TxtType.png';
-    }
-    else if (StringExist(type, 'xml,aspx,php,phtml,js,c')) {
-        return prefix+'CodeType.png';
-    }
-    else if (StringExist(type, 'htm,html')) {
-        return prefix+'WebType.png';
-    }
-    else if (StringExist(type, 'exe,msi')) {
-        return prefix+'ExeType.png';
-    }
-    else if (type=== 'torrent') {
-        return prefix+'BtType.png';
-    }
-    else if (type==='vcf') {
-        return prefix+'VcfType.png';
-    }
-    else {
-        return prefix+'OtherType.png';
-    }
-}
+};
 function DiskData(item){
     item.active=false;//设置未选择
     item.$size=FileSize(item.disk_size);//计算文件大小
-    item.$icon =IconGet(item);//区别文件类型设置图表
     item.disk_size=parseInt(item.disk_size);
     item.disk_main?item.disk_main=localStorage.server+'/'+item.disk_main:"";
     item.shareAddress=item.share?localStorage.server + '/s/' + item.share:"";
-    if(item.disk_main){
+    item.$icon = prefix+'OtherType.png';//初始化为其他图标
+    item.OpenType=null;//初始化为无法打开的文件
+    let type = StringBefore(item.disk_realname||item.disk_main, ".").toLowerCase();
+    item.type=type;
+    if(item.disk_main) {
+        for (let i in FileType) {
+           if (StringExist(type, FileType[i].TypeArray)) {
+               item.$icon = FileType[i].FileIcon
+           }
+        }
         if (item.type==='zip') {
             item.OpenType='zip';
         }
@@ -118,17 +139,15 @@ function DiskData(item){
             item.TypeArray='mp4,rmvb,mkv';
             item.OpenType='video';
         }
-        else if (StringExist(item.type, 'm4a,mp3,ogg,flac,f4a,wav,ape,ncm')) {
-            item.TypeArray='m4a,mp3,ogg,flac,f4a,wav,ape,ncm';
+        else if (StringExist(item.type, 'm4a,mp3,ogg,flac,f4a,wav,ape')) {
+            item.TypeArray='m4a,mp3,ogg,flac,f4a,wav,ape';
             item.OpenType='audio';
         }
-        else if (StringExist(item.type, 'ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java')) {
-            item.TypeArray='ini,txt,md,xml,aspx,php,phtml,js,c,htm,html,log,cpp,java';
+        else if (StringExist(item.type, 'ini,txt,xml,aspx,php,phtml,js,c,htm,html,log,c,cpp,java')) {
             item.OpenType='text';
         }
-        else {
-            item.OpenType=null;
-        }
+    }else{
+        item.$icon=prefix+'FolderType.png';
     }
 }
 function age(birth){
@@ -458,5 +477,5 @@ let VerifyCod=function(){
     return localStorage.server+"/service/verifyCode"+'?'+Math.random();
 };
 export default {
-    User,Disk,Check,StringExist,StringBefore,FileSize,IconGet,VerifyCod,LocalFile
+    User,Disk,Check,StringExist,StringBefore,FileSize,VerifyCod,LocalFile
 }

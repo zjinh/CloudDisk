@@ -199,7 +199,7 @@ button[disabled="disabled"]{
 	display:none;
 }
 *::-webkit-scrollbar-thumb{
-	background : rgba(0,0,0,0.3);
+	background : #EAECF0;
 	position   : absolute;
 	width      : 3px;
 	right      : 0;

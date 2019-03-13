@@ -83,7 +83,7 @@
                 let speed=parseFloat(item.chunk/time).toFixed(1);
                 let remaining_chunk=item.size-item.chunk;
                 let remaining_time=remaining_chunk/speed;
-                return this.$Api.FileSize(speed)+'/s  剩余时间：'+this.formatSeconds(remaining_time);
+                return this.$Api.FileSize(speed)+'/s  剩余时间:'+this.formatSeconds(remaining_time);
             },
             ControlButton(state){
                 let btn='';
