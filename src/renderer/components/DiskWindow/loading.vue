@@ -40,6 +40,8 @@
         color: #5b5bea;
         font-size: 16px;
         padding-top: calc(25% - 35px);
+        position: relative!important;
+        z-index: -1;
     }
     .CloudDiskLoading .sf-icon-hdd{
         width: 100%;
@@ -101,9 +103,9 @@
         color: #828282;
         text-align: center;
         font-size: 16px;
-        z-index: -1;
-        position: unset!important;
         padding-top: calc(25% - 35px);
+        position: relative!important;
+        z-index: -1;
     }
     .CloudDiskEmptyTips span{
         width: 100%;

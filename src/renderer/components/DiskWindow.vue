@@ -788,6 +788,7 @@
                 this.$refs.CloudDiskMain.focus();
                 this.$refs.MouseMenu.MenuShow('file');
                 if (event.button === 0) {
+                    event.stopPropagation();
                     if (this.DiskData.KeyFlag === 'Ctrl') {//Ctrl多选
                         item.active=!item.active;//反选
                     } else if (this.DiskData.KeyFlag === 'Shift') {//Shift多选
