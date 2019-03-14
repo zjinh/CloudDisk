@@ -1,0 +1,333 @@
+*{-webkit-transition:all .35s;-moz-transition:all .35s;-o-transition:all .35s;font-family:Microsoft YaHei}
+::-webkit-scrollbar{width:5px;height:5px;background:0 0}
+::-webkit-scrollbar-button{display:none}
+::-webkit-scrollbar-track{background:0 0}
+::-webkit-scrollbar-track-piece{display:none}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.3);position:absolute;width:5px;right:0;top:0;bottom:0;visibility:hidden\9;opacity:.01;-webkit-transition:.2s;-moz-transition:.2s;-o-transition:.2s;transition:.2s;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px}
+::-webkit-scrollbar-thumb:active,::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,1)}
+::-webkit-scrollbar-corner{display:none}
+::-webkit-scrollbar-resizer{display:none}
+.textLayer{position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;opacity:.2;line-height:1}
+.textLayer>div{color:transparent;position:absolute;white-space:pre;cursor:text;-webkit-transform-origin:0 0;-moz-transform-origin:0 0;-o-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}
+.textLayer .highlight{margin:-1px;padding:1px;background-color:#b400aa;border-radius:4px}
+.textLayer .highlight.begin{border-radius:4px 0 0 4px}
+.textLayer .highlight.end{border-radius:0 4px 4px 0}
+.textLayer .highlight.middle{border-radius:0}
+.textLayer .highlight.selected{background-color:#006400}
+.textLayer ::selection{background:#00f}
+.textLayer ::-moz-selection{background:#00f}
+.textLayer .endOfContent{display:block;position:absolute;left:0;top:100%;right:0;bottom:0;z-index:-1;cursor:default;-webkit-user-select:none;-ms-user-select:none;-moz-user-select:none}
+.textLayer .endOfContent.active{top:0}
+.annotationLayer section{position:absolute}
+.annotationLayer .linkAnnotation>a{position:absolute;font-size:1em;top:0;left:0;width:100%;height:100%}
+.annotationLayer .linkAnnotation>a{background:url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7) 0 0 repeat}
+.annotationLayer .linkAnnotation>a:hover{opacity:.2;background:#ff0;box-shadow:0 2px 10px #ff0}
+.annotationLayer .textAnnotation img{position:absolute;cursor:pointer}
+.annotationLayer .buttonWidgetAnnotation.checkBox input,.annotationLayer .buttonWidgetAnnotation.radioButton input,.annotationLayer .choiceWidgetAnnotation select,.annotationLayer .textWidgetAnnotation input,.annotationLayer .textWidgetAnnotation textarea{background-color:rgba(0,54,255,.13);border:1px solid transparent;box-sizing:border-box;font-size:9px;height:100%;padding:0 3px;vertical-align:top;width:100%}
+.annotationLayer .textWidgetAnnotation textarea{font:message-box;font-size:9px;resize:none}
+.annotationLayer .buttonWidgetAnnotation.checkBox input[disabled],.annotationLayer .buttonWidgetAnnotation.radioButton input[disabled],.annotationLayer .choiceWidgetAnnotation select[disabled],.annotationLayer .textWidgetAnnotation input[disabled],.annotationLayer .textWidgetAnnotation textarea[disabled]{background:0 0;border:1px solid transparent;cursor:not-allowed}
+.annotationLayer .buttonWidgetAnnotation.checkBox input:hover,.annotationLayer .buttonWidgetAnnotation.radioButton input:hover,.annotationLayer .choiceWidgetAnnotation select:hover,.annotationLayer .textWidgetAnnotation input:hover,.annotationLayer .textWidgetAnnotation textarea:hover{border:1px solid #000}
+.annotationLayer .choiceWidgetAnnotation select:focus,.annotationLayer .textWidgetAnnotation input:focus,.annotationLayer .textWidgetAnnotation textarea:focus{background:0 0;border:1px solid transparent}
+.annotationLayer .textWidgetAnnotation input.comb{font-family:monospace;padding-left:2px;padding-right:0}
+.annotationLayer .textWidgetAnnotation input.comb:focus{width:115%}
+.annotationLayer .buttonWidgetAnnotation.checkBox input,.annotationLayer .buttonWidgetAnnotation.radioButton input{-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;appearance:none}
+.annotationLayer .popupWrapper{position:absolute;width:20em}
+.annotationLayer .popup{position:absolute;z-index:200;max-width:20em;background-color:#FF9;box-shadow:0 2px 5px #333;border-radius:2px;padding:.6em;margin-left:5px;cursor:pointer;word-wrap:break-word}
+.annotationLayer .popup h1{font-size:1em;border-bottom:1px solid #000;padding-bottom:.2em}
+.annotationLayer .popup p{padding-top:.2em}
+.annotationLayer .fileAttachmentAnnotation,.annotationLayer .highlightAnnotation,.annotationLayer .lineAnnotation svg line,.annotationLayer .squigglyAnnotation,.annotationLayer .strikeoutAnnotation,.annotationLayer .underlineAnnotation{cursor:pointer}
+.pdfViewer .canvasWrapper{overflow:hidden}
+.pdfViewer .page{direction:ltr;width:816px;height:1056px;margin:1px auto -8px auto;position:relative;overflow:visible;border:9px solid transparent;background-clip:content-box;border-image:url(images/shadow.png) 9 9 repeat;background-color:#fff}
+.pdfViewer.removePageBorders .page{margin:0 auto 10px auto;border:none}
+.pdfViewer.singlePageView{display:inline-block}
+.pdfViewer.singlePageView .page{margin:0;border:none}
+.pdfViewer .page canvas{margin:0;display:block}
+.pdfViewer .page canvas[hidden]{display:none}
+.pdfViewer .page .loadingIcon{position:absolute;display:block;left:0;top:0;right:0;bottom:0;background:url(images/loading-icon.gif) center no-repeat}
+.pdfPresentationMode:-webkit-full-screen .pdfViewer .page{margin-bottom:100%;border:0}
+.pdfPresentationMode:-moz-full-screen .pdfViewer .page{margin-bottom:100%;border:0}
+.pdfPresentationMode:-ms-fullscreen .pdfViewer .page{margin-bottom:100%!important;border:0}
+.pdfPresentationMode:fullscreen .pdfViewer .page{margin-bottom:100%;border:0}
+*{padding:0;margin:0}
+html{height:100%;width:100%;font-size:10px}
+body{height:100%;width:100%;background-color:#404040}
+body,button,input,select{outline:0}
+:focus{outline:0}
+.hidden{display:none!important}
+[hidden]{display:none!important}
+#viewerContainer.pdfPresentationMode:-webkit-full-screen{top:0;border-top:2px solid transparent;background-color:#000;width:100%;height:100%;overflow:hidden;cursor:none;-webkit-user-select:none}
+#viewerContainer.pdfPresentationMode:-moz-full-screen{top:0;border-top:2px solid transparent;background-color:#000;width:100%;height:100%;overflow:hidden;cursor:none;-moz-user-select:none}
+#viewerContainer.pdfPresentationMode:-ms-fullscreen{top:0!important;border-top:2px solid transparent;width:100%;height:100%;overflow:hidden!important;cursor:none;-ms-user-select:none}
+#viewerContainer.pdfPresentationMode:-ms-fullscreen::-ms-backdrop{background-color:#000}
+#viewerContainer.pdfPresentationMode:fullscreen{top:0;border-top:2px solid transparent;background-color:#000;width:100%;height:100%;overflow:hidden;cursor:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
+.pdfPresentationMode:-webkit-full-screen a:not(.internalLink){display:none}
+.pdfPresentationMode:-moz-full-screen a:not(.internalLink){display:none}
+.pdfPresentationMode:-ms-fullscreen a:not(.internalLink){display:none!important}
+.pdfPresentationMode:fullscreen a:not(.internalLink){display:none}
+.pdfPresentationMode:-webkit-full-screen .textLayer>div{cursor:none}
+.pdfPresentationMode:-moz-full-screen .textLayer>div{cursor:none}
+.pdfPresentationMode:-ms-fullscreen .textLayer>div{cursor:none}
+.pdfPresentationMode:fullscreen .textLayer>div{cursor:none}
+.pdfPresentationMode.pdfPresentationModeControls .textLayer>div,.pdfPresentationMode.pdfPresentationModeControls>*{cursor:default}
+#outerContainer{width:100%;height:100%;position:relative}
+#sidebarContainer{position:absolute;top:0;bottom:0;width:200px;visibility:hidden;-webkit-transition-duration:.2s;-webkit-transition-timing-function:ease;transition-duration:.2s;transition-timing-function:ease}
+html[dir=ltr] #sidebarContainer{-webkit-transition-property:left;transition-property:left;left:-200px}
+html[dir=rtl] #sidebarContainer{-webkit-transition-property:right;transition-property:right;right:-200px}
+#outerContainer.sidebarMoving>#sidebarContainer,#outerContainer.sidebarOpen>#sidebarContainer{visibility:visible}
+html[dir=ltr] #outerContainer.sidebarOpen>#sidebarContainer{left:0}
+html[dir=rtl] #outerContainer.sidebarOpen>#sidebarContainer{right:0}
+#mainContainer{position:absolute;top:0;right:0;bottom:0;left:0;min-width:320px}
+html[dir=ltr] #outerContainer.sidebarOpen>#mainContainer{left:200px}
+html[dir=rtl] #outerContainer.sidebarOpen>#mainContainer{right:200px}
+#sidebarContent{top:32px;bottom:0;overflow:auto;-webkit-overflow-scrolling:touch;position:absolute;width:200px;background-color:hsla(0,0%,0%,.1)}
+html[dir=ltr] #sidebarContent{left:0;box-shadow:inset -1px 0 0 hsla(0,0%,0%,.25)}
+html[dir=rtl] #sidebarContent{right:0;box-shadow:inset 1px 0 0 hsla(0,0%,0%,.25)}
+#viewerContainer{overflow:auto;-webkit-overflow-scrolling:touch;position:absolute;top:32px;right:0;bottom:0;left:0;background:#717171}
+.toolbar{position:relative;left:0;right:0;z-index:9999;cursor:default;box-shadow:1px 1px 1px 1px rgba(0,0,0,.48)}
+#toolbarContainer{width:100%}
+#toolbarSidebar{width:200px;height:32px;background-color:#424242}
+html[dir=ltr] #toolbarSidebar{box-shadow:inset -1px 0 0 rgba(0,0,0,.25),inset 0 -1px 0 hsla(0,0%,100%,.05),0 1px 0 hsla(0,0%,0%,.15),0 0 1px hsla(0,0%,0%,.1)}
+html[dir=rtl] #toolbarSidebar{box-shadow:inset 1px 0 0 rgba(0,0,0,.25),inset 0 1px 0 hsla(0,0%,100%,.05),0 1px 0 hsla(0,0%,0%,.15),0 0 1px hsla(0,0%,0%,.1)}
+#toolbarContainer{position:relative;height:32px;background-color:#4f4f4f}
+html[dir=ltr] #toolbarContainer{border-bottom:2px solid #4f4f4f}
+html[dir=rtl] #toolbarContainer{box-shadow:inset -1px 0 0 hsla(0,0%,100%,.08),inset 0 1px 1px hsla(0,0%,0%,.15),inset 0 -1px 0 hsla(0,0%,100%,.05),0 1px 0 hsla(0,0%,0%,.15),0 1px 1px hsla(0,0%,0%,.1)}
+#toolbarViewer{height:32px}
+#loadingBar{position:relative;width:100%;height:4px;background-color:#333;border-bottom:1px solid #333}
+#loadingBar .progress{position:absolute;top:0;left:0;width:0;height:100%;background-color:#ddd;overflow:hidden}
+@-webkit-keyframes progressIndeterminate{0%{left:-142px}
+  100%{left:0}
+}
+@keyframes progressIndeterminate{0%{left:-142px}
+  100%{left:0}
+}
+#loadingBar .progress.indeterminate{background-color:#999;-webkit-transition:none;transition:none}
+#loadingBar .progress.indeterminate .glimmer{position:absolute;top:0;left:0;height:100%;width:calc(100% + 150px);background:repeating-linear-gradient(135deg,#bbb 0,#999 5px,#999 45px,#ddd 55px,#ddd 95px,#bbb 100px);-webkit-animation:progressIndeterminate 950ms linear infinite;animation:progressIndeterminate 950ms linear infinite}
+.findbar,.secondaryToolbar{top:32px;position:absolute;z-index:10000;height:auto;min-width:16px;padding:0 6px 0 6px;margin:4px 2px 4px 2px;color:#d8d8d8;font-size:12px;line-height:14px;text-align:left;cursor:default}
+#secondaryToolbar,.findbar{background:#4f4f4f;color:#333;min-width:300px}
+.findbar>div{height:32px}
+.findbar.wrapContainers>div{clear:both}
+.findbar.wrapContainers>div#findbarMessageContainer{height:auto}
+html[dir=ltr] .findbar{left:68px}
+html[dir=rtl] .findbar{right:68px}
+.findbar label{-webkit-user-select:none;-moz-user-select:none}
+#findInput{width:200px}
+#findInput::-webkit-input-placeholder{font-style:italic}
+#findInput::-moz-placeholder{font-style:italic}
+#findInput:-ms-input-placeholder{font-style:italic}
+#findInput::placeholder{font-style:italic}
+#findInput[data-status=pending]{background-image:url(images/loading-small.png);background-repeat:no-repeat;background-position:right}
+html[dir=rtl] #findInput[data-status=pending]{background-position:left}
+.secondaryToolbar{padding:6px;height:auto;z-index:30000;min-width:unset!important}
+html[dir=ltr] .secondaryToolbar{right:4px}
+html[dir=rtl] .secondaryToolbar{left:4px}
+#secondaryToolbarButtonContainer{max-width:200px;max-height:400px;overflow-y:auto;-webkit-overflow-scrolling:touch;margin-bottom:-4px}
+.doorHanger,.doorHangerRight{border:1px solid hsla(0,0%,0%,.5);border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.doorHanger:after,.doorHanger:before,.doorHangerRight:after,.doorHangerRight:before{bottom:100%;border:solid transparent;content:" ";height:0;width:0;position:absolute;pointer-events:none}
+.doorHanger:after,.doorHangerRight:after{border-bottom-color:hsla(0,0%,32%,.99);border-width:8px}
+.doorHanger:before,.doorHangerRight:before{border-bottom-color:hsla(0,0%,0%,.5);border-width:9px}
+html[dir=ltr] .doorHanger:after,html[dir=rtl] .doorHangerRight:after{left:13px;margin-left:-8px}
+html[dir=ltr] .doorHanger:before,html[dir=rtl] .doorHangerRight:before{left:13px;margin-left:-9px}
+html[dir=ltr] .doorHangerRight:after,html[dir=rtl] .doorHanger:after{right:13px;margin-right:-8px}
+html[dir=ltr] .doorHangerRight:before,html[dir=rtl] .doorHanger:before{right:13px;margin-right:-9px}
+#findResultsCount{background-color:#d8d8d8;color:#515151;text-align:center;padding:5px}
+#findMsg{color:#A6B7D0}
+#findMsg:empty{display:none}
+#findInput.notFound{background-color:#f66}
+#toolbarViewerMiddle{position:absolute;left:50%;transform:translateX(-50%)}
+html[dir=ltr] #toolbarViewerLeft,html[dir=rtl] #toolbarViewerRight{float:left}
+html[dir=ltr] #toolbarViewerRight,html[dir=rtl] #toolbarViewerLeft{float:right}
+html[dir=ltr] #toolbarViewerLeft>*,html[dir=ltr] #toolbarViewerMiddle>*,html[dir=ltr] #toolbarViewerRight>*,html[dir=ltr] .findbar *{position:relative;float:left}
+html[dir=rtl] #toolbarViewerLeft>*,html[dir=rtl] #toolbarViewerMiddle>*,html[dir=rtl] #toolbarViewerRight>*,html[dir=rtl] .findbar *{position:relative;float:right}
+html[dir=ltr] .splitToolbarButton{margin:3px 2px 4px 0;display:inline-block}
+html[dir=rtl] .splitToolbarButton{margin:3px 0 4px 2px;display:inline-block}
+html[dir=ltr] .splitToolbarButton>.toolbarButton{border-radius:0;float:left}
+html[dir=rtl] .splitToolbarButton>.toolbarButton{border-radius:0;float:right}
+.overlayButton,.secondaryToolbarButton,.toolbarButton{border:0 none;background:0 0;width:32px;height:25px}
+.toolbarButton>span{display:inline-block;width:0;height:0;overflow:hidden}
+.overlayButton[disabled],.secondaryToolbarButton[disabled],.toolbarButton[disabled]{opacity:.5;background-color:rgba(0,0,0,0)!important;border:none!important;cursor:no-drop}
+.splitToolbarButton.toggled .toolbarButton{margin:0}
+.dropdownToolbarButton:hover,.overlayButton:focus,.overlayButton:hover,.splitToolbarButton>.toolbarButton:focus,.splitToolbarButton>.toolbarButton:hover,.toolbarButton.textButton:focus,.toolbarButton.textButton:hover{background-color:rgba(255,255,255,.18)}
+.splitToolbarButton>.toolbarButton{position:relative}
+html[dir=ltr] .splitToolbarButton>.toolbarButton:first-child,html[dir=ltr] .splitToolbarButton>.toolbarButton:last-child,html[dir=rtl] .splitToolbarButton>.toolbarButton:first-child,html[dir=rtl] .splitToolbarButton>.toolbarButton:last-child{position:relative;margin:0}
+.splitToolbarButtonSeparator{padding:12px 0;margin:1px 3px;width:1px;background-color:hsla(0,0%,100%,.5);z-index:99;box-shadow:0 0 0 1px hsla(0,0%,100%,.08);display:inline-block}
+html[dir=ltr] .splitToolbarButtonSeparator{float:left}
+html[dir=rtl] .splitToolbarButtonSeparator{float:right}
+.dropdownToolbarButton,.overlayButton,.secondaryToolbarButton,.toolbarButton{min-width:16px;padding:2px 6px 0;border:1px solid transparent;color:#fff;font-size:12px;line-height:17px!important;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;cursor:default}
+html[dir=ltr] .dropdownToolbarButton,html[dir=ltr] .overlayButton,html[dir=ltr] .toolbarButton{margin:3px 2px 4px 0}
+html[dir=rtl] .dropdownToolbarButton,html[dir=rtl] .overlayButton,html[dir=rtl] .toolbarButton{margin:3px 0 4px 2px}
+.dropdownToolbarButton,.overlayButton,.secondaryToolbarButton:focus,.secondaryToolbarButton:hover,.toolbarButton:focus,.toolbarButton:hover{border:1px solid rgba(255,255,255,.42)}
+.dropdownToolbarButton:hover:active,.overlayButton:hover:active,.secondaryToolbarButton:hover:active,.toolbarButton:hover:active{background-color:hsla(0,0%,46%,.2)}
+.secondaryToolbarButton.toggled,.splitToolbarButton.toggled>.toolbarButton.toggled,.toolbarButton.toggled{background-color:hsla(0,0%,100%,.3);box-shadow:0 1px 1px hsla(0,0%,0%,.1) inset,0 0 1px hsla(0,0%,0%,.2) inset,0 1px 0 hsla(0,0%,100%,.05)}
+.dropdownToolbarButton{width:120px;max-width:120px;padding:0;overflow:hidden}
+.dropdownToolbarButton span{position:absolute;right:0;height:25px;line-height:25px;width:16px;text-align:center}
+html[dir=ltr] .dropdownToolbarButton{background-position:95%}
+html[dir=rtl] .dropdownToolbarButton{background-position:5%}
+.dropdownToolbarButton>select{min-width:140px;font-size:12px;color:#fff;margin:0;padding:1px 2px 2px;border:1px solid #777;background-color:hsla(0,0%,100%,.15);}
+.dropdownToolbarButton>select option{color:#303133}
+#customScaleOption{display:none}
+#pageWidthOption{border-bottom:1px rgba(255,255,255,.5) solid}
+html[dir=ltr] .splitToolbarButton:first-child,html[dir=ltr] .toolbarButton:first-child,html[dir=rtl] .splitToolbarButton:last-child,html[dir=rtl] .toolbarButton:last-child{margin-left:4px}
+html[dir=ltr] .splitToolbarButton:last-child,html[dir=ltr] .toolbarButton:last-child,html[dir=rtl] .splitToolbarButton:first-child,html[dir=rtl] .toolbarButton:first-child{margin-right:4px}
+.toolbarButtonSpacer{width:30px;display:inline-block;height:1px}
+html[dir=ltr] #findPrevious{margin-left:3px}
+html[dir=ltr] #findNext{margin-right:3px}
+html[dir=rtl] #findPrevious{margin-right:3px}
+html[dir=rtl] #findNext{margin-left:3px}
+html[dir=ltr] .toolbarButton#sidebarToggle::before{content:url(images/toolbarButton-sidebarToggle.png)}
+html[dir=rtl] .toolbarButton#sidebarToggle::before{content:url(images/toolbarButton-sidebarToggle-rtl.png)}
+.secondaryToolbarButton.presentationMode::before,.toolbarButton.presentationMode::before{content:url(images/toolbarButton-presentationMode.png)}
+.secondaryToolbarButton.openFile::before,.toolbarButton.openFile::before{content:url(images/toolbarButton-openFile.png)}
+.secondaryToolbarButton.bookmark,.toolbarButton.bookmark{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding-top:4px;text-decoration:none}
+.secondaryToolbarButton.bookmark{padding-top:5px}
+.bookmark[href='#']{opacity:.5;pointer-events:none}
+.toolbarButton.pdfSidebarNotification::after{position:absolute;display:inline-block;top:1px;content:'';background-color:#ed3f14;height:9px;width:9px;border-radius:50%}
+html[dir=ltr] .toolbarButton.pdfSidebarNotification::after{left:17px}
+html[dir=rtl] .toolbarButton.pdfSidebarNotification::after{right:17px}
+.secondaryToolbarButton{position:relative;margin:0 0 4px 0;padding:3px 0 1px 0;height:auto;min-height:25px;width:auto;min-width:100%;white-space:normal}
+html[dir=ltr] .secondaryToolbarButton{padding-left:24px;text-align:left}
+html[dir=rtl] .secondaryToolbarButton{padding-right:24px;text-align:right}
+html[dir=ltr] .secondaryToolbarButton.bookmark{padding-left:27px}
+html[dir=rtl] .secondaryToolbarButton.bookmark{padding-right:27px}
+html[dir=ltr] .secondaryToolbarButton>span{padding-right:4px}
+html[dir=rtl] .secondaryToolbarButton>span{padding-left:4px}
+.verticalToolbarSeparator{display:block;padding:8px 0;margin:8px 4px;width:1px;background-color:rgba(255,255,255,.5);box-shadow:0 0 0 1px hsla(0,0%,100%,.08)}
+html[dir=ltr] .verticalToolbarSeparator{margin-left:2px}
+html[dir=rtl] .verticalToolbarSeparator{margin-right:2px}
+.horizontalToolbarSeparator{display:block;margin:0 0 4px 0;height:1px;width:100%;background-color:hsla(0,0%,0%,.5);box-shadow:0 0 0 1px hsla(0,0%,100%,.08)}
+.toolbarField{padding:3px 6px;margin:4px 0 4px 0;border:1px solid #777;background-color:hsla(0,0%,100%,.15);color:#fff;font-size:12px;line-height:14px;outline-style:none;transition-property:background-color,border-color,box-shadow;transition-duration:150ms;transition-timing-function:ease}
+.toolbarField[type=checkbox]{display:inline-block;margin:10px 0}
+.toolbarField.pageNumber{-moz-appearance:textfield;min-width:16px;text-align:right;width:40px}
+.toolbarField.pageNumber.visiblePageIsLoading{background-image:url(images/loading-small.png);background-repeat:no-repeat;background-position:1px}
+.toolbarField.pageNumber::-webkit-inner-spin-button,.toolbarField.pageNumber::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.toolbarField:hover{background-color:hsla(0,0%,100%,.5)}
+.toolbarField:focus{background-color:#4f4f4f;}
+.toolbarLabel{min-width:16px;padding:4px 6px 3px 2px;margin:4px 2px 4px 0;border-radius:2px;color:#fff;font-size:12px;line-height:14px;text-align:left;-webkit-user-select:none;-moz-user-select:none;cursor:default}
+#thumbnailView{position:absolute;width:120px;top:0;bottom:0;padding:10px 40px 0;overflow:auto;-webkit-overflow-scrolling:touch}
+.thumbnail{float:left;margin-bottom:5px}
+#thumbnailView>a:last-of-type>.thumbnail{margin-bottom:10px}
+#thumbnailView>a:last-of-type>.thumbnail:not([data-loaded]){margin-bottom:9px}
+.thumbnail:not([data-loaded]){border:1px dashed rgba(255,255,255,.5);margin:-1px -1px 4px -1px}
+.thumbnailImage{border:1px solid transparent;box-shadow:0 0 0 1px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.3);opacity:.8;z-index:99;background-color:#fff;background-clip:content-box}
+.thumbnailSelectionRing{border-radius:2px;padding:7px}
+.thumbnail:hover>.thumbnailSelectionRing>.thumbnailImage,a:focus>.thumbnail>.thumbnailSelectionRing>.thumbnailImage{opacity:.9}
+.thumbnail:hover>.thumbnailSelectionRing,a:focus>.thumbnail>.thumbnailSelectionRing{background-color:hsla(0,0%,100%,.15);background-image:linear-gradient(hsla(0,0%,100%,.05),hsla(0,0%,100%,0));background-clip:padding-box;box-shadow:0 1px 0 hsla(0,0%,100%,.05) inset,0 0 1px hsla(0,0%,100%,.2) inset,0 0 1px hsla(0,0%,0%,.2);color:hsla(0,0%,100%,.9)}
+.thumbnail.selected>.thumbnailSelectionRing>.thumbnailImage{box-shadow:0 0 0 1px hsla(0,0%,0%,.5);opacity:1}
+.thumbnail.selected>.thumbnailSelectionRing{background-color:hsla(0,0%,100%,.3);background-image:linear-gradient(hsla(0,0%,100%,.05),hsla(0,0%,100%,0));background-clip:padding-box;box-shadow:0 1px 0 hsla(0,0%,100%,.05) inset,0 0 1px hsla(0,0%,100%,.1) inset,0 0 1px hsla(0,0%,0%,.2);color:hsla(0,0%,100%,1)}
+#attachmentsView,#outlineView{position:absolute;width:192px;top:0;bottom:0;overflow:auto;-webkit-overflow-scrolling:touch;-webkit-user-select:none;-moz-user-select:none}
+#outlineView{padding:4px 4px 0}
+#attachmentsView{padding:3px 4px 0}
+html[dir=ltr] .outlineItem>.outlineItems,html[dir=ltr] .outlineWithDeepNesting>.outlineItem{margin-left:20px}
+html[dir=rtl] .outlineItem>.outlineItems,html[dir=rtl] .outlineWithDeepNesting>.outlineItem{margin-right:20px}
+.attachmentsItem>button,.outlineItem>a{text-decoration:none;display:inline-block;min-width:95%;min-width:calc(100% - 4px);height:auto;margin-bottom:1px;border-radius:2px;color:hsla(0,0%,100%,.8);font-size:13px;line-height:15px;-moz-user-select:none;white-space:normal}
+.attachmentsItem>button{border:0 none;background:0 0;cursor:pointer;width:100%}
+html[dir=ltr] .outlineItem>a{padding:2px 0 5px 4px}
+html[dir=ltr] .attachmentsItem>button{padding:2px 0 3px 7px;text-align:left}
+html[dir=rtl] .outlineItem>a{padding:2px 4px 5px 0}
+html[dir=rtl] .attachmentsItem>button{padding:2px 7px 3px 0;text-align:right}
+.outlineItem.selected{background-color:hsla(0,0%,100%,.08);background-image:linear-gradient(hsla(0,0%,100%,.05),hsla(0,0%,100%,0));background-clip:padding-box;box-shadow:0 1px 0 hsla(0,0%,100%,.05) inset,0 0 1px hsla(0,0%,100%,.1) inset,0 0 1px hsla(0,0%,0%,.2);color:hsla(0,0%,100%,1)}
+.noResults{font-size:12px;color:hsla(0,0%,100%,.8);font-style:italic;cursor:default}
+::selection{background:rgba(0,0,255,.3)}
+::-moz-selection{background:rgba(0,0,255,.3)}
+#errorWrapper{background:none repeat scroll 0 0 #F55;color:#fff;left:0;position:absolute;right:0;z-index:1000;padding:3px;font-size:.8em}
+.loadingInProgress #errorWrapper{top:37px}
+#errorMessageLeft{float:left}
+#errorMessageRight{float:right}
+#errorMoreInfo{background-color:#FFF;color:#000;padding:3px;margin:3px;width:98%}
+.overlayButton{width:auto;margin:3px 4px 2px 4px!important;padding:2px 6px 3px 6px}
+#overlayContainer{display:table;position:absolute;width:100%;height:100%;z-index:40000}
+#overlayContainer>*{overflow:auto;-webkit-overflow-scrolling:touch}
+#overlayContainer>.container{display:table-cell;vertical-align:middle;text-align:center}
+#overlayContainer>.container>.dialog{display:inline-block;padding:15px;border-spacing:4px;color:#fff;font-size:12px;line-height:14px;background:#4f4f4f;box-shadow: 0 0 10px 1px #4c4c4c}
+.dialog>.row{display:table-row}
+.dialog>.row>*{display:table-cell}
+.dialog .toolbarField{margin:5px 0}
+.dialog .separator{display:block;margin:4px 0 4px 0;height:1px;width:100%;background-color:hsla(0,0%,0%,.5);box-shadow:0 0 0 1px hsla(0,0%,100%,.08)}
+.dialog .buttonRow{text-align:center;vertical-align:middle}
+.dialog :link{color:#fff}
+#passwordOverlay>.dialog{text-align:center}
+#passwordOverlay .toolbarField{width:200px}
+#documentPropertiesOverlay>.dialog{text-align:left}
+#documentPropertiesOverlay .row>*{min-width:100px}
+html[dir=ltr] #documentPropertiesOverlay .row>*{text-align:left}
+html[dir=rtl] #documentPropertiesOverlay .row>*{text-align:right}
+#documentPropertiesOverlay .row>span{width:125px;word-wrap:break-word}
+#documentPropertiesOverlay .row>p{max-width:225px;word-wrap:break-word}
+#documentPropertiesOverlay .buttonRow{margin-top:10px}
+.clearBoth{clear:both}
+.fileInput{background:#fff;color:#000;margin-top:5px;visibility:hidden;position:fixed;right:0;top:0}
+#PDFBug{background:none repeat scroll 0 0 #fff;border:1px solid #666;position:fixed;top:32px;right:0;bottom:0;font-size:10px;padding:0;width:300px}
+#PDFBug .controls{background:#EEE;border-bottom:1px solid #666;padding:3px}
+#PDFBug .panels{bottom:0;left:0;overflow:auto;-webkit-overflow-scrolling:touch;position:absolute;right:0;top:27px}
+#PDFBug button.active{font-weight:700}
+.debuggerShowText{background:none repeat scroll 0 0 #ff0;color:#00f}
+.debuggerHideText:hover{background:none repeat scroll 0 0 #ff0}
+#PDFBug .stats{font-family:courier;font-size:10px;white-space:pre}
+#PDFBug .stats .title{font-weight:700}
+#PDFBug table{font-size:10px}
+#viewer.textLayer-visible .textLayer{opacity:1}
+#viewer.textLayer-visible .canvasWrapper{background-color:#80ff80}
+#viewer.textLayer-visible .canvasWrapper canvas{mix-blend-mode:screen}
+#viewer.textLayer-visible .textLayer>div{background-color:rgba(255,255,0,.1);color:#000;border:solid 1px rgba(255,0,0,.5);-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+#viewer.textLayer-hover .textLayer>div:hover{background-color:#fff;color:#000}
+#viewer.textLayer-shadow .textLayer>div{background-color:rgba(255,255,255,.6);color:#000}
+.grab-to-pan-grab{cursor:url(images/grab.cur),move!important;cursor:-webkit-grab!important;cursor:-moz-grab!important;cursor:grab!important}
+.grab-to-pan-grab :not(input):not(textarea):not(button):not(select):not(:link){cursor:inherit!important}
+.grab-to-pan-grab:active,.grab-to-pan-grabbing{cursor:url(images/grabbing.cur),move!important;cursor:-webkit-grabbing!important;cursor:-moz-grabbing!important;cursor:grabbing!important;position:fixed;background:0 0;display:block;top:0;left:0;right:0;bottom:0;overflow:hidden;z-index:50000}
+@page{margin:0}
+#printContainer{display:none}
+@media screen and (min-resolution:2dppx){.toolbarButton::before{-webkit-transform:scale(.5);transform:scale(.5);top:-5px}
+  .secondaryToolbarButton::before{-webkit-transform:scale(.5);transform:scale(.5);top:-4px}
+  html[dir=ltr] .toolbarButton::before,html[dir=rtl] .toolbarButton::before{left:-1px}
+  html[dir=ltr] .secondaryToolbarButton::before{left:-2px}
+  html[dir=rtl] .secondaryToolbarButton::before{left:186px}
+  #findInput[data-status=pending],.toolbarField.pageNumber.visiblePageIsLoading{background-image:url(images/loading-small@2x.png);background-size:16px 17px}
+  html[dir=ltr] .toolbarButton#sidebarToggle::before{content:url(images/toolbarButton-sidebarToggle@2x.png)}
+  html[dir=rtl] .toolbarButton#sidebarToggle::before{content:url(images/toolbarButton-sidebarToggle-rtl@2x.png)}
+  .secondaryToolbarButton.presentationMode::before,.toolbarButton.presentationMode::before{content:url(images/toolbarButton-presentationMode@2x.png)}
+  .secondaryToolbarButton.openFile::before,.toolbarButton.openFile::before{content:url(images/toolbarButton-openFile@2x.png)}
+}
+@media print{body{background:transparent none}
+  #errorWrapper,#loadingBox,#secondaryToolbar,#sidebarContainer,.textLayer,.toolbar{display:none}
+  #viewerContainer{overflow:visible}
+  #mainContainer,#viewerContainer,.page,.page canvas{position:static;padding:0;margin:0}
+  .page{float:left;display:none;border:none;box-shadow:none;background-clip:content-box;background-color:#fff}
+  .page[data-loaded]{display:block}
+  .fileInput{display:none}
+  body[data-pdfjsprinting] #outerContainer{display:none}
+  body[data-pdfjsprinting] #printContainer{display:block}
+  #printContainer{height:100%}
+  #printContainer>div{position:relative;top:0;left:0;width:1px;height:1px;overflow:visible;page-break-after:always;page-break-inside:avoid}
+  #printContainer canvas,#printContainer img{display:block}
+}
+.visibleLargeView,.visibleMediumView,.visibleSmallView{display:none}
+@media all and (max-width:1040px){#outerContainer.sidebarMoving #toolbarViewerMiddle,#outerContainer.sidebarOpen #toolbarViewerMiddle{display:table;margin:auto;left:auto;position:inherit;transform:none}
+}
+@media all and (max-width:980px){.sidebarMoving .hiddenLargeView,.sidebarOpen .hiddenLargeView{display:none}
+  .sidebarMoving .visibleLargeView,.sidebarOpen .visibleLargeView{display:inherit}
+}
+@media all and (max-width:900px){#toolbarViewerMiddle{display:table;margin:auto;left:auto;position:inherit;transform:none}
+  .sidebarMoving .hiddenMediumView,.sidebarOpen .hiddenMediumView{display:none}
+  .sidebarMoving .visibleMediumView,.sidebarOpen .visibleMediumView{display:inherit}
+}
+@media all and (max-width:840px){#sidebarContainer{top:32px;z-index:100}
+  .loadingInProgress #sidebarContainer{top:37px}
+  #sidebarContent{top:32px;background-color:hsla(0,0%,0%,.7)}
+  html[dir=ltr] #outerContainer.sidebarOpen>#mainContainer{left:0}
+  html[dir=rtl] #outerContainer.sidebarOpen>#mainContainer{right:0}
+  #outerContainer .hiddenLargeView,#outerContainer .hiddenMediumView{display:inherit}
+  #outerContainer .visibleLargeView,#outerContainer .visibleMediumView{display:none}
+}
+@media all and (max-width:770px){#outerContainer .hiddenLargeView{display:none}
+  #outerContainer .visibleLargeView{display:inherit}
+}
+@media all and (max-width:700px){#outerContainer .hiddenMediumView{display:none}
+  #outerContainer .visibleMediumView{display:inherit}
+}
+@media all and (max-width:640px){.hiddenSmallView,.hiddenSmallView *{display:none}
+  .visibleSmallView{display:inherit}
+  .toolbarButtonSpacer{width:0}
+  html[dir=ltr] .findbar{left:38px}
+  html[dir=rtl] .findbar{right:38px}
+}
+@media all and (max-width:535px){#scaleSelectContainer{display:none}
+}

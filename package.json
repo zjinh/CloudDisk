@@ -1,0 +1,122 @@
+{
+  "name": "CloudDisk",
+  "version": "1.2.5",
+  "author": "ZJINH <2665229856@qq.com>",
+  "description": "CloudDisk",
+  "license": "ZJINH",
+  "main": "./dist/electron/main.js",
+  "scripts": {
+    "build": "node .electron-vue/build.js && electron-builder",
+    "build:dir": "node .electron-vue/build.js && electron-builder --dir",
+    "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
+    "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
+    "dev": "node .electron-vue/dev-runner.js",
+    "pack": "npm run pack:main && npm run pack:renderer",
+    "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
+    "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
+    "postinstall": ""
+  },
+  "build": {
+    "productName": "CloudDisk",
+    "appId": "com.zjinh.app.disk",
+    "directories": {
+      "output": "build"
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://cloud.com:100/update"
+      }
+    ],
+    "files": [
+      "dist/electron/**/*"
+    ],
+    "nsis": {
+      "oneClick": false,
+      "menuCategory": "Cloud",
+      "shortcutName": "Cloud-网盘",
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "runAfterFinish": true
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "static/icons/icon.icns"
+    },
+    "win": {
+      "icon": "static/icons/icon.ico",
+      "artifactName": "${productName}_setup_${version}.${ext}",
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "icon": "static/icons"
+    }
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "electron-updater": "^4.0.6",
+    "element-ui": "^2.6.1",
+    "iview": "^3.3.0",
+    "vue": "^2.6.8",
+    "vue-electron": "^1.0.6",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.1.0",
+    "vuex-electron": "^1.0.3",
+    "winreg": "^1.2.4"
+  },
+  "devDependencies": {
+    "ajv": "^6.10.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-component": "^1.1.1",
+    "babel-plugin-import": "^1.11.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "babili-webpack-plugin": "^0.1.2",
+    "cfonts": "^2.4.2",
+    "chalk": "^2.4.2",
+    "copy-webpack-plugin": "^5.0.0",
+    "cross-env": "^5.2.0",
+    "css-loader": "^2.1.1",
+    "del": "^4.0.0",
+    "devtron": "^1.4.0",
+    "electron": "^4.0.8",
+    "electron-builder": "^20.38.5",
+    "electron-debug": "^2.1.0",
+    "electron-devtools-installer": "^2.2.4",
+    "file-loader": "^3.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "0.5.0",
+    "multispinner": "^0.2.1",
+    "node-loader": "^0.6.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^1.1.2",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^15.7.0",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.8",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-hot-middleware": "^2.24.3",
+    "webpack-merge": "^4.2.1"
+  }
+}
