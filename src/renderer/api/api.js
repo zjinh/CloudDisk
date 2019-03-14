@@ -94,7 +94,7 @@ let FileType={
     },
     video:{
         TypeArray:'mp4,rmvb,mkv',
-        FileIcon:prefix+'ExcelType.png'
+        FileIcon:prefix+'VideoType.png'
     },
     image:{
         TypeArray:'apng,png,jpg,jpeg,bmp,gif',
