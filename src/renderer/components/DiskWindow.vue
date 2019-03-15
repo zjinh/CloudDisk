@@ -418,6 +418,7 @@
                             this.$electron.remote.getCurrentWindow().webContents.downloadURL(item.disk_main+'?disk_name='+item.disk_name);
                         });
                         this.SelectDownLoadFiles=[];
+                        this.$Message.info(tips+'已加入下载列队');
                         break;
                     case 'search'://搜索
                         if (flag) {

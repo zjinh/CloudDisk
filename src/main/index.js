@@ -154,6 +154,9 @@ let DiskSystem= {
             onclose:()=>{
                 LoginWindow=null;
             },
+            callback:()=>{
+                BindIpc();
+            }
         });
     },
     MainWindow:(data)=>{
@@ -227,6 +230,7 @@ let DiskSystem= {
                 if(!LoginWindow) {
                     app.quit();
                 }
+                session.defaultSession.removeAllListeners('will-download');
             },
             callback:()=>{
                 LoginWindow?LoginWindow.close():"";
@@ -633,7 +637,6 @@ if (!gotTheLock) {
     app.on('ready', function (){
         app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
         DiskSystem.LoginWindow(true);
-        BindIpc();
     });
 }
 app.on('window-all-closed', () => {
