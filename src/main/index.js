@@ -80,12 +80,12 @@ let WindowControl={
             maximizable:options.maximizable === undefined ? true : options.maximizable,
             resizable:options.resizable === undefined ? true : options.resizable,
             alwaysOnTop:options.alwaysOnTop === undefined ? false : options.alwaysOnTop,
-            backgroundColor:options.backgroundColor||'',
             show:false,
             webPreferences:{
                 webSecurity:(process.env.NODE_ENV === 'development')?false:true
             }
         });
+        options.backgroundColor&&(win.backgroundColor=options.backgroundColor);
         win.name=options.url;
         win.loadURL(WindowControl.CheckRouter(options.url));
         win.callback=(data)=>{
@@ -313,14 +313,14 @@ let DiskSystem= {
         PopupWindow=WindowControl.New({
             url:"disk-msg",
             data:msg,
-            width: 250,
+            width: 300,
             height: 150,
             useContentSize: true,
             resizable:false,
             maximizable:false,
             transparent:true,
             alwaysOnTop:true,
-            x:screen.getPrimaryDisplay().workAreaSize.width-255,
+            x:screen.getPrimaryDisplay().workAreaSize.width-305,
             y:screen.getPrimaryDisplay().workAreaSize.height-155,
             onclose:()=>{
                 PopupWindow=null;

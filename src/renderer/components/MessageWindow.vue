@@ -24,7 +24,7 @@
                     mini:false,
                     resize:false,
                     drag:true,
-                    background:'#38f',
+                    background:'#5656de',
                     color:'#fff',
                     title:'CloudDisk-通知'
                 },
@@ -68,7 +68,7 @@
         background: #fff;
     }
     .MessageContainer{
-        padding: 15px;
+        padding: 10px;
     }
     .MessageContainer i{
         float: left;
