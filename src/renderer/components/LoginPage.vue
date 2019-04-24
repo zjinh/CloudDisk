@@ -298,7 +298,6 @@
                         }
                         this.WindowObject.setSize(800,300);
                         this.WindowObject.setAlwaysOnTop(false);
-                        this.CheckUserConf();
                         setTimeout(()=>{
                             this.LoadingText = '正在加载网盘数据';
                             this.$ipc.send('system','login',this.ConfigObject);
@@ -514,9 +513,6 @@
                     this.$Message[rs.state](rs.msg);
                 })
             },
-            CheckUserConf:function(){
-
-            },
             changeType:function (type) {
                 if(this.PostState.length>5){
                     return
@@ -543,6 +539,7 @@
                             localStorage.server=value;
                         },(error)=>{
                             this.$Message.error(value+'不可用');
+                            this.OpenServerWindow();
                         })
                     }
                 });
