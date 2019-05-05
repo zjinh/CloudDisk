@@ -90,6 +90,11 @@ Vue.api = Vue.prototype.$Api = Api;//请求接口
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 axios.defaults.withCredentials=true;
 Vue.http = Vue.prototype.$http = axios;
+Vue.Notify = Vue.prototype.$Notify =(msg)=>{
+    new Notification('CloudDisk',{
+        msg
+    })
+};//请求接口
 Vue.config.productionTip = false;
 new Vue({
   components: { App },
