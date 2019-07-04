@@ -82,6 +82,7 @@ let WindowControl={
             alwaysOnTop:options.alwaysOnTop === undefined ? false : options.alwaysOnTop,
             show:false,
             webPreferences:{
+                nodeIntegration:true,
                 webSecurity:(process.env.NODE_ENV === 'development')?false:true
             }
         });
