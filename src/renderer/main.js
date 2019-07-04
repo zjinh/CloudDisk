@@ -92,7 +92,7 @@ axios.defaults.withCredentials=true;
 Vue.http = Vue.prototype.$http = axios;
 Vue.Notify = Vue.prototype.$Notify =(msg)=>{
     new Notification('CloudDisk',{
-        msg
+        body: msg
     })
 };//请求接口
 Vue.config.productionTip = false;
