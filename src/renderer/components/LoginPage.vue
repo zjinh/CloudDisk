@@ -529,7 +529,7 @@
                     title: "修改服务器地址",
                     tips: '请输入服务器地址',
                     value:this.ServerAddress,
-                    inputPattern: /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])/,
+                    inputPattern: /(https|http):\/\/([^\/\:]+)?(\:[0-9]+)?(\/[^\?]+)?(\?.+)?/,
                     inputErrorMessage: '服务器地址格式不正确',
                     callback:(value)=>{
                         this.$Message.info('正在验证'+value+'是否可用');
