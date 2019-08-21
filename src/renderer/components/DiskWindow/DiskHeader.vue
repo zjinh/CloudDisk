@@ -11,7 +11,7 @@
                 <li class="item">{{UserInfo.username}}</li>
                 <DropdownMenu slot="list">
                     <DropdownItem name="account">
-                        <img draggable="false" :src="UserInfo.userhead">
+                        <img draggable="false" :src="UserInfo.userhead" alt="">
                         <span>我</span>
                     </DropdownItem>
                     <DropdownItem name="setting">系统设置</DropdownItem>

@@ -266,6 +266,7 @@ input[type="text"]:disabled{
 }
 .CloudIndexLogining img{
 	width: 120px;
+	height: 120px;
 	border-radius: 100%;
 	-moz-border-radius: 100%;
 	-webkit-border-radius: 100%;

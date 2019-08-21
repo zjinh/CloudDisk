@@ -1,6 +1,6 @@
 {
   "name": "CloudDisk",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "author": "ZJINH <2665229856@qq.com>",
   "description": "CloudDisk",
   "license": "ZJINH",
@@ -18,7 +18,7 @@
   },
   "build": {
     "productName": "CloudDisk",
-    "appId": "com.zjinh.app.disk",
+    "appId": "com.zjinh.app.c-disk",
     "directories": {
       "output": "build"
     },
@@ -72,7 +72,7 @@
     "axios": "^0.18.0",
     "electron-updater": "^4.0.14",
     "element-ui": "^2.10.1",
-    "iview": "^3.4.2",
+    "iview": "3.3.0",
     "vue": "^2.6.10",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.7",
@@ -98,7 +98,7 @@
     "css-loader": "^3.1.0",
     "del": "^5.0.0",
     "devtron": "^1.4.0",
-    "electron": "^6.0.0",
+    "electron": "4.2.8",
     "electron-builder": "^21.2.0",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^2.2.4",

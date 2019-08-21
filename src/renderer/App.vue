@@ -9,6 +9,7 @@
       name: 'Cloud-Disk',
       created(){
           this.$Message.config({
+              top: 60,
               duration: 2.5
           });
       },
@@ -16,6 +17,6 @@
 </script>
 
 <style>
-  @import url("../../static/font/icon.css");
+  @import url("assets/font/icon.css");
   @import url("assets/css/public.css");
 </style>

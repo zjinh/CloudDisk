@@ -77,15 +77,15 @@
                 </div>
             </div>
             <div class="CloudIndexRight">
-                <img draggable="false" src="../../../static/img/logo/log.png">
+                <img draggable="false" src="../../../static/img/logo/log.png" alt="">
             </div>
         </div>
         <div class="CloudIndexLogining" v-show="LoginSuccess">
             <ul>
                 <li class="sf-icon-music"></li>
                 <li class="sf-icon-users"></li>
-                <li>
-                    <img draggable="false" :src="User.head?User.head+now:''">
+                <li style="width: 180px;">
+                    <img draggable="false" :src="User.head?User.head+now:normalHead" alt="">
                     <div class="circle"></div>
                 </li>
                 <li class="sf-icon-video"></li>
@@ -104,6 +104,9 @@
         computed:{
             now(){
                 return '?'+Date.now();
+            },
+            normalHead(){
+                return this.$path.join(__static,'img/bar/disk.png')
             }
         },
         data(){

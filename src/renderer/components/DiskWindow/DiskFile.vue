@@ -2,7 +2,7 @@
     <div>
         <div v-for="(item,index) in data" :class="DiskData.DiskShowState+(item.active?' active':'')" ripple @mousedown="select(item,index)" @dblclick="OpenFile(item)">
             <span class="icon">
-                <img :src="item.$icon" draggable="false">
+                <img :src="item.$icon" draggable="false" alt="">
             </span>
             <p>{{item.disk_name}}</p>
             <div class="time">{{item.create_time||item.modify_time}}</div>

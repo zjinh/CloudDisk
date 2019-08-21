@@ -2,7 +2,7 @@
     <div class="cd-disk-info-main" @keyup.stop.esc="close" tabindex="-1">
         <WindowsHeader :data=header></WindowsHeader>
         <div class="cd-disk-info-head">
-            <img draggable="false" :src="DiskData.$icon">
+            <img draggable="false" :src="DiskData.$icon" alt="">
             <span>{{DiskData.disk_name}}</span>
         </div>
         <div class="cd-disk-info-item">

@@ -15,7 +15,6 @@
 </template>
 
 <script>
-    // import {mapGetters,mapMutations} from 'vuex';
     export default {
         name: "DiskTree",
         props:{
@@ -34,9 +33,6 @@
             this.init();
         },
         methods:{
-           /* ...mapMutations([
-                'set_SelectTree',
-            ]),//这是vuex的方法*/
             init(){
                 this.UserDiskTreeData=[
                     {"disk_name":"全部文件","disk_id":"null","parent_id":"","show":false,"load":false,"child":[]}
@@ -61,11 +57,7 @@
             },
             ToggleDiskTree (item,index) {
                 if(item.load==='success') {
-                    if (item.show) {
-                        item.show = false;
-                    } else {
-                        item.show = true;
-                    }
+                    item.show=!item.show;
                 }else{
                     item.load='loading';
                     this.LoadTreeData(item);
@@ -82,7 +74,6 @@
                         path[j].className='cd-tree active'
                     }
                 }
-                // this.set_SelectTree(item);//这是vuex的方法
                 this.$emit("SelectDiskTree",item)
             }
         }

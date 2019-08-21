@@ -3,7 +3,7 @@
         <WindowsHeader :data="header"></WindowsHeader>
         <div class="cd-user-left">
             <div class="cd-user-right-info">
-                <img draggable="false" :src="UploadSrc?UploadSrc:User.userhead">
+                <img draggable="false" :src="UploadSrc?UploadSrc:User.userhead" alt="">
                 <p class="name">{{User.username}}</p>
                 <p class="age">{{User.sex}},{{User.birth}}岁</p>
             </div>
@@ -15,7 +15,7 @@
                 <div class="cd-user-line"><label>邮箱：</label><p>{{User.email}}</p></div>
                 <div class="cd-user-line">
                     <label>手机：</label>
-                    <Input :value=User.phone clearable style="width: calc(100% - 50px)" name="phone" :number=true :maxlength=11></Input>
+                    <Input :value=User.phone clearable="" style="width: calc(100% - 50px)" name="phone" :number=true :maxlength=11></Input>
                 </div>
                 <div class="cd-user-line">
                     <label>生日：</label>
