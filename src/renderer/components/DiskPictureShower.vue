@@ -2,7 +2,7 @@
     <div class="ImageShowContainer" @mousewheel="MouseZoom" tabindex="-1"  @keydown.left="Prev" @keydown.right="Next">
         <WindowsHeader :data=header></WindowsHeader>
         <p class="ImageShowTips"> <span class="ImageShowZoom" :style="{'opacity':ZoomWin}">{{ZoomPercent}}</span>{{NowShow.count+1}}/{{PhotoList.length}}</p>
-        <img :class="'ImgShow '+(!Control?'ImgAnim':'')" :src="NowShow.URL" ref="ImgShow" @load="onload" @mousedown="Drag">
+        <img :class="'ImgShow '+(!Control?'ImgAnim':'')" :src="NowShow.URL" ref="ImgShow" @load="onload" @mousedown="Drag" alt="">
         <Spin v-show="loaded">
             <Icon type="ios-loading" size=26 class="loading"></Icon>
         </Spin>

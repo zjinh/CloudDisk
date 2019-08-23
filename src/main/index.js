@@ -82,7 +82,8 @@ let WindowControl={
             alwaysOnTop:options.alwaysOnTop === undefined ? false : options.alwaysOnTop,
             show:false,
             webPreferences:{
-                webSecurity:(process.env.NODE_ENV === 'development')?false:true
+                nodeIntegration:true,
+                webSecurity:!(process.env.NODE_ENV === 'development')
             }
         });
         options.backgroundColor&&(win.backgroundColor=options.backgroundColor);
@@ -346,10 +347,10 @@ let DiskSystem= {
             event.sender.send('check-for-update',message.updateAva);//返回一条信息
         });
         //当没有可用更新的时候触发
-        autoUpdater.on('update-not-available', function(info) {
+        autoUpdater.on('update-not-available', function() {
             event.sender.send('check-for-update',message.updateNotAva);//返回一条信息
         });
-        autoUpdater.on('error', function(error){
+        autoUpdater.on('error', function(){
             event.sender.send('check-for-update',message.error);//返回一条信息
         });
         // 更新下载进度事件
@@ -487,7 +488,7 @@ function BindIpc() {
         item.fileName=name;
         item.path=TransDownFolder+'/'+name;
         item.setSavePath(TransDownFolder+'/'+name); // 设置保存路径,使Electron不提示保存对话框。
-        item.on('updated', (event, state) => {
+        item.on('updated', () => {
             DownloadList[Math.round(item.getStartTime())]=item;
             let file=FileObject(item,item.isPaused()?'interrupted':false);
             webContents&&webContents.send('download',file);
@@ -622,7 +623,7 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit()
 } else {
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
+    app.on('second-instance', () => {
         if(LoginWindow){
             LoginWindow.show();
             LoginWindow.restore();

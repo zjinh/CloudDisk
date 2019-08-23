@@ -77,15 +77,15 @@
                 </div>
             </div>
             <div class="CloudIndexRight">
-                <img draggable="false" src="../../../static/img/logo/log.png">
+                <img draggable="false" src="../../../static/img/logo/log.png" alt="">
             </div>
         </div>
         <div class="CloudIndexLogining" v-show="LoginSuccess">
             <ul>
                 <li class="sf-icon-music"></li>
                 <li class="sf-icon-users"></li>
-                <li>
-                    <img draggable="false" :src="User.head?User.head+now:''">
+                <li style="width: 180px;">
+                    <img draggable="false" :src="User.head?User.head+now:normalHead" alt="">
                     <div class="circle"></div>
                 </li>
                 <li class="sf-icon-video"></li>
@@ -104,6 +104,9 @@
         computed:{
             now(){
                 return '?'+Date.now();
+            },
+            normalHead(){
+                return this.$path.join(__static,'img/bar/disk.png')
             }
         },
         data(){
@@ -298,7 +301,6 @@
                         }
                         this.WindowObject.setSize(800,300);
                         this.WindowObject.setAlwaysOnTop(false);
-                        this.CheckUserConf();
                         setTimeout(()=>{
                             this.LoadingText = '正在加载网盘数据';
                             this.$ipc.send('system','login',this.ConfigObject);
@@ -514,9 +516,6 @@
                     this.$Message[rs.state](rs.msg);
                 })
             },
-            CheckUserConf:function(){
-
-            },
             changeType:function (type) {
                 if(this.PostState.length>5){
                     return
@@ -533,7 +532,7 @@
                     title: "修改服务器地址",
                     tips: '请输入服务器地址',
                     value:this.ServerAddress,
-                    inputPattern: /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])/,
+                    inputPattern: /(https|http):\/\/([^\/\:]+)?(\:[0-9]+)?(\/[^\?]+)?(\?.+)?/,
                     inputErrorMessage: '服务器地址格式不正确',
                     callback:(value)=>{
                         this.$Message.info('正在验证'+value+'是否可用');
@@ -543,6 +542,7 @@
                             localStorage.server=value;
                         },(error)=>{
                             this.$Message.error(value+'不可用');
+                            this.OpenServerWindow();
                         })
                     }
                 });
