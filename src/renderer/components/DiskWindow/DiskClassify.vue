@@ -86,7 +86,7 @@
                 let season = 'Spring';
                 let tag = 0;
                 let D = new Date();
-                let month = D.getMonth();
+                let month = D.getMonth()+1;
                 let hHour = D.getHours();
                 if (month > 2 && month < 6) {
                     season = 'Spring'

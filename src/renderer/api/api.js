@@ -501,9 +501,9 @@ let Check=function (url,callback,error) {
         error:error
     })
 };
-let VerifyCod=function(){
+let VerifyCode=function(){
     return localStorage.server+"/service/verifyCode"+'?'+Math.random();
 };
 export default {
-    User,Disk,Check,StringExist,StringBefore,FileSize,VerifyCod,LocalFile
+    User,Disk,Check,StringExist,StringBefore,FileSize,VerifyCode,LocalFile
 }
