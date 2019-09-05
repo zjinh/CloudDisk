@@ -25,7 +25,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "http://cloud.com:100/update"
+        "url": "https://update.zjinh.cn/c-disk"
       }
     ],
     "files": [

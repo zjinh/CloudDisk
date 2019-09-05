@@ -113,7 +113,7 @@
                 })
             },
             checkUpdate () {
-                this.$ipc.send('system','check-for-update',localStorage.server);
+                this.$ipc.send('system','check-for-update','https://update.zjinh.cn/c-disk'/*localStorage.server*/);
                 this.loading = true;
             },
             close() {

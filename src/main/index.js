@@ -395,7 +395,7 @@ function BindIpc() {
                 DiskSystem.SettingWindow(data);
                 break;
             case 'check-for-update':/*检查更新*/
-                autoUpdater.setFeedURL(data+'/update');
+                autoUpdater.setFeedURL(data);
                 DiskSystem.CheckUpdate(event);
                 autoUpdater.checkForUpdates();
                 break;

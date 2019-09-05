@@ -2,7 +2,7 @@
     <div>
         <div class="CloudIndexSection" v-show="!LoginSuccess">
             <section>
-                <button type="button" class="sf-icon-cog" @click="OpenServerWindow"></button>
+                <button type="button" class="sf-icon-cog" v-if="production" @click="OpenServerWindow"></button>
                 <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
                 <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
             </section>
@@ -111,8 +111,9 @@
         },
         data(){
             return{
+                production:(process.env.NODE_ENV!=='production'),
                 /*服务器值*/
-                ServerAddress:localStorage.server||'http://cloud.com:100',
+                ServerAddress:localStorage.server||'https://api.zjinh.cn',
                 LoadingText:'正在加载用户信息',//登陆中提示
                 /*这里为组件传值*/
                 RemberPass:false,
@@ -235,7 +236,8 @@
         },
         created:function () {
             this.WindowObject=this.$electron.remote.getCurrentWindow();
-            localStorage.server=this.ServerAddress;
+            // localStorage.server=this.ServerAddress;
+            localStorage.server='https://api.zjinh.cn';
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
                 this.$Api.LocalFile.Read('setting',(data)=>{
