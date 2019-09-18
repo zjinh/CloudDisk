@@ -29,6 +29,9 @@ axios.interceptors.response.use(function (response) {
 const path =require("path");
 const fs= require('fs');
 let address=process.env.HOMEDRIVE+process.env.HOMEPATH+'/CloudDisk\/';//用户文件地址
+function severAddress() {
+    return localStorage.server;
+}
 let prefix=path.join(__static, '/img/disk/');
 function Ajax(options) {
     let params = new URLSearchParams();
@@ -141,8 +144,8 @@ function DiskData(item){
     item.active=false;//设置未选择
     item.$size=FileSize(item.disk_size);//计算文件大小
     item.disk_size=parseInt(item.disk_size);
-    item.disk_main?item.disk_main=localStorage.server+'/'+item.disk_main:"";
-    item.shareAddress=item.share?localStorage.server + '/s/' + item.share:"";
+    item.disk_main?item.disk_main=severAddress()+'/'+item.disk_main:"";
+    item.shareAddress=item.share?severAddress() + '/s/' + item.share:"";
     item.$icon = prefix+'OtherType.png';//初始化为其他图标
     item.OpenType=null;//初始化为无法打开的文件
     let type = StringBefore(item.disk_realname||item.disk_main, ".").toLowerCase();
@@ -185,10 +188,10 @@ function age(birth){
 let User={
     Login:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/login",
+            url:severAddress()+"/service/user/login",
             data:data,
             success:(rs)=>{
-                rs[0].head=localStorage.server+'/'+rs[0].head+'?'+Date.now();
+                rs[0].head=severAddress()+'/'+rs[0].head+'?'+Date.now();
                 callback(rs);
             },
             error:error
@@ -196,7 +199,7 @@ let User={
     },
     Register:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/register",
+            url:severAddress()+"/service/user/register",
             data:data,
             success:callback,
             error:error
@@ -204,7 +207,7 @@ let User={
     },
     Forget:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/forget",
+            url:severAddress()+"/service/user/forget",
             data:data,
             success:callback,
             error:error
@@ -212,7 +215,7 @@ let User={
     },
     Verify:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/verifyCheck",
+            url:severAddress()+"/service/user/verifyCheck",
             data:data,
             success:callback,
             error:error
@@ -220,11 +223,11 @@ let User={
     },
     UserInfo:function (callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/UserInfo",
+            url:severAddress()+"/service/user/UserInfo",
             data:[],
             success:(rs)=>{
                 rs[0].birth=age(rs[0].birthday);
-                rs[0].userhead=localStorage.server+'/'+rs[0].userhead+'?'+Date.now();
+                rs[0].userhead=severAddress()+'/'+rs[0].userhead+'?'+Date.now();
                 callback(rs);
             },
             error:error
@@ -232,7 +235,7 @@ let User={
     },
     ReSend:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/resend",
+            url:severAddress()+"/service/user/resend",
             data:data,
             success:callback,
             error:error
@@ -240,7 +243,7 @@ let User={
     },
     Update:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/UpdateUserInfo",
+            url:severAddress()+"/service/user/UpdateUserInfo",
             data:data,
             upload:true,
             success:callback,
@@ -249,7 +252,7 @@ let User={
     },
     FeedBack:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/SendCouple",
+            url:severAddress()+"/service/user/SendCouple",
             data:data,
             success:callback,
             error:error
@@ -257,7 +260,7 @@ let User={
     },
     ChangePass:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/ChangePass",
+            url:severAddress()+"/service/user/ChangePass",
             data:data,
             success:callback,
             error:error
@@ -265,7 +268,7 @@ let User={
     },
     ChangeSafeEmail:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/user/ChangeSafeEmail",
+            url:severAddress()+"/service/user/ChangeSafeEmail",
             data:data,
             success:callback,
             error:error
@@ -275,7 +278,7 @@ let User={
 let Disk={
     LoadTreeFile:function (id,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/GetTreeFile",
+            url:severAddress()+"/service/disk/GetTreeFile",
             data:{
                 disk_id:id
             },
@@ -285,7 +288,7 @@ let Disk={
     },
     LoadMainFile:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/GetMainFile",
+            url:severAddress()+"/service/disk/GetMainFile",
             data:data,
             success:(rs)=>{
                 rs.forEach((item)=>{
@@ -298,7 +301,7 @@ let Disk={
     },
     UnZip:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/UnZipFile",
+            url:severAddress()+"/service/disk/UnZipFile",
             data:data,
             success:(rs)=>{
                 rs[0]&&rs[0].data?DiskData(rs[0].data):'';
@@ -310,7 +313,7 @@ let Disk={
     Search:function (data,callback,error) {
         data.loadtype='search';
         Ajax({
-            url:localStorage.server+"/service/disk/GetMainFile",
+            url:severAddress()+"/service/disk/GetMainFile",
             data:data,
             success:(rs)=>{
                 rs.forEach((item)=>{
@@ -323,7 +326,7 @@ let Disk={
     },
     NewFolder:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/NewFolder",
+            url:severAddress()+"/service/disk/NewFolder",
             data:data,
             success:(rs)=>{
                 rs.forEach((item)=>{
@@ -336,7 +339,7 @@ let Disk={
     },
     Copy:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/CopyFile",
+            url:severAddress()+"/service/disk/CopyFile",
             data:data,
             success:callback,
             error:error
@@ -344,7 +347,7 @@ let Disk={
     },
     Cut:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/MoveFile",
+            url:severAddress()+"/service/disk/MoveFile",
             data:data,
             success:callback,
             error:error
@@ -352,7 +355,7 @@ let Disk={
     },
     Rename:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/RenameFile",
+            url:severAddress()+"/service/disk/RenameFile",
             data:data,
             success:callback,
             error:error
@@ -360,7 +363,7 @@ let Disk={
     },
     Trash:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/TrashFile",
+            url:severAddress()+"/service/disk/TrashFile",
             data:data,
             success:callback,
             error:error
@@ -368,7 +371,7 @@ let Disk={
     },
     Delete:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/DeleteFile",
+            url:severAddress()+"/service/disk/DeleteFile",
             data:data,
             success:callback,
             error:error
@@ -376,7 +379,7 @@ let Disk={
     },
     Restore:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/RestoreFile",
+            url:severAddress()+"/service/disk/RestoreFile",
             data:data,
             success:callback,
             error:error
@@ -384,7 +387,7 @@ let Disk={
     },
     Address:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/AddresFile/"+data,
+            url:severAddress()+"/service/disk/AddresFile/"+data,
             method:'get',
             success:callback,
             error:error
@@ -392,7 +395,7 @@ let Disk={
     },
     Share:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/ShareFile",
+            url:severAddress()+"/service/disk/ShareFile",
             data:data,
             success:callback,
             error:error
@@ -400,7 +403,7 @@ let Disk={
     },
     CancelShare:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/CancelShareFile",
+            url:severAddress()+"/service/disk/CancelShareFile",
             data:data,
             success:callback,
             error:error
@@ -408,7 +411,7 @@ let Disk={
     },
     OpenFile:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/OpenFile",
+            url:severAddress()+"/service/disk/OpenFile",
             data:data,
             success:callback,
             error:error
@@ -416,7 +419,7 @@ let Disk={
     },
     GetLyr:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/api/disk/lrc",
+            url:severAddress()+"/service/api/disk/lrc",
             data:data,
             success:callback,
             error:error
@@ -424,7 +427,7 @@ let Disk={
     },
     Download:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/Download",
+            url:severAddress()+"/service/disk/Download",
             data:data,
             success:callback,
             error:error
@@ -432,7 +435,7 @@ let Disk={
     },
     Upload:function (data,callback,error) {
         Ajax({
-            url:localStorage.server+"/service/disk/upload",
+            url:severAddress()+"/service/disk/upload",
             data:data,
             upload:true,
             success:(rs)=>{
@@ -502,7 +505,7 @@ let Check=function (url,callback,error) {
     })
 };
 let VerifyCode=function(){
-    return localStorage.server+"/service/verifyCode"+'?'+Math.random();
+    return severAddress()+"/service/verifyCode"+'?'+Math.random();
 };
 export default {
     User,Disk,Check,StringExist,StringBefore,FileSize,VerifyCode,LocalFile
