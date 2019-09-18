@@ -64,7 +64,7 @@ Vue.prototype.InputConfrim=(options)=>{
 };
 //引入electron接口
 const path = require('path');
-let ipc=require('electron').ipcRenderer;
+const ipc=require('electron').ipcRenderer;
 Vue.path = Vue.prototype.$path = path;//path接口
 Vue.ipc = Vue.prototype.$ipc = ipc;//ipc接口
 Vue.api = Vue.prototype.$Api = Api;//请求接口
@@ -72,4 +72,4 @@ Vue.Notify = Vue.prototype.$Notify =(msg)=>{
     new Notification('CloudDisk',{
         body: msg
     })
-};//请求接口
+};//通知接口
