@@ -94,7 +94,7 @@
 </template>
 
 <script>
-    import StartOnBoot from '../api/StartOnBoot';
+    import StartOnBoot from '../tools/StartOnBoot';
     import SettingMenu from './DiskSetting/SettingMenu';
     export default {
         name: "DiskSetting",

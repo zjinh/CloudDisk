@@ -731,7 +731,7 @@
                         if (data.length) {
                             this.DiskData.DiskSize.total = data[0].max_size;
                             this.DiskData.DiskSize.use = data[0].use_size;
-                            this.DiskData.DiskSize.text = '可用:'+this.$Api.FileSize(this.DiskData.DiskSize.total-this.DiskData.DiskSize.use);
+                            this.DiskData.DiskSize.text = '可用:'+this.$Api.Disk.FileSize(this.DiskData.DiskSize.total-this.DiskData.DiskSize.use);
                             /*let Percent = (this.DiskData.DiskSize.use / this.DiskData.DiskSize.total) * 100;
                             this.DiskData.DiskSize.Percent = Percent + '%';
                             if (65 < Percent && Percent < 85) {

@@ -22,7 +22,7 @@
             return{
                 id:'Input-'+Math.random(),
                 focusState:'CloudIndex-Input',
-                url:this.$Api.VerifyCode(),
+                url:this.$Api.Public.VerifyCode(),
             }
         },
         methods:{
@@ -34,7 +34,7 @@
                 }
             },
             refresh(){
-                this.url=this.$Api.VerifyCode();
+                this.url=this.$Api.Public.VerifyCode();
             }
         }
     }

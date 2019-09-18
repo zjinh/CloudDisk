@@ -31,7 +31,7 @@
 </template>
 
 <script>
-    import Media from '../api/media';
+    import Media from '../tools/media';
     import MusicList from './DiskMusicPlayer/MusicList';
     import WindowsHeader from "./DiskWindow/WindowHeader";
     export default {

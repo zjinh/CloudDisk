@@ -316,50 +316,50 @@ button[disabled="disabled"]{
 .slideOutUp{-webkit-animation-name:slideOutUp;animation-name:slideOutUp}
 /*iview组件处理*/
 .v-modal{
-	opacity: 0;
+	opacity: 0!important;
 }
 .el-message-box{
-	width: 350px;
+	width: 350px!important;
 }
 .el-input{
-	height: 35px;
+	height: 35px!important;
 }
 .el-input__inner{
-	height: 35px;
-	line-height: 35px;
+	height: 35px!important;
+	line-height: 35px!important;
 }
 .el-message-box__input{
-	padding-top:10px;
+	padding-top:10px!important;
 }
 .el-message-box__errormsg{
 	min-height: unset!important;
 }
 .el-dialog__header{
-	padding: 15px 15px 10px;
+	padding: 15px 15px 10px!important;
 }
 .el-dialog__title{
-	font-size: 18px;
+	font-size: 18px!important;
 }
 .el-dialog__body{
-	padding: 5px 15px;
+	padding: 5px 15px!important;
 }
 .el-dialog__body .ivu-input-wrapper{
-	margin: 6px 0;
+	margin: 6px 0!important;
 }
 .el-dialog__footer{
-	padding: 10px 14px 18px;
+	padding: 10px 14px 18px!important;
 }
 .el-input.is-active .el-input__inner, .el-input__inner:focus{
-	border-color: #5b5bea;
+	border-color: #5b5bea!important;
 }
 .el-button{
-	border: none;
+	border: none!important;
 	background: none!important;
 }
 .el-button:focus, .el-button:hover {
-	color: #5b5bea;
-	border-color: #c6e2ff;
-	background-color: #ecf5ff;
+	color: #5b5bea!important;
+	border-color: #c6e2ff!important;
+	background-color: #ecf5ff!important;
 }
 .el-button--primary{
 	background: #5b5bea!important;
@@ -368,7 +368,7 @@ button[disabled="disabled"]{
 .el-button--primary:focus, .el-button--primary:hover {
 	background: #5b5bea!important;
 	border-color: #5b5bea!important;
-	color: #FFF;
+	color: #FFF!important;
 }
 /*头部*/
 .cd-drag-head-big{

@@ -15,7 +15,7 @@
                 <Progress :percent="PercentCount(item)" :status="item.state==='progressing'?'active':'normal'" :stroke-width="6"></Progress>
             </div>
             <div class="task-speed">
-                {{$Api.FileSize(item.chunk)}}/{{$Api.FileSize(item.size)}}
+                {{$Api.Disk.FileSize(item.chunk)}}/{{$Api.Disk.FileSize(item.size)}}
                 <span v-show="item.state==='progressing'">{{MathSpeend(item)}}</span>
             </div>
         </li>
@@ -83,7 +83,7 @@
                 let speed=parseFloat(item.chunk/time).toFixed(1);
                 let remaining_chunk=item.size-item.chunk;
                 let remaining_time=remaining_chunk/speed;
-                return this.$Api.FileSize(speed)+'/s  剩余时间:'+this.formatSeconds(remaining_time);
+                return this.$Api.Disk.FileSize(speed)+'/s  剩余时间:'+this.formatSeconds(remaining_time);
             },
             ControlButton(state){
                 let btn='';

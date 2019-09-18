@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import Media from '../api/media';
+    import Media from '../tools/media';
     import WindowsHeader from "./DiskWindow/WindowHeader";
     export default {
         name: "DiskVideoPlayer",
