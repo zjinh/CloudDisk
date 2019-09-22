@@ -89,7 +89,7 @@
                 let user_pic = elm.value;
                 if (user_pic.length > 1 && user_pic) {
                     let type =  this.$Api.StringBefore(user_pic,'.').toLowerCase();
-                    if (!this.$Api.StringExist(type,'png,jpg,jpeg,bmp,gif')) {
+                    if (!type.Exist('png,jpg,jpeg,bmp,gif')) {
                         this.$Message.error('所选格式为' + type + ' 请重新选择上传的文件');
                         return false
                     }

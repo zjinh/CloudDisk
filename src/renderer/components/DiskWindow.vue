@@ -382,7 +382,7 @@
                                 let data = [];
                                 if (OpenType === 'image' || OpenType === 'video' || OpenType === 'audio') {
                                     this.UserDiskData.forEach((file) => {
-                                        if (this.$Api.StringExist(file.type, item.TypeArray)) {
+                                        if (file.type.Exist(item.TypeArray)) {
                                             data.push(file)
                                         }
                                     });
