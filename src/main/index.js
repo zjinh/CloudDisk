@@ -117,7 +117,7 @@ let WindowControl={
         if(win) {
             win.show();
             win.focus();
-            win.callback(data);
+            data&&win.callback(data);
         }
     }
 };
