@@ -627,12 +627,13 @@ if (!gotTheLock) {
         if(LoginWindow){
             LoginWindow.show();
             LoginWindow.restore();
-            LoginWindow.focus()
+            LoginWindow.focus();
+            return
         }
         if (MainWindow) {
             MainWindow.show();
             MainWindow.restore();
-            MainWindow.focus()
+            MainWindow.focus();
         }
     });
     app.on('ready', function (){
