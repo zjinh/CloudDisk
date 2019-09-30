@@ -77,7 +77,9 @@
             this.$ipc.on('user-update',()=>{
                 this.GetUserInfo();
             });
-            this.GetUserInfo();
+            this.$Api.LocalFile.read('user',(data)=>{
+                this.UserInfo=data;
+            })
         },
         methods:{
             mini () {
@@ -132,8 +134,6 @@
                     this.$nextTick(()=>{
                         this.UserInfo=rs[0];
                     });
-                    this.$Api.LocalFile.Exist(rs[0].userid);
-                    this.$Api.LocalFile.Write('user',rs[0]);
                     localStorage.LoginTime=rs[0].login_time;
                 },()=>{
                     this.$Message.error({

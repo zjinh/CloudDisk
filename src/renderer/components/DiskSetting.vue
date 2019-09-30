@@ -107,7 +107,7 @@
                     }else{
                         StartOnBoot.disableAutoStart('CloudDisk')
                     }
-                    this.$Api.LocalFile.Write('setting',this.SettingData);
+                    this.$Api.LocalFile.write('setting',this.SettingData);
                 },
                 deep: true
             },
@@ -188,14 +188,14 @@
                 });
             },//获取用户信息,
             GetLocalSetting(){
-                this.$Api.LocalFile.Read('setting',(data)=>{
+                this.$Api.LocalFile.read('setting',(data)=>{
                     if(data.Email!==undefined){
                         this.$nextTick(()=>{
                             this.SettingData=data;
                         });
                     }else{
                         this.SettingData.TransDownFolder=process.env.USERPROFILE;
-                        this.$Api.LocalFile.Write('setting',this.SettingData);
+                        this.$Api.LocalFile.write('setting',this.SettingData);
                     }
                     switch (this.SettingData.NoticeVoice.substr(-5)) {
                         case "1.wav":

@@ -240,7 +240,7 @@
             localStorage.server='https://api.zjinh.cn';
             if(localStorage.username&&localStorage.password){
                 this.RemberPass=true;
-                this.$Api.LocalFile.Read('setting',(data)=>{
+                this.$Api.LocalFile.read('setting',(data)=>{
                     this.ConfigObject=data;
                     if(data.AutoLogin!==undefined){
                         this.AutoLogin=data.AutoLogin;

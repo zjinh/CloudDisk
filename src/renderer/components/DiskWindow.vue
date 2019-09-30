@@ -210,7 +210,7 @@
                         this.$refs.DiskClassify.TransData[1].count = this.UploadCount;
                         this.$refs.DiskClassify.TransData[2].count = this.FinishCount;
                     });
-                    this.$Api.LocalFile.Write('transfer', this.TransformData);
+                    this.$Api.LocalFile.write('transfer', this.TransformData);
                 },
                 deep: true
             }
@@ -255,7 +255,7 @@
                 window.addEventListener("drop", function (e) {
                     e.preventDefault();
                 }, false);
-                this.$Api.LocalFile.Read('transfer').then((data) => {
+                this.$Api.LocalFile.read('transfer',(data) => {
                     if (data.length) {
                         this.TransformData = data;
                         this.TransformData.forEach((item) => {

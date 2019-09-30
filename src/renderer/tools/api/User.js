@@ -1,12 +1,18 @@
 import {Ajax,severAddress} from "./request";
+import LocalFile from "./LocalFile";
 export default {
     Login(data,callback,error) {
         Ajax({
             url:"/service/user/login",
             data:data,
             success:(rs)=>{
-                rs[0].head=severAddress()+'/'+rs[0].head+'?'+Date.now();
-                callback(rs);
+                if(rs[0].state==='success'){
+                    LocalFile.init(rs[0].userid, () => {
+                        rs[0].head=severAddress()+'/'+rs[0].head+'?'+Date.now();
+                        LocalFile.write('login', JSON.parse(JSON.stringify(data)),true);
+                        callback && callback(rs);
+                    });
+                }
             },
             error:error
         })
@@ -42,6 +48,7 @@ export default {
             success:(rs)=>{
                 rs[0].birth=this.age(rs[0].birthday);
                 rs[0].userhead=severAddress()+'/'+rs[0].userhead+'?'+Date.now();
+                LocalFile.write('user',rs[0]);
                 callback(rs);
             },
             error:error
