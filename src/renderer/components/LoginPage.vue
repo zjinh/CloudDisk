@@ -17,7 +17,7 @@
                     <Logininput :data="LoginUserInput"></Logininput>
                     <Logininput :data="LoginPassInput" @keyup.enter.native="login"></Logininput>
                     <div class="CloudIndex-LineContainer">
-                        <label><Checkbox v-model="RemberPass">记住我</Checkbox></label>
+                        <label><Checkbox v-model="RemberPass" disabled>记住我</Checkbox></label>
                         <a @click="changeType('forget')">忘记密码？</a>
                     </div>
                     <div class="CloudIndex-postBut">
@@ -113,23 +113,23 @@
             return{
                 production:(process.env.NODE_ENV!=='production'),
                 /*服务器值*/
-                ServerAddress:localStorage.server||'https://api.zjinh.cn',
+                ServerAddress:'https://api.zjinh.cn',
                 LoadingText:'正在加载用户信息',//登陆中提示
                 /*这里为组件传值*/
-                RemberPass:false,
+                RemberPass:true,
                 PostState:false,
                 LoginSuccess:false,
                 /*登录组件数据*/
                 LoginUserInput:{
                     icon:"sf-icon-user",
                     text:"用户名/手机号/邮箱/CloudID",
-                    value:localStorage.username||''
+                    value:''
                 },
                 LoginPassInput:{
                     icon:"sf-icon-lock",
                     type:'password',
                     text:"输入您的密码",
-                    value:localStorage.password||''
+                    value:''
                 },
                 /*注册组件数据*/
                 RegisterUserInput:{
@@ -226,32 +226,17 @@
                     State:true,
                     Text:'重新发送'
                 },
-                /*是否自动登录*/
-                AutoLogin:false,
-                /*配置对象*/
-                ConfigObject:{},
                 /*窗体对象*/
                 WindowObject:false,
             }
         },
         created:function () {
             this.WindowObject=this.$electron.remote.getCurrentWindow();
-            // localStorage.server=this.ServerAddress;
-            localStorage.server='https://api.zjinh.cn';
-            if(localStorage.username&&localStorage.password){
-                this.RemberPass=true;
-                this.$Api.LocalFile.read('setting',(data)=>{
-                    this.ConfigObject=data;
-                    if(data.AutoLogin!==undefined){
-                        this.AutoLogin=data.AutoLogin;
-                    }
-                    this.$ipc.on('win-data',(e,msg)=>{//接收是否允许自动登录
-                        if(this.AutoLogin&&eval(msg)===true){
-                            this.login();
-                        }
-                    })
-                });
-            }
+            this.$ipc.on('win-data',(e,data)=>{//接收是否允许自动登录
+                this.LoginUserInput.value=data.username;
+                this.LoginPassInput.value=data.password;
+                this.login();
+            });
             window.addEventListener( "dragenter", function (e) {
                 e.preventDefault();
             }, false);
@@ -295,17 +280,14 @@
                     if(rs.state==='success'){
                         this.LoginSuccess=true;
                         this.User.head=rs.head;
-                        if(this.RemberPass){
-                            localStorage.username=username;
-                            localStorage.password=password;
-                        }else{
-                            localStorage.username=localStorage.password='';
-                        }
                         this.WindowObject.setSize(800,300);
                         this.WindowObject.setAlwaysOnTop(false);
                         setTimeout(()=>{
                             this.LoadingText = '正在加载网盘数据';
-                            this.$ipc.send('system','login',this.ConfigObject);
+                            this.$ipc.send('system','login',{
+                                username:username,
+                                password:password,
+                            });
                             setTimeout(()=> {
                                 this.LoadingText='欢迎回来 '+rs.user;
                             },1100)
@@ -541,7 +523,6 @@
                         this.$Api.Check(value,(rs)=>{
                             this.$Message.success(value+'可用！');
                             this.ServerAddress=value;
-                            localStorage.server=value;
                         },(error)=>{
                             this.$Message.error(value+'不可用');
                             this.OpenServerWindow();

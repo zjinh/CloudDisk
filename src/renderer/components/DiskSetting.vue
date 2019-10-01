@@ -27,10 +27,10 @@
                     <div class="cd-setting-form">
                         <Checkbox v-model="SettingData.AutoStartFlag">系统启动后自动运行CloudDisk</Checkbox>
                     </div>
-                    <p class="cd-setting-sec-title">自动登录</p>
+                   <!-- <p class="cd-setting-sec-title">自动登录</p>
                     <div class="cd-setting-form" style="width: 100%">
                         <Checkbox v-model="SettingData.AutoLogin">打开CloudDisk后自动登录(需勾选记住密码)</Checkbox>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="cd-setting-container" v-show="SettingMenuData.Safety.active">
                     <p class="cd-setting-title">绑定设置</p>
@@ -171,6 +171,7 @@
             }
         },
         created(){
+            this.$Api.LocalFile.User=localStorage.UserId;
             this.LoginTime=localStorage.LoginTime;
             this.GetLocalSetting();
         },
@@ -182,10 +183,10 @@
                 this.SettingMenuData[index].active='active';
             },
             GetUserInfo () {
-                this.$Api.User.UserInfo((rs)=>{
-                    this.SettingData.Phone=rs[0].phone;
-                    this.SettingData.Email=rs[0].email;
-                });
+                this.$Api.LocalFile.read('user',(data)=>{
+                    this.SettingData.Phone=data.phone;
+                    this.SettingData.Email=data.email;
+                })
             },//获取用户信息,
             GetLocalSetting(){
                 this.$Api.LocalFile.read('setting',(data)=>{

@@ -16,7 +16,7 @@
          @keyup="DiskData.KeyFlag =null"
          tabindex="1" ref="CloudDiskMain">
         <DiskClassify :type="DiskData.Type" :DiskData="DiskData" :show="NoTransType" @callback="SwitchClassify" @change="SwitchClassify" ref="DiskClassify"></DiskClassify>
-        <section class="cd-right">
+        <section class="cd-right" v-if="login">
             <DiskHeader :data="DiskData" :count="DownloadCount+UploadCount"  @callback="SwitchType"></DiskHeader>
             <DiskNavigation :data="DiskData" :loading="LoadCompany" :hide="NeedHide" @callback="NavigationControl" @feature="DiskFeatureControl"></DiskNavigation>
             <DiskRecoverBar :show="isTrash" :disabled="UserDiskData.length===0" @callback="UserDiskData =[]"></DiskRecoverBar>
@@ -142,7 +142,9 @@
                 ConfigObject:{
                     NoticeFlag:true,
                     NoticeBubble:true,
-                }
+                },
+                login:false,
+                UserInfo:{}
             }
         },
         watch: {
@@ -237,7 +239,6 @@
         },
         created() {
             this.Bind();
-            this.GetMainFile(null, this.loadClassify);
             this.NoticeSrc = localStorage.NoticeVoice;
         },
         methods: {
@@ -255,16 +256,6 @@
                 window.addEventListener("drop", function (e) {
                     e.preventDefault();
                 }, false);
-                this.$Api.LocalFile.read('transfer',(data) => {
-                    if (data.length) {
-                        this.TransformData = data;
-                        this.TransformData.forEach((item) => {
-                            if (item.trans_type === 'download' && item.state !== 'completed') {
-                                this.$electron.remote.getCurrentWindow().webContents.downloadURL(item.disk_main+'?disk_name='+item.disk_name);
-                            }
-                        })
-                    }
-                });
                 this.$ipc.on('download', (e, file) => {
                     for (let i = 0; i < this.TransformData.length; i++) {
                         if (file.name === this.TransformData[i].name) {
@@ -281,7 +272,21 @@
                     });
                 });
                 this.$ipc.on('win-data', (e, data) => {//接收用户配置文件
-                    this.ConfigObject = data;
+                      localStorage.UserId=data.id;
+                     this.$Api.User.Login(data,()=>{
+                         this.login=true;
+                         this.GetMainFile(null, this.loadClassify);
+                         this.$Api.LocalFile.read('transfer',(data) => {
+                             if (data.length) {
+                                 this.TransformData = data;
+                                 this.TransformData.forEach((item) => {
+                                     if (item.trans_type === 'download' && item.state !== 'completed') {
+                                         this.$electron.remote.getCurrentWindow().webContents.downloadURL(item.disk_main+'?disk_name='+item.disk_name);
+                                     }
+                                 })
+                             }
+                         });
+                     })
                 });
             },
             /*导航栏函数*/

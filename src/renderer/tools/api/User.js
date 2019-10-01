@@ -9,6 +9,7 @@ export default {
                 if(rs[0].state==='success'){
                     LocalFile.init(rs[0].userid, () => {
                         rs[0].head=severAddress()+'/'+rs[0].head+'?'+Date.now();
+                        data.id=rs[0].userid;
                         LocalFile.write('login', JSON.parse(JSON.stringify(data)),true);
                         callback && callback(rs);
                     });
@@ -46,6 +47,7 @@ export default {
             url:"/service/user/UserInfo",
             data:[],
             success:(rs)=>{
+                localStorage.LoginTime=rs[0].login_time;
                 rs[0].birth=this.age(rs[0].birthday);
                 rs[0].userhead=severAddress()+'/'+rs[0].userhead+'?'+Date.now();
                 LocalFile.write('user',rs[0]);

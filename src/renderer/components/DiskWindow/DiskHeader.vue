@@ -39,7 +39,7 @@
             },
             count:{
                 type:Number
-            }
+            },
         },
         data(){
             return{
@@ -77,9 +77,7 @@
             this.$ipc.on('user-update',()=>{
                 this.GetUserInfo();
             });
-            this.$Api.LocalFile.read('user',(data)=>{
-                this.UserInfo=data;
-            })
+            this.GetUserInfo();
         },
         methods:{
             mini () {
@@ -134,7 +132,6 @@
                     this.$nextTick(()=>{
                         this.UserInfo=rs[0];
                     });
-                    localStorage.LoginTime=rs[0].login_time;
                 },()=>{
                     this.$Message.error({
                         content: '账号状态异常，请重新登录！',

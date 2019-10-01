@@ -1,4 +1,4 @@
-import {Ajax,severAddress} from "./request";
+import {Ajax,severAddress,updateServer} from "./request";
 export default {
     Check(url,callback,error){
         Ajax({
@@ -10,5 +10,6 @@ export default {
     },
     VerifyCode(){
         return severAddress()+"/service/verifyCode"+'?'+Math.random();
-    }
+    },
+    updateServer
 }

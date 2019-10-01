@@ -1,5 +1,7 @@
 import {app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen,session } from 'electron'
 import { autoUpdater } from 'electron-updater'
+import LocalFile from "../renderer/tools/api/LocalFile";
+import User from "../renderer/tools/api/User";
 const path = require('path');
 let TransDownFolder=process.env.USERPROFILE;
 let DownloadList={};
@@ -155,9 +157,6 @@ let DiskSystem= {
             onclose:()=>{
                 LoginWindow=null;
             },
-            callback:()=>{
-                BindIpc();
-            }
         });
     },
     MainWindow:(data)=>{
@@ -235,6 +234,9 @@ let DiskSystem= {
             },
             callback:()=>{
                 LoginWindow?LoginWindow.close():"";
+                LocalFile.read('setting',(data)=>{
+                    TransDownFolder=data.TransDownFolder||process.env.HOME;
+                })
             }
         });
     },
@@ -376,7 +378,6 @@ function BindIpc() {
     ipcMain.on('system',(event,type,data)=>{
         switch (type) {
             case 'login':
-                TransDownFolder=data.TransDownFolder;
                 DiskSystem.MainWindow(data);
                 break;
             case 'popup':
@@ -637,8 +638,21 @@ if (!gotTheLock) {
         }
     });
     app.on('ready', function (){
+        BindIpc();
         app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
-        DiskSystem.LoginWindow(true);
+        LocalFile.read('login',(data,err)=>{
+            if(err){
+                DiskSystem.LoginWindow({
+                    username:"",password:""
+                });
+            }else{
+                User.Login(data,()=>{
+                    DiskSystem.MainWindow(data);
+                },()=>{
+                    DiskSystem.LoginWindow(data);
+                })
+            }
+        },true);
     });
 }
 app.on('window-all-closed', () => {
