@@ -11,5 +11,6 @@ export default {
     VerifyCode(){
         return severAddress()+"/service/verifyCode"+'?'+Math.random();
     },
+    severAddress,
     updateServer
 }

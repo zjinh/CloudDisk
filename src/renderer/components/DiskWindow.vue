@@ -256,6 +256,7 @@
                 window.addEventListener("drop", function (e) {
                     e.preventDefault();
                 }, false);
+                localStorage.server=this.$Api.Public.severAddress();
                 this.$ipc.on('download', (e, file) => {
                     for (let i = 0; i < this.TransformData.length; i++) {
                         if (file.name === this.TransformData[i].name) {
