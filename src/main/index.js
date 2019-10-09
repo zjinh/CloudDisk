@@ -67,27 +67,25 @@ let appTray = null;//托盘变量
 let WindowControl={
     New:(options)=>{
         Menu.setApplicationMenu(null);
-        let win = new BrowserWindow({
-            width: options.width||800,
-            height: options.height||600,
-            minWidth: options.minWidth,
-            minHeight: options.minHeight,
-            title:options.title||'CloudDisk',
+        let defaultOptions={
+            width: 800,
+            height: 600,
+            title:'CloudDisk',
             frame:false,
-            useContentSize:options.useContentSize||false,
-            transparent:options.transparent||false,
-            x:options.x,
-            y:options.y,
-            minimizable:options.minimizable === undefined ? true : options.minimizable,
-            maximizable:options.maximizable === undefined ? true : options.maximizable,
-            resizable:options.resizable === undefined ? true : options.resizable,
-            alwaysOnTop:options.alwaysOnTop === undefined ? false : options.alwaysOnTop,
+            useContentSize:false,
+            transparent:false,
+            minimizable: true ,
+            maximizable:true,
+            resizable: true,
+            alwaysOnTop:false,
             show:false,
             webPreferences:{
                 nodeIntegration:true,
                 webSecurity:!(process.env.NODE_ENV === 'development')
             }
-        });
+        };
+        options=Object.assign(defaultOptions, options);
+        let win = new BrowserWindow(options);
         options.backgroundColor&&(win.backgroundColor=options.backgroundColor);
         win.name=options.url;
         win.loadURL(WindowControl.CheckRouter(options.url));
