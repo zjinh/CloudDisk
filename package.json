@@ -70,10 +70,10 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "crypto-js": "^3.1.9-1",
     "electron-updater": "^4.0.14",
     "element-ui": "^2.10.1",
     "iview": "3.3.0",
-    "js-base64": "^2.5.1",
     "vue": "^2.6.10",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.1.3",

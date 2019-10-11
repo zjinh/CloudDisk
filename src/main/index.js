@@ -644,6 +644,9 @@ if (!gotTheLock) {
                     username:"",password:""
                 });
             }else{
+                if(!data.username){
+                    return DiskSystem.LoginWindow(data);
+                }
                 User.Login(data,()=>{
                     DiskSystem.MainWindow(data);
                 },()=>{

@@ -13,6 +13,8 @@ export default {
                         LocalFile.write('login', JSON.parse(JSON.stringify(data)),true);
                         callback && callback(rs);
                     });
+                }else{
+                    error&&error()
                 }
             },
             error:error

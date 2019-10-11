@@ -233,9 +233,11 @@
         created:function () {
             this.WindowObject=this.$electron.remote.getCurrentWindow();
             this.$ipc.on('win-data',(e,data)=>{//接收是否允许自动登录
-                this.LoginUserInput.value=data.username;
-                this.LoginPassInput.value=data.password;
-                this.login();
+                this.LoginUserInput.value=data.username||'';
+                this.LoginPassInput.value=data.password||'';
+                if(this.LoginUserInput.value) {
+                    this.login();
+                }
             });
             window.addEventListener( "dragenter", function (e) {
                 e.preventDefault();
