@@ -88,10 +88,9 @@
                 let elm=event.target;
                 let user_pic = elm.value;
                 if (user_pic.length > 1 && user_pic) {
-                    let type =  this.$Api.StringBefore(user_pic,'.').toLowerCase();
+                    let type =  user_pic.Before('.').toLowerCase();
                     if (!type.Exist('png,jpg,jpeg,bmp,gif')) {
-                        this.$Message.error('所选格式为' + type + ' 请重新选择上传的文件');
-                        return false
+                        return this.$Message.error('所选格式为' + type + ' 请重新选择上传的文件');
                     }
                     elm.files&&elm.files[0]?this.UploadSrc = window.URL.createObjectURL(elm.files[0]):"";
                 }
