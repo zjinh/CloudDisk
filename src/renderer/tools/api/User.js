@@ -10,6 +10,7 @@ export default {
                     LocalFile.init(rs[0].userid, () => {
                         rs[0].head=severAddress()+'/'+rs[0].head+'?'+Date.now();
                         data.id=rs[0].userid;
+                        LocalFile.write('key', data.id);
                         LocalFile.write('login', JSON.parse(JSON.stringify(data)),true);
                         callback && callback(rs);
                     });
