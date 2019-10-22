@@ -17,6 +17,6 @@
 </script>
 
 <style>
-  @import url("assets/font/icon.css");
+  @import url("../../static/font/icon.css");
   @import url("assets/css/public.css");
 </style>
