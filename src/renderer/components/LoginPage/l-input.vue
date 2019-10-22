@@ -1,8 +1,7 @@
-/*用户登录界面input*/
 <template>
-    <div :class="(data.disabled||data.value)?'CloudIndex-Input Input-Focus':focusState">
+    <div :class="(data.disabled||data.value)?'cd-index-input input-focus':focusState">
         <span :class="data.icon"></span>
-        <input :id="id" :type="data.type?data.type:'text'" v-model="data.value" autocomplete='off' spellcheck="false" @focus="focusState='CloudIndex-Input Input-Focus'" @blur="blur" :disabled="data.disabled?data.disabled:false">
+        <input :id="id" :type="data.type?data.type:'text'" v-model="data.value" autocomplete='off' spellcheck="false" @focus="focusState='cd-index-input input-focus'" @blur="blur" :disabled="data.disabled?data.disabled:false">
         <label :for="id">{{data.text}}</label>
         <Tooltip v-if="data.state==='verify'" content="点击刷新" placement="bottom-end" :transfer="true">
             <img draggable="false" :src="url" @click="refresh" alt="">
@@ -14,23 +13,21 @@
     export default {
         name: "l-input",
         props: {
-            data: {
-                type: Object
-            }
+            data: Object
         },
         data(){
             return{
-                id:'Input-'+Math.random(),
-                focusState:'CloudIndex-Input',
+                id:'input-'+Math.random(),
+                focusState:'cd-index-input',
                 url:this.$Api.Public.VerifyCode(),
             }
         },
         methods:{
             blur () {
                 if(this.data.value){
-                    this.focusState='CloudIndex-Input Input-Focus'
+                    this.focusState='cd-index-input input-focus'
                 }else{
-                    this.focusState='CloudIndex-Input'
+                    this.focusState='cd-index-input'
                 }
             },
             refresh(){
@@ -41,5 +38,4 @@
 </script>
 
 <style scoped>
-
 </style>

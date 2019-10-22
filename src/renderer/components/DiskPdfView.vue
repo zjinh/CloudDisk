@@ -1,7 +1,7 @@
 <template>
-    <div class="PdfWindow">
+    <div class="cd-pdf-window">
         <WindowsHeader :data=header></WindowsHeader>
-        <div class="PDfContainer">
+        <div class="cd-pdf-show-container">
             <iframe :src="src"></iframe>
         </div>
     </div>
@@ -39,16 +39,16 @@
 
 <style scoped>
     /*pdf窗口*/
-    .PdfWindow{
+    .cd-pdf-window{
         width:100%;
         height: 100%;
         background: #4f4f4f;
     }
-    .PDfContainer,.FileShowContainer{
+    .cd-pdf-show-container{
         width: 100%;
         height: calc(100% - 32px);
     }
-    .PDfContainer iframe{
+    .cd-pdf-show-container iframe{
         width: 100%;
         height: 100%;
     }

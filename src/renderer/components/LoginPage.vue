@@ -1,29 +1,29 @@
 <template>
     <div>
-        <div class="CloudIndexSection" v-show="!LoginSuccess">
+        <div class="cd-index-section" v-show="!LoginSuccess">
             <section>
                 <button type="button" class="sf-icon-cog" v-if="production" @click="OpenServerWindow"></button>
                 <button type="button" class="sf-icon-window-minimize" @click="mini"></button>
                 <button type="button" class="sf-icon-times" style="font-size:16px" @click="close"></button>
             </section>
         </div>
-        <div class="CloudIndexMain">
-            <div class="CloudIndexLeft">
-                <div class="CloudIndexHead" style="-webkit-app-region: drag" >
+        <div class="cd-index-main">
+            <div class="cd-index-left">
+                <div class="cd-index-head" style="-webkit-app-region: drag" >
                     <h1>{{HeadText.h1}}</h1>
                     <p>{{HeadText.tips}}</p>
                 </div>
-                <div class="CloudIndexForm" v-show="ShowState.login.state">
+                <div class="cd-index-form" v-show="ShowState.login.state">
                     <Logininput :data="LoginUserInput"></Logininput>
                     <Logininput :data="LoginPassInput" @keyup.enter.native="login"></Logininput>
-                    <div class="CloudIndex-LineContainer">
+                    <div class="cd-index-line-container">
                         <label><Checkbox v-model="RemberPass" disabled>记住我</Checkbox></label>
                         <a @click="changeType('forget')">忘记密码？</a>
                     </div>
-                    <div class="CloudIndex-postBut">
+                    <div class="cd-index-post-button">
                         <button @click="login" :class="PostState">登录</button>
                     </div>
-                    <div class="CloudIndex-OtherLogin">
+                    <div class="cd-index-other-login">
                         <label>其他登录</label>
                         <ul>
                             <li class="sf-icon-wechat" ripple><span>&nbsp&nbsp微信</span></li>
@@ -31,56 +31,56 @@
                             <li class="sf-icon-qq" ripple><span>&nbsp&nbspQQ</span></li>
                         </ul>
                     </div>
-                    <div class="CloudIndex-Tips">
+                    <div class="cd-index-tips">
                         <p>使用邮箱&nbsp<span @click="changeType('register')">创建一个新用户</span></p>
                     </div>
                 </div>
-                <div class="CloudIndexForm" v-show="ShowState.register.state">
+                <div class="cd-index-form" v-show="ShowState.register.state">
                     <Logininput :data="RegisterUserInput"></Logininput>
                     <Logininput :data="RegisterMailInput"></Logininput>
                     <Logininput :data="RegisterPassInput"></Logininput>
                     <Logininput :data="RegisterCodeInput" @keyup.enter.native="register"></Logininput>
-                    <div class="CloudIndex-postBut">
+                    <div class="cd-index-post-button">
                         <button @click="register" :class="PostState">创建</button>
                     </div>
-                    <div class="CloudIndex-Tips">
+                    <div class="cd-index-tips">
                         <p>已经有账号&nbsp<span @click="changeType('login')">前往登录</span></p>
                     </div>
                 </div>
-                <div class="CloudIndexForm"  v-show="ShowState.forget.state">
+                <div class="cd-index-form"  v-show="ShowState.forget.state">
                     <Logininput :data="ForgetUserInput"></Logininput>
                     <Logininput :data="ForgetMailInput"></Logininput>
                     <Logininput :data="ForgetCodeInput"  @keyup.enter.native="forget"></Logininput>
-                    <div class="CloudIndex-LineContainer">
+                    <div class="cd-index-line-container">
                         <p>填写以上信息开始吧</p>
                     </div>
-                    <div class="CloudIndex-postBut">
+                    <div class="cd-index-post-button">
                         <button @click="forget" :class="PostState">开始</button>
                     </div>
-                    <div class="CloudIndex-Tips">
+                    <div class="cd-index-tips">
                         <p>没有问题了&nbsp<span @click="changeType('login')">前往登录</span></p>
                     </div>
                 </div>
-                <div class="CloudIndexForm" v-show="ShowState.verify.state">
+                <div class="cd-index-form" v-show="ShowState.verify.state">
                     <Logininput :data="VerifyUserInput"></Logininput>
                     <Logininput :data="VerifyPassInput"></Logininput>
                     <Logininput :data="VerifyCodeInput"  @keyup.enter.native="verify"></Logininput>
-                    <div class="CloudIndex-Tips">
+                    <div class="cd-index-tips">
                         <p style="text-align: left">没有收到邮件&nbsp<span @click="ReSend">{{ResendData.Text}}</span></p>
                     </div>
-                    <div class="CloudIndex-postBut">
+                    <div class="cd-index-post-button">
                         <button @click="verify" :class="PostState">激活</button>
                     </div>
-                    <div class="CloudIndex-Tips">
+                    <div class="cd-index-tips">
                         <p>账号激活了&nbsp<span @click="changeType('login')">前往登录</span></p>
                     </div>
                 </div>
             </div>
-            <div class="CloudIndexRight">
+            <div class="cd-index-right">
                 <img draggable="false" src="../../../static/img/logo/log.png" alt="">
             </div>
         </div>
-        <div class="CloudIndexLogining" v-show="LoginSuccess">
+        <div class="cd-index-logining" v-show="LoginSuccess">
             <ul>
                 <li class="sf-icon-music"></li>
                 <li class="sf-icon-users"></li>
@@ -268,7 +268,7 @@
                     this.$Message.warning('正在验证登录信息');
                     return false;
                 }
-                this.PostState='CloudIndex-posting';
+                this.PostState='cd-index-posting';
                 this.$Api.User.Login({
                     username:username,
                     password:password,
@@ -336,7 +336,7 @@
                     this.$Message.warning('正在验证注册信息');
                     return false;
                 }
-                this.PostState='CloudIndex-posting';
+                this.PostState='cd-index-posting';
                 this.$Api.User.Register({
                     username: username,
                     email: mail,
@@ -391,7 +391,7 @@
                     this.$Message.warning('正在验证您输入的信息');
                     return false;
                 }
-                this.PostState='CloudIndex-posting';
+                this.PostState='cd-index-posting';
                 this.$Api.User.Forget({
                     username: username,
                     email: mail,
@@ -440,7 +440,7 @@
                     this.$Message.warning('正在激活您的账号');
                     return false;
                 }
-                this.PostState='CloudIndex-posting';
+                this.PostState='cd-index-posting';
                 this.$Api.User.Verify({
                     name: username,
                     pass: pass,

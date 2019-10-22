@@ -1,9 +1,9 @@
 <template>
-    <div :class="'MessageMain '+animation">
+    <div :class="'cd-message-main '+animation">
         <div class="shadow"></div>
-        <div class="MessageMain">
+        <div class="cd-message-main">
             <WindowHeader v-bind:data="confData"></WindowHeader>
-            <div class="MessageContainer">
+            <div class="cd-message-container">
                 <Icon type="ios-alert-outline" />
                 <p>{{MegData}}</p>
             </div>
@@ -62,19 +62,19 @@
 
 <style scoped>
     /*消息弹窗*/
-    .MessageMain{
+    .cd-message-main{
         width: 100%;
         height: 100%;
         background: #fff;
     }
-    .MessageContainer{
+    .cd-message-container{
         padding: 10px;
     }
-    .MessageContainer i{
+    .cd-message-container i{
         float: left;
         font-size: 30px;
     }
-    .MessageContainer p{
+    .cd-message-container p{
         float: left;
         font-size: 14.5px;
         line-height: 1.6;

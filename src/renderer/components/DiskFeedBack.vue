@@ -96,7 +96,7 @@
         width: 100%;
         height: calc(100% - 50px);
         background: #fff;
-        padding:0 30px 20px;
+        padding:0  20px;
         position: relative;
     }
     .app-version .logo{
@@ -123,7 +123,6 @@
     }
     .cd-feedback-main{
         height: calc(100% - 50px);
-        padding:0 10px;
         background: #fff;
     }
     .cd-feedback-main p{

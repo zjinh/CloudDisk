@@ -1,7 +1,7 @@
 <template>
     <div class="cd-main FileContent">
         <WindowsHeader :data=header style="border-bottom: 2px solid #6ce26c;"></WindowsHeader>
-        <div class="FileShowContainer">
+        <div class="cd-file-show-container">
             <iframe :src="LoadUrl"></iframe>
         </div>
     </div>
@@ -38,11 +38,11 @@
 
 <style scoped>
     /*文件查看窗口*/
-    .FileShowContainer {
+    .cd-file-show-container {
         width: 100%;
         height: calc(100% - 30px);
     }
-    .FileShowContainer iframe{
+    .cd-file-show-container iframe{
         overflow: auto;
     }
 </style>

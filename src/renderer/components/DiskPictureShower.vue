@@ -1,12 +1,12 @@
 <template>
-    <div class="ImageShowContainer" @mousewheel="MouseZoom" tabindex="-1"  @keydown.left="Prev" @keydown.right="Next">
+    <div class="cd-image-container" @mousewheel="MouseZoom" tabindex="-1"  @keydown.left="Prev" @keydown.right="Next">
         <WindowsHeader :data=header></WindowsHeader>
-        <p class="ImageShowTips"> <span class="ImageShowZoom" :style="{'opacity':ZoomWin}">{{ZoomPercent}}</span>{{NowShow.count+1}}/{{PhotoList.length}}</p>
-        <img :class="'ImgShow '+(!Control?'ImgAnim':'')" :src="NowShow.URL" ref="ImgShow" @load="onload" @mousedown="Drag" alt="">
+        <p class="ImageShowTips"> <span class="cd-image-zoom" :style="{'opacity':ZoomWin}">{{ZoomPercent}}</span>{{NowShow.count+1}}/{{PhotoList.length}}</p>
+        <img :class="'cd-image-show '+(!Control?'cd-image-animated':'')" :src="NowShow.URL" ref="imageShow" @load="onload" @mousedown="Drag" alt="">
         <Spin v-show="loaded">
             <Icon type="ios-loading" size=26 class="loading"></Icon>
         </Spin>
-        <ul class="ImgControl">
+        <ul class="cd-image-control">
             <li class="sf-icon-search-plus" @click="Zoom(1)"></li>
             <li class="sf-icon-search-minus" @click="Zoom(-1)"></li>
             <li class="sf-icon-angle-left" @click="Prev"></li>
@@ -83,9 +83,9 @@
                 this.loaded=true;
                 this.ZoomSize=1;
                 this.angle=0;
-                let img_show= this.$refs.ImgShow;
+                let img_show= this.$refs.imageShow;
                 img_show.removeAttribute("style");
-                document.getElementsByClassName('ImageShowContainer')[0].focus();
+                document.getElementsByClassName('cd-image-container')[0].focus();
                 let time_p1=setInterval(()=>{
                     let imgW=img_show.offsetWidth;
                     if(img_show.complete){
@@ -102,7 +102,7 @@
             },
             centerImg(){
                 this.loaded=false;
-                let img_show= this.$refs.ImgShow;
+                let img_show= this.$refs.imageShow;
                 img_show.style.left = "0";
                 img_show.style.top = "0";
             },
@@ -113,14 +113,14 @@
                 this.header.title=item.disk_name+'-图片查看';
             },
             orginz(){
-                let img_show= this.$refs.ImgShow;
+                let img_show= this.$refs.imageShow;
                 img_show.removeAttribute('style');
                 this.ZoomSize=1;
                 this.centerImg();
             },
             Zoom(a){
                 this.Control=true;
-                let img_show= this.$refs.ImgShow;
+                let img_show= this.$refs.imageShow;
                 let oldWidth = img_show.offsetWidth;
                 let oldHeight = img_show.offsetHeight;
                 let oldLeft = img_show.offsetLeft;
@@ -149,7 +149,7 @@
                 this.centerImg();
             },
             Drag(){
-                let img_show= this.$refs.ImgShow;
+                let img_show= this.$refs.imageShow;
                 event.preventDefault();
                 let _this=this;
                 this.Control=true;
@@ -183,7 +183,7 @@
                 this.Zoom(event.wheelDelta);
             },
             roate(a) {
-                let img_show= this.$refs.ImgShow;
+                let img_show= this.$refs.imageShow;
                 this.angle=this.angle+a;
                 img_show.style.webkitTransform = 'rotate(' + this.angle + 'deg)';
             },
@@ -231,7 +231,7 @@
         border: 1px solid #eee;
     }
     /*图片查看*/
-    .ImageShowContainer {
+    .cd-image-container {
         float:left;
         width:100%;
         height:100%;
@@ -242,11 +242,11 @@
         -khtml-user-select:none;
         user-select:none;
     }
-    .ImageShowContainer .ivu-spin-main{
+    .cd-image-container .ivu-spin-main{
         float: right;
         padding: 30px 10px;
     }
-    .ImageShowZoom {
+    .cd-image-zoom {
         height: 30px;
         color: #fff;
         text-align: center;
@@ -258,7 +258,7 @@
         -o-transition: all .35s;
         margin-right: 10px;
     }
-    .ImgShow {
+    .cd-image-show {
         position:absolute;
         top:0;
         left:0;
@@ -275,13 +275,13 @@
         -moz-transition:none!important;
         -o-transition:none!important;
     }
-    .ImgAnim{
+    .cd-image-animated{
         -webkit-transition: all .3s ease-out!important;
         -moz-transition:all .3s ease-out!important;
         -o-transition: all .3s ease-out!important;
         transition: all .3s ease-out!important;
     }
-    .ImgControl {
+    .cd-image-control {
 
         bottom: 30px;
         z-index: 3;
@@ -299,7 +299,7 @@
         z-index: 2;
         text-shadow:0 0 5px rgb(0, 0, 0);
     }
-    .ImgControl{
+    .cd-image-control{
         position: absolute;
         margin:0 auto;
         bottom: 30px;
@@ -313,7 +313,7 @@
         text-align:center;
         box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 0 1px rgba(0,0,0,.2);
     }
-    .ImgControl li {
+    .cd-image-control li {
         float:left;
         width:42px;
         height:42px;
@@ -323,10 +323,10 @@
         cursor:pointer;
         color:#fff;
     }
-    .ImgControl .sf-icon-angle-left,.ImgControl .sf-icon-angle-right{
+    .cd-image-control .sf-icon-angle-left,.cd-image-control .sf-icon-angle-right{
         font-size: 22px;
     }
-    .ImgControl li:hover {
+    .cd-image-control li:hover {
         background:rgba(125, 125, 125, 0.5);
         color:#Fff;
     }

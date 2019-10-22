@@ -11,7 +11,7 @@
                     <div class="cd-player-process-bar" :style="{'width':ProcessWidth}">
                         <span></span>
                     </div>
-                    <div class="VideoTempBar" :style="{'width':CacheWidth}"></div>
+                    <div class="cd-video-temp-bar" :style="{'width':CacheWidth}"></div>
                 </div>
                 <div class="cd-video-player-time">{{TimeText}}</div>
                 <div :class="'sf-icon-volume-up '+(VolumnState?'cd-video-player-volumn-active':'')" @mousedown.stop="VolumnState?VolumnState=false:VolumnState=true"></div>

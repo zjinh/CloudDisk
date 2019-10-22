@@ -111,7 +111,7 @@
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
 }
-.VideoTempBar {
+.cd-video-temp-bar {
     position:relative;
     top:-10px;
     z-index:1;
@@ -300,7 +300,7 @@
     z-index: 3;
     -webkit-app-region: no-drag;
 }
-#AudioLrcList{
+#cd-audio-lrc-list{
     float: left;
     padding-left: 28px;
     width: 245px;
@@ -311,7 +311,7 @@
     -moz-transition: all 350ms;
     -webkit-transition: all 350ms;
 }
-#AudioLrcList *{
+#cd-audio-lrc-list *{
     display: none;
 }
 .this_lrc{

@@ -17,7 +17,7 @@
                     </div>
                 </div>
             </div>
-            <div class="cd-music-player-time"><div id="AudioLrcList"></div><span>{{TimeText}}</span></div>
+            <div class="cd-music-player-time"><div id="cd-audio-lrc-list"></div><span>{{TimeText}}</span></div>
             <div class="cd-player-slider-container" @mousedown="TimeChange" ref="slider">
                 <div class="cd-player-slider" :style="{'width':ProcessWidth}">
                     <span></span>
@@ -79,7 +79,7 @@
                 /* 定时刷新时间，单位：秒 */
                 format: '<li>{html}</li>',
                 /* 模板 */
-                prefixid: 'AudioLrcList',
+                prefixid: 'cd-audio-lrc-list',
                 /* 容器ID */
                 hoverClass: 'this_lrc',
                 /* 选中节点的className */
