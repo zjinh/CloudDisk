@@ -17,6 +17,7 @@ export default {
                 }else{
                     error&&error()
                 }
+                callback && callback(rs);
             },
             error:error
         })
