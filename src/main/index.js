@@ -2,6 +2,7 @@ import {app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen,session } f
 import { autoUpdater } from 'electron-updater'
 import LocalFile from "../renderer/tools/api/LocalFile";
 import User from "../renderer/tools/api/User";
+
 const path = require('path');
 let TransDownFolder=process.env.USERPROFILE;
 let DownloadList={};
