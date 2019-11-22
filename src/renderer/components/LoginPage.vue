@@ -279,32 +279,30 @@
                         this.$Message.error('服务器错误');
                         return;
                     }
-                    if(rs.state==='success'){
-                        this.LoginSuccess=true;
-                        this.User.head=rs.head;
-                        this.WindowObject.setSize(800,300);
-                        this.WindowObject.setAlwaysOnTop(false);
-                        setTimeout(()=>{
-                            this.LoadingText = '正在加载网盘数据';
-                            this.$ipc.send('system','login',{
-                                username:username,
-                                password:password,
-                            });
-                            setTimeout(()=> {
-                                this.LoadingText='欢迎回来 '+rs.user;
-                            },1100)
+                    this.LoginSuccess=true;
+                    this.User.head=rs.head;
+                    this.WindowObject.setSize(800,300);
+                    this.WindowObject.setAlwaysOnTop(false);
+                    setTimeout(()=>{
+                        this.LoadingText = '正在加载网盘数据';
+                        this.$ipc.send('system','login',{
+                            username:username,
+                            password:password,
+                        });
+                        setTimeout(()=> {
+                            this.LoadingText='欢迎回来 '+rs.user;
                         },1100)
-                    }else{
-                        if(rs.msg==='未激活的用户'){
-                            this.$Message.info('请查看您的激活邮箱'+rs.email);
-                            this.VerifyUserInput.value=username;
-                            this.changeType('verify');
-                        }else{
-                            this.$Message[rs.state](rs.msg);
-                        }
-                    }
-                },()=>{
+                    },1100)
+                },(rs)=>{
+                    rs=rs[0];
                     this.PostState='';
+                    if(rs.msg==='未激活的用户'){
+                        this.$Message.info('请查看您的激活邮箱'+rs.email);
+                        this.VerifyUserInput.value=username;
+                        this.changeType('verify');
+                    }else{
+                        this.$Message[rs.state](rs.msg);
+                    }
                 });
             },
             register:function(){

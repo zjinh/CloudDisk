@@ -894,10 +894,8 @@
                 if (event.target.className === 'sf-icon-times') {
                     if(item.trans_type==='download'){
                         this.$ipc.send('download', 'cancel', item.id);
-                    }else{
-                        this.TransformData.splice(index, 1);
                     }
-                    return
+                    return this.TransformData.splice(index, 1);
                 }
                 if (item.state === 'completed') {
                     return this.TransformData.splice(index, 1);
