@@ -1,117 +1,119 @@
-const fs= require('fs');
+const fs = require('fs');
 import encrypt from "../encrypt";
+const productName='CloudDisk';
 export default {
-    address:process.env.HOMEDRIVE+process.env.HOMEPATH+'/CloudDisk\/',
-    User:null,
-    debug:process.env.NODE_ENV === 'development',
-    AccountFile:{},//用户本地文件对象
-    char26(){
+    address:(process.platform==='win32'?process.env.HOMEDRIVE+process.env.HOMEPATH:process.env.HOME) + '/CloudSeries\/',
+    user: '',
+    debug: process.env.NODE_ENV === 'development',
+    folders: {},
+    files:{},//用户本地文件对象
+    char26() {
         let ch_small = 'a';
         let str = '';
         let ch_big = 'A';
-        for(let i=0;i<26;i++){
-            str += String.fromCharCode(ch_small.charCodeAt(0)+i)+ String.fromCharCode(ch_big.charCodeAt(0)+i);
+        for (let i = 0; i < 26; i++) {
+            str += String.fromCharCode(ch_small.charCodeAt(0) + i) + String.fromCharCode(ch_big.charCodeAt(0) + i);
         }
         return str;
     },
     log(message){
         this.debug&&console.info(message);
     },
-    init(user,callback){
-        fs.access(this.address,fs.constants.F_OK | fs.constants.W_OK,(err)=>{
-            if(err){
-                fs.mkdir(this.address,(err)=>{
-                    this.log('已创建系统文件夹，准备创建主配置文件');
-                    this.userVerify(user,()=>{
-                        this.create(user,callback);
+    init(user, callback) {
+        this.user=user;
+        this.folderVerify(this.address, () => {
+            this.folders = {
+                basic: this.address + productName,
+                'user': this.address + productName+'/' + user,
+            };
+            this.files={
+                login:this.folders.basic,
+                user:this.folders.user,
+                transfer:this.folders.user,
+                setting:this.folders.user,
+                key:this.folders.basic,
+                __map__:this.folders.basic,
+            };
+            let foldersMap = [],i = 0;
+            for (let folder in this.folders) {
+                foldersMap.push(this.folders[folder]);
+            }
+            this.createFolder(foldersMap,i,()=>{
+                this.log(productName+'文件夹初始化完成');
+                for (let file in this.files) {
+                    this.files[file]=this.files[file]+'/'+file+'.json';
+                    fs.writeFile(this.files[file], (file==='__map__')?JSON.stringify(this.files):'', (err) => {
+                        this.log('创建' + this.files[file]);
                     });
-                })
+                }
+                callback&&callback();
+            });
+        });
+    },
+    createFolder(map,index,callback){
+        this.folderVerify(map[index], () => {
+            if (index !== map.length - 1) {
+                index++;
+                this.createFolder(map,index,callback)
             }else{
-                this.log('系统文件夹已存在，准备创建主配置文件');
-                this.userVerify(user,()=>{
-                    this.create(user,callback);
-                });
+                callback&&callback()
             }
         });
     },
-    userVerify(user,callback){
-        fs.access(this.address+user,fs.constants.F_OK | fs.constants.W_OK,(err)=>{
-            err?fs.mkdir(this.address+user,(err)=>{
-                callback&&callback()
-            }):callback&&callback()
+    folderVerify(url, callback) {
+        fs.access(url, fs.constants.F_OK | fs.constants.W_OK, (err) => {
+            err ? fs.mkdir(url, (err) => {
+                callback && callback()
+            }) : callback && callback()
         })
     },
-    map(user,callback){
-        let map={
-            login:this.address,
-            user:this.address+user+'/',
-            transfer:this.address+user+'/',
-            setting:this.address+user+'/',
-            key:this.address
-        };
-        this.User=user;
-        for(let i in map){
-            map[i]=map[i]+i+'.json';
+    getMap(type){
+        if(this.files[type]){
+            return this.files
         }
-        this.AccountFile=map;
-        callback&&callback()
-    },
-    create(user,callback){
-        this.log('开始创建主配置文件');
-        this.map(user,()=>{
-            for(let i in this.AccountFile){
-                fs.appendFileSync(this.AccountFile[i],'');
-                console.log('创建'+this.AccountFile[i]);
-            }
-        });
-        callback&&callback();
-    },
-    read(type,callback,encryption){
-        this.map(this.User);
-        let data={};
-        if(typeof callback==="function"){
-            fs.readFile(this.AccountFile[type],{flag:'r+',encoding:'utf8'},(err,data)=>{
-                return this.readCallback(encryption,data,callback)
-            });
-            this.log('异步读取'+this.AccountFile[type]);
-        }else{
-            try {
-                data=fs.readFileSync(this.AccountFile[type],{flag:'r+',encoding:'utf8'});
-                this.log('同步读取'+this.AccountFile[type]);
-            }catch (e) {}
-            return this.readCallback(encryption,data)
-        }
-    },
-    readCallback(encryption,data,callback){
-        data=encryption?this.encryption(data,false):data;
-        try{
-            data=JSON.parse(data)
+        try {
+            return JSON.parse(fs.readFileSync(this.address+productName+'/__map__.json'));
         }catch (e) {
-            data={}
+            return false;
         }
-        callback&&callback(data);
-        return data;
     },
-    write(type,data,encryption){
-        this.map(this.User);
-        this.log('写入'+this.AccountFile[type]);
-        data=JSON.stringify(data);
-        if(encryption){
-            data=this.encryption(data,true);
+    read(type,callback, encryption) {
+        this.files=this.getMap(type);
+        this.log('读取' +  this.files[type]);
+        if(!this.files){
+            return callback(null,callback,1)
         }
-        if(type==='key'){
-            let char26=this.char26();
-            data=encrypt.encode(data,data+char26,data+char26);
-        }
-        fs.writeFile(this.AccountFile[type],data, (err)=>{});
+        fs.readFile(this.files[type], {flag: 'r+', encoding: 'utf8'}, (err, data) => {
+            data = encryption ? this.encryption(data, false) : data;
+            try {
+                data = JSON.parse(data)
+            } catch (e) {
+                data = {}
+            }
+            callback && callback(data,err);
+        });
     },
-    encryption(data,command){
-        let key=this.read('key');
-        let pKey=key+this.char26();
-        if(command==='lock'||command===true) {
-            data=encrypt.encode(data,pKey,key);
-        }else{
-            data=encrypt.decode(data,pKey,key);
+    write(type, data, encryption,callback) {
+        this.log('写入' + this.files[type]);
+        data = JSON.stringify(data);
+        if (encryption) {
+            data = this.encryption(data, true);
+        }
+        if (type === 'key') {
+            let char26 = this.char26();
+            data = encrypt.encode(data, data + char26, data + char26);
+        }
+        fs.writeFile(this.files[type], data, (err) => {
+            callback&&callback(data,err)
+        });
+    },
+    encryption(data, command) {
+        let key = this.read('key');
+        let pKey = key + this.char26();
+        if (command === 'lock' || command === true) {
+            data = encrypt.encode(data, pKey, key);
+        } else {
+            data = encrypt.decode(data, pKey, key);
         }
         return data
     }

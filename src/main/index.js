@@ -149,7 +149,6 @@ let DiskSystem= {
             title:'CloudDisk-欢迎',
             width: 850,
             height: 550,
-            alwaysOnTop:true,
             maximizable:false,
             resizable:false,
             onclose:()=>{
