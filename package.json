@@ -1,123 +1,54 @@
 {
-  "name": "CloudDisk",
-  "version": "1.3.2",
-  "author": "ZJINH <2665229856@qq.com>",
+  "name": "c-disk",
+  "author": "ZJINH",
   "description": "CloudDisk",
-  "license": "ZJINH",
-  "main": "./dist/electron/main.js",
+  "version": "1.3.3",
+  "private": true,
   "scripts": {
-    "build": "node .electron-vue/build.js && electron-builder",
-    "build:dir": "node .electron-vue/build.js && electron-builder --dir",
-    "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
-    "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
-    "dev": "node .electron-vue/dev-runner.js",
-    "pack": "npm run pack:main && npm run pack:renderer",
-    "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
-    "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": ""
-  },
-  "build": {
-    "productName": "CloudDisk",
-    "appId": "com.zjinh.app.c-disk",
-    "directories": {
-      "output": "build"
-    },
-    "publish": [
-      {
-        "provider": "generic",
-        "url": "https://update.zjinh.cn/c-disk"
-      }
-    ],
-    "files": [
-      "dist/electron/**/*"
-    ],
-    "nsis": {
-      "oneClick": false,
-      "menuCategory": "Cloud",
-      "shortcutName": "Cloud-网盘",
-      "allowToChangeInstallationDirectory": true,
-      "perMachine": true,
-      "runAfterFinish": true
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    },
-    "mac": {
-      "icon": "static/icons/icon.icns"
-    },
-    "win": {
-      "icon": "static/icons/icon.ico",
-      "artifactName": "${productName}_setup_${version}.${ext}",
-      "target": [
-        "nsis"
-      ]
-    },
-    "linux": {
-      "icon": "static/icons"
-    }
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service lint && vue-cli-service electron:serve",
+    "build": "vue-cli-service lint && vue-cli-service electron:build",
+    "dev:web": "vue-cli-service serve",
+    "build:web": "vue-cli-service build",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps",
+    "electron:generate-icons": "electron-icon-builder --input=./public/logo.png --output=build --flatten"
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "core-js": "^3.4.5",
     "crypto-js": "^3.1.9-1",
     "electron-updater": "^4.2.0",
     "element-ui": "^2.10.1",
     "iview": "3.3.0",
     "vue": "^2.6.10",
-    "vue-electron": "^1.0.6",
-    "vue-router": "^3.1.3",
-    "vuex": "^3.1.2",
-    "vuex-electron": "^1.0.3",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1",
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "ajv": "^6.10.2",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-component": "^1.1.1",
-    "babel-plugin-import": "^1.13.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "babili-webpack-plugin": "^0.1.2",
-    "cfonts": "^2.4.5",
-    "chalk": "^3.0.0",
-    "copy-webpack-plugin": "^5.0.5",
-    "cross-env": "^6.0.3",
-    "css-loader": "^3.2.0",
-    "del": "^5.1.0",
-    "devtron": "^1.4.0",
+    "@vue/cli-plugin-babel": "^4.1.1",
+    "@vue/cli-plugin-eslint": "^4.1.1",
+    "@vue/cli-service": "^4.1.1",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.0.1",
     "electron": "5.0.10",
-    "electron-builder": "^21.2.0",
-    "electron-debug": "^3.0.1",
-    "electron-devtools-installer": "^2.2.4",
-    "file-loader": "^5.0.2",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.8.0",
-    "multispinner": "^0.2.1",
-    "node-loader": "^0.6.0",
-    "style-loader": "^1.0.0",
-    "url-loader": "^3.0.0",
-    "vue-html-loader": "^1.2.4",
-    "vue-loader": "^15.7.2",
-    "vue-style-loader": "^4.1.2",
-    "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0",
-    "webpack-hot-middleware": "^2.25.0",
-    "webpack-merge": "^4.2.2"
-  }
+    "electron-icon-builder": "^1.0.0",
+    "eslint": "^6.7.1",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^6.0.1",
+    "vue-cli-plugin-electron-builder": "^1.3.1",
+    "vue-cli-plugin-element": "^1.0.1",
+    "vue-template-compiler": "^2.5.21"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "main": "background.js"
 }

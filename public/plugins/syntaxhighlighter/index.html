@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<script type="text/javascript" src="scripts/shCore.js"></script>
+	<script type="text/javascript" src="scripts/shAutoloader.js"></script>
+	<script type="text/javascript" src="scripts/shBrush.js"></script>
+	<script type="text/javascript" src="scripts/shLegacy.js"></script>
+	<link type="text/css" rel="stylesheet" href="styles/shCoreDefault.css"/>
+	<style>
+		html,body{
+			padding: 0;
+			margin: 0;
+			height:100%;
+			-webkit-text-size-adjust:100%;
+			-ms-text-size-adjust:100%;
+		}
+		#pre{
+			width: 100%;
+			height: 100%;
+			margin: 0;
+		}
+		/*滚动条*/
+		*::-webkit-scrollbar{
+			width:7px;
+			height:7px;
+			background:none;
+		}
+		*::-webkit-scrollbar-button{
+			display:none;
+		}
+		*::-webkit-scrollbar-track{
+			background:none;
+		}
+		*::-webkit-scrollbar-track-piece {
+			display:none;
+		}
+		*::-webkit-scrollbar-thumb{
+			background : rgba(0,0,0,0.3);
+			position   : absolute;
+			width      : 3px;
+			right      : 0;
+			top        : 0;
+			bottom     : 0;
+			visibility : hidden\9; /* Target only IE7 and IE8 with this hack */
+			opacity    : .01;
+			-webkit-transition    : .2s;
+			-moz-transition       : .2s;
+			-o-transition         : .2s;
+			transition            : .2s;
+			-moz-border-radius    : 3px;
+			-webkit-border-radius : 3px;
+			border-radius         : 3px;
+		}
+		*::-webkit-scrollbar-thumb:active,*::-webkit-scrollbar-thumb:hover{
+			background : rgba(0,0,0,.50);
+		}
+		*::-webkit-scrollbar-corner {
+			display:none;
+		}
+		*::-webkit-scrollbar-resizer  {
+			display:none;
+		}
+	</style>
+</head>
+<body>
+	<pre class="brush: js;" id="pre">
+	</pre>
+</body>
+<script>
+    function query(url) {
+        url=url?url:location.search; //获取url中"?"符后的字串
+        let param = {},strs;
+        if (url.split("?").length>1) {
+            strs = url.split("?")[1].split("&");
+            for(let i = 0; i < strs.length; i ++) {
+                param[strs[i].split("=")[0]]=decodeURIComponent(strs[i].split("=")[1]);
+            }
+        }
+        return param;
+    };
+    console.log(query())
+    let url=query().server+"/service/disk/OpenFile?id="+query().id+"&name="+query().type;
+    let xhr=new XMLHttpRequest();
+    xhr.open("get",url,true);
+    xhr.send(null);
+    xhr.onreadystatechange=function(){
+        if(xhr.readyState===4&&xhr.status===200){
+            let ret=xhr.responseText;
+            document.getElementById('pre').innerText=ret;
+            document.getElementById('pre').className='brush: '+query().type+';';
+            SyntaxHighlighter.highlight();
+        }
+    };
+</script>
+</html>

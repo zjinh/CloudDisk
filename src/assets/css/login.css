@@ -1,0 +1,319 @@
+body,html {
+	margin: 0;
+	height: 100%;
+	overflow: hidden;
+}
+body {
+	z-index: -1;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+	padding: 0!important;
+}
+input[type="text"]:disabled{
+	background: none;
+	cursor: no-drop;
+}
+.cd-index-section{
+	width: 100%;
+	height: 30px;
+	z-index:1;
+	top: 0;
+	left: 0;
+	position: absolute;
+	-webkit-app-region: drag;
+}
+.cd-index-section 	section{
+	float: right;
+	height: 100%;
+	-webkit-app-region: no-drag;
+}
+.cd-index-section button{
+	float: left;
+	width: 40px;
+	height: 100%;
+	color: #fff;
+	margin-left: 5px;
+	background: none;
+	font-size: 12px;
+}
+.cd-index-section button:hover{
+	background: rgba(255,255,255,0.2);
+}
+.cd-index-main{
+	width: 100%;
+	height:100%;
+	background: #fff;
+}
+.cd-index-left,.cd-index-right{
+	float: left;
+	height: 100%;
+}
+.cd-index-left{
+	width: 300px;
+	padding: 45px 25px
+}
+.cd-index-right{
+	width: calc(100% - 300px);
+	height: 553px;
+	background-image: url("../../assets/img/login/right-bg.png");
+	background-size: cover;
+}
+.cd-index-right img{
+	width: 130px;
+	position: absolute;
+	top: 215px;
+	right: 195px;
+}
+/*表单样式开始*/
+.cd-index-head{
+	height: 80px;
+}
+.cd-index-head h1{
+	color: #5b5bea;
+	font-weight: lighter;
+	font-size: 25px;
+}
+.cd-index-head p{
+	margin-top: 5px;
+	color: #888888;
+	font-size: 14px;
+}
+.cd-index-form{
+	width: 100%;
+}
+.cd-index-input{
+	width: 100%;
+	height: 40px;
+	position: relative;
+	border-bottom: 1px solid #eee;
+	margin-top: 20px;
+	overflow: unset!important;
+}
+.cd-index-input span,.cd-index-input label{
+	color: #b8b7b7;
+}
+.cd-index-input span{
+	float: left;
+	width: 30px;
+	height: 40px;
+	position: absolute;
+	text-align: center;
+	line-height: 40px;
+	font-size: 14px;
+}
+.cd-index-input input{
+	width: 100%;
+	height: 32px;
+	padding-left: 35px;
+	margin-top: 4px;
+}
+.cd-index-input label{
+	position: absolute;
+	left: 35px;
+	font-size: 14px;
+	top: 10px;
+	cursor: text;
+	-webkit-transition:all .35s;
+	-moz-transition:all .35s;
+	-o-transition:all .35s;
+}
+.cd-index-input .ivu-tooltip{
+	height: 40px;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.cd-index-input img{
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+}
+.input-focus label{
+	top: -10px!important;
+	color: #5b5bea!important;
+	font-size: 12px!important;
+}
+.cd-index-line-container{
+	margin-top: 15px;
+	padding:10px 5px;
+}
+.cd-index-line-container label,.cd-index-line-container span,.cd-index-line-container p{
+	font-size: 12px;
+	color: #b8b7b7;
+}
+.cd-index-line-container a{
+	float: right;
+	font-size: 12px;
+	color: #888888;
+	cursor: pointer;
+	line-height: 22px;
+}
+.cd-index-post-button{
+	margin-top: 25px;
+	padding-bottom: 20px;
+}
+.cd-index-post-button button{
+	width: 150px;
+	height: 40px;
+	border-radius: 100px;
+	color: #fff;
+	margin-left: 50px;
+	background: #4f93f4;
+	background: -webkit-linear-gradient(90deg, #600fff, #4f93f4,#600fff, #81bffa, #600fff, #4f93f4, #600fff, #600fff);
+	background: -o-linear-gradient(90deg, #600fff, #4f93f4,#600fff, #81bffa, #600fff, #4f93f4, #600fff, #600fff);
+	background: -moz-linear-gradient(90deg, #600fff, #4f93f4,#600fff, #81bffa, #600fff, #4f93f4, #600fff, #600fff);
+	background: linear-gradient(90deg, #600fff, #4f93f4,#600fff, #81bffa, #600fff, #4f93f4, #600fff, #600fff);
+	-webkit-transition: background 0.1s ease-in-out;
+	-moz-transition: background 0.1s ease-in-out;
+	-o-transition: background 0.1s ease-in-out;
+	transition: background 0.1s ease-in-out;
+	box-shadow:0 3px 10px #7c7cee;
+	background-size: 400%;
+	background-position:-280%, 50%;
+}
+@keyframes animate_bg {
+	0%,100% {
+		background-position: 50%, 50%;
+	}
+
+	50% {
+		background-position:-100%, 50%;
+	}
+}
+.cd-index-posting{
+	animation: animate_bg 5s infinite;
+}
+/*第三方登录*/
+.cd-index-other-login{
+	text-align: center;
+}
+.cd-index-other-login label{
+	font-size: 12px;
+	color: #b8b7b7;
+}
+.cd-index-other-login ul{
+	width: 100%;
+	height: 35px;
+	margin-top: 5px;
+}
+.cd-index-other-login ul *{
+	float: left;
+	height: 35px;
+	line-height: 35px;
+}
+.cd-index-other-login ul li{
+	width: 124px;
+	cursor: pointer;
+	font-size: 14px;
+	color: #3d4f4f;
+}
+.cd-index-other-login ul li span{
+	float: unset;
+	color: #6e6e6e;
+}
+.cd-index-other-login div{
+	width: 1px;
+	background: #eee;
+}
+/*提示*/
+.cd-index-tips{
+	margin-top: 30px;
+	text-align: center;
+	font-size: 12px;
+}
+.cd-index-tips p{
+	color: #b8b7b7;
+}
+.cd-index-tips span{
+	color: #5b5bea;
+	cursor: pointer;
+}
+/*加载*/
+:root {
+	--innerRadius: 2em;
+}
+.cd-index-logining{
+	width: 800px;
+	height: 300px;
+	background: #fff;
+	position: absolute;
+	top: calc(50% - 150px);
+	left: calc(50% - 400px);
+	color: #fff;
+	box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 0 1px rgba(0,0,0,.2);
+	background: -webkit-linear-gradient(75deg, #600fff 40%, #4f93f4,#4f93f4);
+	background: -o-linear-gradient(75deg, #600fff 40%, #4f93f4,#4f93f4);
+	background: -moz-linear-gradient(75deg, #600fff 40%, #4f93f4,#4f93f4);
+	background: linear-gradient(75deg, #600fff 40%, #4f93f4,#4f93f4);
+	text-align: center;
+	-webkit-app-region: drag;
+}
+.cd-index-logining ul{
+	width: 100%;
+	padding: 0 129px;
+}
+.cd-index-logining ul li{
+	float: left;
+	line-height: 300px;
+	padding: 0 30px;
+	font-size: 25px;
+	overflow: unset;
+	position: relative;
+	height: 255px;
+}
+.cd-index-logining img{
+	width: 120px;
+	height: 120px;
+	border-radius: 100%;
+	-moz-border-radius: 100%;
+	-webkit-border-radius: 100%;
+	margin-top: 85px;
+	position: relative;
+	z-index: 1;
+}
+.cd-index-logining p{
+	width: 100%;
+	font-size: 14px;
+}
+.circle {
+	width: 56px;
+	height: 56px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: unset!important;
+	left: 61px;
+	top: 117px;
+	position: absolute;
+}
+.circle::before,
+.circle::after {
+	content: '';
+	position: absolute;
+	width: calc(var(--innerRadius) * 1 * 2);
+	height: calc(var(--innerRadius) * 1 * 2);
+	border: 2px solid #fff;
+	background: rgba(255,255,255,.5);
+	border-radius: 50%;
+	animation: pulse 2s ease-out infinite;
+}
+.circle::after {
+	animation-delay: 1s;
+}
+@keyframes pulse {
+	from {
+		transform: scale(1);
+		filter: opacity(0.9);
+	}
+
+	to {
+		transform: scale(2);
+		filter: opacity(0);
+	}
+}
+.v-modal{
+	opacity: 0;
+}
