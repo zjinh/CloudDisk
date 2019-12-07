@@ -46,9 +46,13 @@ export default {
 				this.log(productName + '文件夹初始化完成');
 				for (let file in this.files) {
 					this.files[file] = this.files[file] + '/' + file + '.json';
-					fs.writeFile(this.files[file], file === '__map__' ? JSON.stringify(this.files) : '', err => {
-						this.log('创建' + this.files[file]);
-					});
+					if (file === '__map__') {
+						fs.writeFile(this.files[file], JSON.stringify(this.files), () => {
+							this.log('创建' + this.files[file]);
+						});
+					} else {
+						fs.appendFileSync(this.files[file], '');
+					}
 				}
 				callback && callback();
 			});

@@ -45,7 +45,7 @@
 				<div class="cd-mouse-select" v-show="MouseSelectData.width" :style="MouseSelectData" />
 				<DiskTransList v-show="DiskData.Type === 'trans'" :data="TransformData" @ControlTrans="ControlTrans" />
 			</section>
-			<input type="file" id="FileArea" @change="PreparUpload" hidden ref="FileArea" multiple="multiple" />
+			<input type="file" id="FileArea" @change="PrepareUploadFile" hidden ref="FileArea" multiple="multiple" />
 			<audio :src="NoticeSrc" ref="NoticeAudio" />
 			<MouseMenu :type="loadClassify" :node="$refs.CloudDiskMain" :DiskData="DiskData" @callback="DiskFeatureControl" ref="MouseMenu" />
 			<el-dialog title="选择目标文件夹" :visible.sync="showTree" width="350px">
@@ -86,6 +86,7 @@ import DiskShare from '../components/DiskWindow/DiskShare'; //文件分享
 import DiskTransList from '../components/DiskWindow/DiskTransList'; //下载列表
 import loading from '../components/DiskWindow/loading'; //加载
 import MouseMenu from '../components/DiskWindow/MouseMenu'; //右键菜单
+import upload from '../tools/file/upload';
 export default {
 	name: 'DiskWindow',
 	components: {
@@ -151,10 +152,7 @@ export default {
 			ShowUploadTips: false,
 			/*文件传输列表参数*/
 			TransformData: [],
-			SelectUploadFiles: [], //选择上传的文件
 			SelectDownLoadFiles: [], //选择下载的文件
-			DiskUploadData: [], //上传文件记录
-			DiskDownLoadData: [], //下载文件记录，
 			UploadCount: 0, //上传技术
 			DownloadCount: 0, //下载计数
 			FinishCount: 0, //完成计数
@@ -252,6 +250,9 @@ export default {
 				(this.DiskData.SelectFiles.length > 1 || this.DiskData.NowSelect.disk_id !== undefined)
 			);
 		},
+		/**
+		 * @return {boolean}
+		 */
 		NoTransType() {
 			return this.DiskData.Type !== 'trans';
 		},
@@ -261,6 +262,9 @@ export default {
 		IsNoDiskData() {
 			return this.LoadCompany && this.NoTransType;
 		},
+		/**
+		 * @return {string}
+		 */
 		AutoHeight() {
 			return (
 				'calc(100% - 120px - ' +
@@ -306,7 +310,8 @@ export default {
 				false
 			);
 			localStorage.server = this.$Api.Public.severAddress();
-			this.$ipc.on('download', (e, file) => {
+			this.$ipc.on('download', (e, file, completed) => {
+				completed && this.DiskFeatureControl('popup', file.name + '下载完成'); /*消息提醒*/
 				for (let i = 0; i < this.TransformData.length; i++) {
 					if (file.name === this.TransformData[i].name) {
 						this.$nextTick(() => {
@@ -338,6 +343,10 @@ export default {
 									}
 								});
 							}
+						});
+						this.$Api.LocalFile.read('setting', data => {
+							this.ConfigObject = data;
+							this.$ipc.send('system', 'download-update', data.TransDownFolder);
 						});
 					},
 					() => {
@@ -460,7 +469,7 @@ export default {
 					this.$refs.FileArea.value = '';
 					this.$refs.FileArea.click();
 					if (datas) {
-						this.PreparUpload(datas.dataTransfer);
+						this.PrepareUploadFile(datas.dataTransfer);
 						this.ShowUploadTips = false;
 					}
 					break;
@@ -773,7 +782,8 @@ export default {
 						}, 200);
 					}
 					if (this.ConfigObject.NoticeBubble) {
-						this.$ipc.send('system', 'popup', datas);
+						this.$notify(datas);
+						//this.$ipc.send('system', 'popup', datas);
 					}
 					break;
 			}
@@ -923,61 +933,6 @@ export default {
 			this.DiskData.SelectFiles = [];
 		},
 		/*右键菜单函数*/
-		UploadDrop(e) {
-			if (this.loadClassify === 'normal') {
-				this.PreparUpload(e.dataTransfer);
-				this.ShowUploadTips = false;
-			}
-		}, //拖拽上传
-		PreparUpload(data) {
-			if (data.target) {
-				data = data.target;
-			}
-			for (let k = 0; k < data.files.length; k++) {
-				this.SelectUploadFiles.push(data.files[k]);
-			}
-			let fileArea = data.files;
-			let file;
-			let OneFile = {};
-			this.$nextTick(() => {
-				for (let i = 0; i < fileArea.length; i++) {
-					file = fileArea[i];
-					OneFile = {
-						time: new Date().getTime() / 1000,
-						name: file.name,
-						chunk: 0,
-						size: file.size,
-						trans_type: 'upload',
-						state: 'progressing',
-						disk_main: file.path,
-						shows: false
-					};
-					for (let j = 0; j < this.DiskUploadData.length; j++) {
-						let item = this.DiskUploadData[j];
-						if (item.name === OneFile.name && item.chunk !== 0 && item.disk_main === OneFile.disk_main) {
-							item.state = 'progressing';
-							this.PostUpload(item);
-							return false;
-						}
-					}
-					this.DiskUploadData.push(OneFile);
-					this.TransformData.push(OneFile);
-					this.PostUpload(OneFile, 'first');
-				}
-				this.$Message.info(fileArea.length + '个文件已加入上传列队');
-			});
-		}, //处理上传
-		FindTheFile(fileName) {
-			let files = this.SelectUploadFiles,
-				theFile;
-			for (let i = 0, j = files.length; i < j; ++i) {
-				if (files[i].name === fileName) {
-					theFile = files[i];
-					break;
-				}
-			}
-			return theFile ? theFile : [];
-		}, //查找上传的文件
 		ControlTrans(item, index) {
 			if (event.target.className === 'sf-icon-times') {
 				if (item.trans_type === 'download') {
@@ -990,62 +945,30 @@ export default {
 			}
 			if (item.trans_type === 'upload') {
 				item.state = item.state === 'interrupted' ? 'progressing' : 'interrupted';
-				this.PostUpload(item);
+				this.PrepareUploadFile(item);
 			} else {
 				let commend = item.state === 'progressing' ? 'pause' : 'resume';
 				this.$ipc.send('download', commend, item.id);
 			}
 		}, //传输任务控制
-		PostUpload(item, times) {
-			let fileName = item.name,
-				eachSize = item.size / 150,
-				totalSize = item.size,
-				chunks = Math.ceil(totalSize / eachSize),
-				chunk = item.chunk || 0;
-			chunk = parseInt(chunk, 10); // 上传之前查询是否以及上传过分片
-			let isLastChunk = chunk === chunks - 1 ? 1 : 0; // 判断是否为末分片
-			if (times === 'first' && isLastChunk === 1) {
-				// 如果第一次上传就为末分片，即文件已经上传完成，则重新覆盖上传
-				chunk = 0;
-				isLastChunk = 0;
+		UploadDrop(e) {
+			if (this.loadClassify === 'normal') {
+				this.PrepareUploadFile(e.dataTransfer);
+				this.ShowUploadTips = false;
 			}
-			// 设置分片的开始结尾
-			let blobFrom = chunk * eachSize, // 分段开始
-				blobTo = (chunk + 1) * eachSize > totalSize ? totalSize : (chunk + 1) * eachSize, // 分段结尾
-				fd = new FormData();
-			this.$nextTick(() => {
-				item.chunk = blobTo;
-			});
-			fd.append('theFile', this.FindTheFile(fileName).slice(blobFrom, blobTo)); // 分好段的文件
-			fd.append('fileName', fileName); // 文件名
-			fd.append('parent_id', this.NowDiskID); // 当前目录id
-			fd.append('totalSize', totalSize); // 文件总大小
-			fd.append('isLastChunk', isLastChunk); // 是否为末段
-			fd.append('isFirstUpload', times === 'first' ? 1 : 0); // 是否是第一段（第一次上传）
-			// 上传
-			this.$Api.Disk.Upload(fd, rs => {
-				if (parseInt(rs.status) === 200) {
-					// 上传成功
-					if (rs.data) {
-						// 已经上传完毕
-						this.$nextTick(() => {
-							item.state = 'completed';
-							if (this.NowDiskID === rs.data.parent_id) {
-								this.UserDiskData.push(rs.data);
-							}
-						});
-						this.DiskFeatureControl('popup', item.name + '上传完成'); /*消息提醒*/
-					} else {
-						item.chunk = ++chunk;
-						// 这样设置可以暂停，但点击后动态的设置就暂停不了..
-						if (item.state === 'progressing') {
-							this.PostUpload(item);
-						}
+		}, //拖拽上传
+		PrepareUploadFile(data) {
+			upload.prepareFile(data, {
+				data: this.NowDiskID,
+				add: file => {
+					this.TransformData.push(file);
+					this.$Message.info((data.target ? data.target : data).files.length + '个文件已加入上传列队');
+				},
+				success: (file, rs) => {
+					if (this.NowDiskID === rs.data.parent_id) {
+						this.UserDiskData.push(rs.data);
 					}
-				} else {
-					this.$nextTick(() => {
-						item.state = 'interrupted'; //可恢复的上传
-					});
+					this.DiskFeatureControl('popup', file.name + '上传完成'); /*消息提醒*/
 				}
 			});
 		},

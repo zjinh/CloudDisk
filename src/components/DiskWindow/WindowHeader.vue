@@ -84,7 +84,7 @@ export default {
 			this.win.minimize();
 		},
 		close() {
-			this.win.close();
+			this.data.close() || this.win.close();
 		},
 		restore() {
 			if (this.win.isMaximized()) {

@@ -1,3 +1,4 @@
+import {app} from "electron";
 <template>
 	<div class="cd-setting-win">
 		<div class="cd-drag-head-big">
@@ -162,11 +163,12 @@ export default {
 				NoticeFlag: true, //提醒声音
 				NoticeVoice: '音效一' //哪个提醒声音
 			},
+			defaultFolder: null,
 			loading: ''
 		};
 	},
 	created() {
-		this.$Api.LocalFile.User = localStorage.UserId;
+		this.defaultFolder = (this.$electron.remote ? this.$electron.remote : this.$electron).app.getPath('downloads');
 		this.LoginTime = localStorage.LoginTime;
 		this.GetLocalSetting();
 	},
@@ -191,7 +193,7 @@ export default {
 						this.SettingData = data;
 					});
 				} else {
-					this.SettingData.TransDownFolder = process.env.USERPROFILE;
+					this.SettingData.TransDownFolder = this.defaultFolder;
 					this.$Api.LocalFile.write('setting', this.SettingData);
 				}
 				switch (this.SettingData.NoticeVoice.substr(-5)) {
@@ -396,7 +398,7 @@ export default {
 					filters: [{ name: 'All', extensions: ['*'] }]
 				},
 				res => {
-					res = res[0] || process.env.USERPROFILE;
+					res = (res[0] && res[0]) || this.defaultFolder;
 					//回调函数内容，此处是将路径内容显示在input框内
 					this.SettingData.TransDownFolder = res;
 				}

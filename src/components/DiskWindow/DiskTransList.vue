@@ -34,6 +34,9 @@ export default {
 		ControlTrans(item, index) {
 			this.$emit('ControlTrans', item, index);
 		},
+		/**
+		 * @return {number}
+		 */
 		PercentCount(item) {
 			return parseFloat(((item.chunk / item.size) * 100).toFixed(1));
 		},

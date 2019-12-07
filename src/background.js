@@ -1,13 +1,13 @@
 'use strict';
+import packageInfo from '../package';
 import { app, protocol, ipcMain, BrowserWindow, session, Tray, Menu, screen, nativeImage } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import windowControl from './tools/main/windowControl';
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 import LocalFile from './tools/api/LocalFile';
+import download from './tools/file/download';
 const path = require('path');
-let TransDownFolder = process.env.USERPROFILE;
-let DownloadList = {};
 let LoginWindow,
 	MainWindow,
 	DiskInfo,
@@ -75,22 +75,6 @@ let VideoButtons = [
 ];
 let appTray = null; //托盘变量
 /*网盘函数*/
-function FileObject(item, state) {
-	return {
-		id: Math.round(item.getStartTime()),
-		url: item.getURLChain(),
-		time: item.getStartTime(),
-		name: item.fileName,
-		path: item.path,
-		chunk: item.getReceivedBytes(),
-		size: item.getTotalBytes(),
-		trans_type: 'download',
-		state: state || item.getState(),
-		disk_main: item.getURL(),
-		canResume: item.canResume(),
-		shows: true
-	};
-}
 let DiskSystem = {
 	LoginWindow: flag => {
 		if (LoginWindow) {
@@ -184,9 +168,6 @@ let DiskSystem = {
 			},
 			callback: () => {
 				LoginWindow ? LoginWindow.close() : '';
-				LocalFile.read('setting', data => {
-					TransDownFolder = data.TransDownFolder || process.env.HOME;
-				});
 			}
 		});
 	},
@@ -469,6 +450,9 @@ function bindIpc() {
 			case 'user-update':
 				MainWindow.webContents.send('user-update', data);
 				break;
+			case 'download-update':
+				data && download.changeFolder(data);
+				break;
 			case 'logoff':
 				DiskSystem.logoff();
 				break;
@@ -531,7 +515,7 @@ function bindIpc() {
 	});
 	/*下载事件控制*/
 	ipcMain.on('download', (event, type, data) => {
-		let downloadItem = DownloadList[data];
+		let downloadItem = download.downloadList[data];
 		if (downloadItem === undefined) {
 			return;
 		}
@@ -549,36 +533,7 @@ function bindIpc() {
 				break;
 		}
 	});
-	session.defaultSession.removeAllListeners('will-download');
-	session.defaultSession.on('will-download', (event, item, webContents) => {
-		let name =
-			decodeURI(
-				item
-					.getURLChain()
-					.toString()
-					.split('?disk_name=')[1]
-			) || item.getFilename();
-		item.fileName = name;
-		item.path = TransDownFolder + '/' + name;
-		item.setSavePath(TransDownFolder + '/' + name); // 设置保存路径,使Electron不提示保存对话框。
-		item.on('updated', () => {
-			DownloadList[Math.round(item.getStartTime())] = item;
-			let file = FileObject(item, item.isPaused() ? 'interrupted' : false);
-			webContents && webContents.send('download', file);
-		});
-		item.once('done', (event, state) => {
-			let file = FileObject(item, item.isPaused() ? 'interrupted' : false);
-			webContents && webContents.send('download', file);
-			if (state === 'completed') {
-				delete DownloadList[Math.round(item.getStartTime())];
-			} else {
-				console.log(`Download failed: ${state}`);
-			}
-		});
-	});
 }
-/*创建窗口*/
-
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
 	app.quit();
@@ -599,7 +554,9 @@ if (!gotTheLock) {
 	});
 	app.on('ready', function() {
 		bindIpc(); //初始化ipc
+		download.init();
 		createProtocol('app');
+		app.setAppUserModelId(packageInfo.appId);
 		app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 		LocalFile.read(
 			'login',
