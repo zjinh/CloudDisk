@@ -97,7 +97,7 @@ let DiskSystem = {
 		if (MainWindow) {
 			return windowControl.active(MainWindow, data);
 		}
-		appTray = new Tray(path.join(__static, 'icon/tray@2x.png'));
+		appTray = new Tray(path.join(__static, 'icon/tray@3x.png'));
 		//图标的上下文菜单
 		let trayMenuTemplate = [
 			//托盘菜单

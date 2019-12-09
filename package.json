@@ -13,7 +13,7 @@
     "build:web": "vue-cli-service build",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
-    "electron:generate-icons": "electron-icon-builder --input=./public/logo.png --output=build --flatten"
+    "icons": "electron-icon-builder --input=./public/logo.png --output=build --flatten"
   },
   "dependencies": {
     "axios": "^0.19.0",
