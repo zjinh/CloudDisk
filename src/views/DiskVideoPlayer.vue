@@ -9,7 +9,7 @@
 		@keydown.left="ChangeTime('-')"
 		@keydown.right="ChangeTime('+')"
 	>
-		<WindowsHeader :data="header"></WindowsHeader>
+		<WindowsHeader :data="header"/>
 		<div class="cd-video-main">
 			<video
 				:style="{ height: VideoHeight }"
@@ -25,13 +25,13 @@
 				@seeking="PlayButtonState = 'sf-icon-circle-notch sf-spin'"
 				@canplay="VideoPlayerCommend('play')"
 				:src="NowPlay.PlayUrl"
-			></video>
+			/>
 			<div :class="'cd-video-fliter ' + PlayButtonState + ' ' + animation" @click="VideoPlayerCommend('play')"></div>
 			<div :class="'cd-video-control ' + BarAnimation" @mouseover="ShowControl" @mouseout="HideControl">
 				<div :class="'cd-video-play ' + PlayButtonState" @click="VideoPlayerCommend('play')"></div>
 				<div class="cd-video-player-slider-container" @mousedown="TimeChange" ref="slider">
 					<div class="cd-player-process-bar" :style="{ width: ProcessWidth }">
-						<span></span>
+						<span/>
 					</div>
 					<div class="cd-video-temp-bar" :style="{ width: CacheWidth }"></div>
 				</div>
@@ -44,7 +44,7 @@
 				<div class="cd-video-player-volumn" v-show="VolumnState">
 					<div class="cd-player-volumn-container" ref="volunm" @mousedown="ChangeVolumn">
 						<div class="cd-player-volumn-slider">
-							<span></span>
+							<span/>
 						</div>
 					</div>
 				</div>
