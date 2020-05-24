@@ -1,0 +1,54 @@
+{
+  "name": "c-disk",
+  "author": "ZJINH",
+  "description": "CloudDisk",
+  "appId": "com.zjinh.app.CloudDisk",
+  "version": "1.3.4",
+  "private": true,
+  "scripts": {
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service lint && vue-cli-service electron:serve",
+    "build": "vue-cli-service lint && vue-cli-service electron:build",
+    "dev:web": "vue-cli-service serve",
+    "build:web": "vue-cli-service build",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps",
+    "icons": "electron-icon-builder --input=./public/logo.png --output=build --flatten"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "core-js": "^3.4.5",
+    "crypto-js": "^3.1.9-1",
+    "electron-updater": "^4.2.0",
+    "element-ui": "^2.10.1",
+    "iview": "3.3.0",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.1.1",
+    "@vue/cli-plugin-eslint": "^4.1.1",
+    "@vue/cli-service": "^4.1.1",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.0.1",
+    "electron": "5.0.10",
+    "electron-icon-builder": "^1.0.0",
+    "eslint": "^6.7.1",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^6.0.1",
+    "vue-cli-plugin-electron-builder": "^1.3.1",
+    "vue-cli-plugin-element": "^1.0.1",
+    "vue-template-compiler": "^2.5.21"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "main": "background.js"
+}
