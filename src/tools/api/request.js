@@ -1,7 +1,7 @@
 import axios from 'axios/index';
 axios.defaults.withCredentials = true;
 function severAddress() {
-	return 'https://api.zjinh.cn';
+	return 'http://zjinh.cn';
 }
 function updateServer() {
 	return 'https://update.zjinh.cn/c-disk';
