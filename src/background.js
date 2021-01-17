@@ -92,7 +92,6 @@ let DiskSystem = {
 				LoginWindow = null;
 			},
 			callback: () => {
-				LoginWindow.webContents.openDevTools();
 			}
 		});
 	},
