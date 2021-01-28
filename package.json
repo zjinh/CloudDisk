@@ -32,7 +32,7 @@
     "@vue/cli-service": "^4.4.6",
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
-    "electron": "^9.2.0",
+    "electron": "^9.4.0",
     "electron-icon-builder": "^1.0.2",
     "eslint": "^7.6.0",
     "eslint-plugin-prettier": "^3.1.4",
