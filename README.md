@@ -53,7 +53,7 @@
 #### 更多预览请前往项目吧....
 
 
-> 旧版分界线
+> --------------------旧版分界线--------------------------
 ## 🖥 应用界面
 #### 主界面
    ![主界面](screen/disk.gif)
@@ -95,7 +95,6 @@ C-DISK是一款集上传下载、文件在线查看的工具。
 - [Element](https://element.eleme.io)
 
 ## 🛠 使用的插件
-- [pdf.js](https://github.com/mozilla/pdf.js)
 - [syntaxhighlighter](https://github.com/syntaxhighlighter/syntaxhighlighter)
 
 ## ⌨️ 本地开发
