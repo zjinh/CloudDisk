@@ -5,8 +5,8 @@
 
 > C-DISK
 ## 体验
-- 旧版：[点我下载](https://works.zjinh.cn/CloudDisk)
-- 重构版：[点我前往](https://disk.zjinh.cn)
+- 旧版：[点我下载](https://works.zjinh.cn)
+- 重构版：[点我前往/下载](https://disk.zjinh.cn)
 - 体验账号：用户密码均为123
 ## Cloud系列项目
 - [C-Disk(重构版)](https://disk.zjinh.cn)

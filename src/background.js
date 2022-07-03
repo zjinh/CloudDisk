@@ -91,8 +91,7 @@ let DiskSystem = {
 			onclose: () => {
 				LoginWindow = null;
 			},
-			callback: () => {
-			}
+			callback: () => {}
 		});
 	},
 	MainWindow: data => {
